@@ -3,8 +3,8 @@ import capytaine as capy
 import numpy as np
 import time 
 # Define Array and Waves
-wecx = [0, 50, 100, 150, 200]
-wecy = [0, 0, 0, 0, 0]
+wecx = [0, 5000000000]
+wecy = [0, 0]
 r = 1
 omega = 1
 beta = 0
@@ -41,9 +41,9 @@ def bem_potentials(bodies,neighbors):
     solver = solver = capy.BEMSolver()
     diff_problem = {body:capy.DiffractionProblem(body=body,omega=omega,wave_direction=beta) for body in bodies}
     diff_result = {body:solver.solve(diff_problem[body]) for body in bodies}
-    phi = {effector: # the effecting wec
-           {effected:solver.compute_potential(effected.home,diff_result[effector])for effected in bodies} # the wec being effected
-          for effector in bodies}
+    phi = {effecter: # the effecting wec
+           {effected:solver.compute_potential(effecter.home,diff_result[effecter])for effected in bodies} # the wec being effected
+          for effecter in bodies}
     '''The above line(s) of code may be a bit confusing initially. Basically I'm making a 2d dictonary to act as the phi  matrix
     the first "dimension" is the effecting wec, and the second is the wec being effected. We then calculate the potential caused
     by the effecting wec (using the diffraction result) at the effected wec's home for every combination of effecting and 
@@ -51,6 +51,7 @@ def bem_potentials(bodies,neighbors):
     return phi
 
 phi = bem_potentials(bodies,neighbors)
+print(phi)
 end_time = time.perf_counter()
 total_time = end_time-start_time
 print(f"BEM completed in {total_time} seconds.")
@@ -62,15 +63,17 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
     def pwa_interaction(body_i,body_j,phi_ij):  # calculates each term in the sumation
         k = omega**2/g
         x_i = body_i.home[0]
-        y_i = body_i.home[0]
+        y_i = body_i.home[1]
         x_j = body_j.home[0]
         y_j = body_j.home[1]
         if x_i == x_j:
             theta = np.pi/2
         else:
             theta = np.arctan((y_j-y_i)/(x_j-x_i))  # just some trig
+
         # First get the exponential term that multiplies the potential, should be bounded by -1 and 1
         phi_multiplier = np.exp(1j*k*((x_i-x_j)*np.cos(theta)+(y_i-y_j)*np.sin(theta))) 
+        print(f"the multiplier is {phi_multiplier}")
         phi_term = phi_ij*phi_multiplier        # the term for eq 10, phi_ij times the exponential thingy
         return phi_term
     phi_star = {body: # for each body
@@ -79,7 +82,7 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
     return phi_star
 
 phi_star = calc_phi_star(bodies,neighbors,phi) # eq 10
-
+print(phi_star)
 end_time = time.perf_counter()
 total_time = end_time-start_time
 print(f"First PWA phi calculated in {total_time} seconds.")
