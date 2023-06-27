@@ -1,9 +1,10 @@
 # PWA - NDG's attempt
 import capytaine as capy
 import numpy as np
+import time 
 # Define Array and Waves
-wecx = [0, 50, 100]
-wecy = [0, 0, 0]
+wecx = [0, 50, 100, 150, 200]
+wecy = [0, 0, 0, 0, 0]
 r = 1
 omega = 1
 beta = 0
@@ -32,6 +33,7 @@ def get_neighbors(bodies):
     return neighbors
 neighbors = get_neighbors(bodies)
 print("Initialization completed. On to BEM...")
+start_time = time.perf_counter()
 
 # Step 1: BEM Potentials
 def bem_potentials(bodies,neighbors):
@@ -49,7 +51,11 @@ def bem_potentials(bodies,neighbors):
     return phi
 
 phi = bem_potentials(bodies,neighbors)
-print("BEM completed. On to PWA...")
+end_time = time.perf_counter()
+total_time = end_time-start_time
+print(f"BEM completed in {total_time} seconds.")
+print("On to PWA...")
+start_time = time.perf_counter()
 
 # Step 2: PWA
 def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
@@ -59,7 +65,10 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
         y_i = body_i.home[0]
         x_j = body_j.home[0]
         y_j = body_j.home[1]
-        theta = np.arctan((y_j-y_i)/(x_j-x_i))  # just some trig
+        if x_i == x_j:
+            theta = np.pi/2
+        else:
+            theta = np.arctan((y_j-y_i)/(x_j-x_i))  # just some trig
         # First get the exponential term that multiplies the potential, should be bounded by -1 and 1
         phi_multiplier = np.exp(1j*k*((x_i-x_j)*np.cos(theta)+(y_i-y_j)*np.sin(theta))) 
         phi_term = phi_ij*phi_multiplier        # the term for eq 10, phi_ij times the exponential thingy
@@ -70,5 +79,7 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
     return phi_star
 
 phi_star = calc_phi_star(bodies,neighbors,phi) # eq 10
-print(phi_star)
 
+end_time = time.perf_counter()
+total_time = end_time-start_time
+print(f"First PWA phi calculated in {total_time} seconds.")
