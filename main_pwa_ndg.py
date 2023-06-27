@@ -1,5 +1,4 @@
 # PWA - NDG's attempt
-import capytaine as capy
 import numpy as np
 import time 
 import wec_array_initialization as array_init
@@ -42,7 +41,6 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
 
         # First get the exponential term that multiplies the potential, should be bounded by -1 and 1
         phi_multiplier = np.exp(1j*k*((x_i-x_j)*np.cos(theta)+(y_i-y_j)*np.sin(theta))) 
-        print(f"the multiplier is {phi_multiplier}")
         phi_term = phi_ij*phi_multiplier        # the term for eq 10, phi_ij times the exponential thingy
         return phi_term
     phi_star = {body: # for each body

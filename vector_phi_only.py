@@ -1,5 +1,4 @@
 # PWA - NDG's attempt
-import capytaine as capy
 import numpy as np
 import time 
 import wec_array_initialization as array_init
