@@ -41,13 +41,7 @@ def bem_potentials(bodies,neighbors):
     solver = solver = capy.BEMSolver()
     diff_problem = {body:capy.DiffractionProblem(body=body,omega=omega,wave_direction=beta) for body in bodies}
     diff_result = {body:solver.solve(diff_problem[body]) for body in bodies}
-    phi = {effecter: # the effecting wec
-           {effected:solver.compute_potential(effected.home,diff_result[effecter])for effected in bodies} # the wec being effected
-          for effecter in bodies}
-    '''The above line(s) of code may be a bit confusing initially. Basically I'm making a 2d dictonary to act as the phi  matrix
-    the first "dimension" is the effecting wec, and the second is the wec being effected. We then calculate the potential caused
-    by the effecting wec (using the diffraction result) at the effected wec's home for every combination of effecting and 
-    effected wec'''
+    phi = {body: solver.compute_potential(body.home,diff_result[body]) for body in bodies}
     return phi
 
 phi = bem_potentials(bodies,neighbors)
@@ -73,16 +67,21 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
 
         # First get the exponential term that multiplies the potential, should be bounded by -1 and 1
         phi_multiplier = np.exp(1j*k*((x_i-x_j)*np.cos(theta)+(y_i-y_j)*np.sin(theta))) 
-        print(f"the multiplier is {phi_multiplier}")
         phi_term = phi_ij*phi_multiplier        # the term for eq 10, phi_ij times the exponential thingy
         return phi_term
     phi_star = {body: # for each body
-                sum(pwa_interaction(neighbor,body,phi[neighbor][body]) for neighbor in neighbors[body]) # sum effects of neighbors
+                sum(pwa_interaction(neighbor,body,phi[neighbor]) for neighbor in neighbors[body]) # sum effects of neighbors
                for body in bodies}
     return phi_star
 
 phi_star = calc_phi_star(bodies,neighbors,phi) # eq 10
-print(phi_star)
+for ii in range(2*N):
+    phi = phi_star
+    phi_star = calc_phi_star(bodies,neighbors,phi) # eq 10
+
+
 end_time = time.perf_counter()
 total_time = end_time-start_time
-print(f"First PWA phi calculated in {total_time} seconds.")
+print(f"PWA completed in {total_time} seconds.")
+print(f"2nd to last phi was {phi}")
+print(f"Final phi was {phi_star}")
