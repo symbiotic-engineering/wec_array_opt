@@ -6,8 +6,9 @@ def get_body(r,x,y):
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
     body = body.immersed_part()
-    body.name = f'{x}_{y}_{r}'
+    body.name = f'{x}_{y}'
     body.home = np.array([x,y,0])
+    body.radius = r
     return body
 
 def get_neighbors(bodies):
