@@ -34,10 +34,7 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
         y_i = body_i.home[1]
         x_j = body_j.home[0]
         y_j = body_j.home[1]
-        if x_i == x_j:
-            theta = np.pi/2
-        else:
-            theta = np.arctan((y_j-y_i)/(x_j-x_i))  # just some trig
+        theta = np.arctan2((y_j-y_i),(x_j-x_i))  # just some trig
 
         # First get the exponential term that multiplies the potential, should be bounded by -1 and 1
         phi_multiplier = np.exp(1j*k*((x_i-x_j)*np.cos(theta)+(y_i-y_j)*np.sin(theta))) 
