@@ -13,9 +13,14 @@ def phi_matrix(bodies,omega,beta):
                {effected:solver.compute_potential(effected.home,rad_result[effecter])for effected in bodies} # the wec being effected
               for effecter in bodies}
     diff_phi = {effecter: # the effecting wec
-           {effected:solver.compute_potential(effected.home,diff_result[effecter])for effected in bodies} # the wec being effected
+                {effected:solver.compute_potential(effected.home,diff_result[effecter])for effected in bodies} # the wec being effected
+               for effecter in bodies}
+    inc_phi = {body:incident_potential(body.home,diff_problem[body]) for body in bodies}
+    phi = {effecter:
+           {effected: rad_phi[effecter][effected]+diff_phi[effecter][effected] for effected in bodies}
           for effecter in bodies}
-    phi = 0
+    for body in bodies:
+        phi[body][body] += inc_phi[body] # add in the incident potential
     '''The above line(s) of code may be a bit confusing initially. Basically I'm making a 2d dictonary to act as the phi  matrix
     the first "dimension" is the effecting wec, and the second is the wec being effected. We then calculate the potential caused
     by the effecting wec (using the diffraction result) at the effected wec's home for every combination of effecting and 
