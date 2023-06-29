@@ -4,9 +4,9 @@ import time
 import wec_array_initialization as array_init
 import bem_potentials as bem
 # Define Array and Waves
-wecx = [0, 10000000000000]
+wecx = [0, 100000000000000]
 wecy = [0, 0]
-r = 1
+r = 10
 omega = 1
 beta = np.pi/2
 g = 9.81
@@ -46,6 +46,7 @@ def calc_phi_star(bodies,neighbors,phi):        # uses equation 10 in the paper
     return phi_star
 
 for body in bodies:
+        #if body.name == "100000000000000_0":
         if body.name == "0_0":
             body1 = body
             break
