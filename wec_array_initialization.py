@@ -9,6 +9,9 @@ def get_body(r,x,y):
     body.name = f'{x}_{y}'
     body.home = np.array([x,y,0])
     body.radius = r
+    body.center_of_mass=(x, y, 0)
+    body.keep_only_dofs(['Heave'])
+    body.rotation_center=(x,y,0)
     return body
 
 def get_neighbors(bodies):

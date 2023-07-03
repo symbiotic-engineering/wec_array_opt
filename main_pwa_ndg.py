@@ -5,8 +5,8 @@ import bem_interface as bem
 import pwa_interface as pwa
 
 # Define Array and Waves
-wecx = [0, 100]
-wecy = [0, 0]
+wecx = [0,100]
+wecy = [0,0]
 r = 10
 omega = 1
 beta = 0
@@ -23,6 +23,8 @@ print("======================================= BEM complete on to PWA ==========
 
 # Step 2: PWA
 for ii in range(2*N):
+    print(f"Iteration {ii+1}")
     phi_star = pwa.calc_phi_star(bodies,neighbors,phi,omega) # eq 10
     phi = bem.phi_vector2matrix(phi_star,bodies,omega,beta)
-print(phi)
+    print("Phi is ...")
+    print(phi)
