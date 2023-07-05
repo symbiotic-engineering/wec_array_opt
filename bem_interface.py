@@ -19,7 +19,7 @@ def initial_hydrodynamics(bodies,omega,beta):
     sig_d = {body:diff_result[body].sources for body in bodies}
     Fd = {body:diff_result[body].forces['Heave'] for body in bodies}
     Fk = {body:FK_force(diff_problem[body])['Heave'] for body in bodies}
-    F = {body:Fd[body] + Fk[body] for body in bodies}
+    F  = {body:Fd[body] + Fk[body] for body in bodies}
     initial_hydro = {body:{
                      'A':A[body],
                      'B':B[body],

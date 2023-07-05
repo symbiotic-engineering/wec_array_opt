@@ -14,11 +14,21 @@ def get_body(r,x,y):
     body.rotation_center=(x,y,0)
     return body
 
+def calc_theta(body,neighbor):
+    x_1 = body.home[0]
+    y_1 = body.home[1]
+    x_2 = neighbor.home[0]
+    y_2 = neighbor.home[1]
+    theta = np.arctan2((y_1-y_2),(x_1-x_2))  # just some trig
+    return theta
+
+
 def get_neighbors(bodies):
     neighbors = {body:[] for body in bodies}
     for body in bodies:
         for neighbor in bodies:
             if not body == neighbor:
+                neighbor.theta = calc_theta(body,neighbor) # angle from neighbor to body, used in pwa
                 neighbors[body].append(neighbor)
     return neighbors
 
