@@ -5,8 +5,8 @@ import step4_interface as step4
 '''Please note that I changed how I index my 2d dictionaries for ease of coding in some parts.
 In my first attempt I did variable[effecting body][effected body] for all my interaction terms.
 Now I do variable[effected body][effecting body] because it lets me easily sum by doing
-sum(variable[body].variable) and it returns the total of what is effecting it instead of the
-total of how it is effecting others. The variables this impacts are only "phi" and "a".'''
+sum(variable[body].value) and it returns the total of what is effecting it instead of the total
+of how it is effecting others. The variables this impacts are only "phi" and "a".'''
 
 # Define Array
 wecx = [0,100]
