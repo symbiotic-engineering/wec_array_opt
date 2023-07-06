@@ -24,7 +24,7 @@ bodies,neighbors = array_init.run(wecx,wecy,r)
 
 # Babarit Step 1: BEM stuff
 ii = 1
-initial_hydro = bem.initial_hydrodynamics(bodies,omega,omega)
+initial_hydro = bem.initial_hydrodynamics(bodies,neighbors,omega,beta)
 
 # Step 2: Initialize amplitude matrix
 a = {body1:{body2:0 for body2 in bodies} for body1 in bodies}
@@ -44,4 +44,3 @@ for ii in range(2*N):
     print(phi)
     phi = step4.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
     a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)
-
