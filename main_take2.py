@@ -18,7 +18,6 @@ Amp = 1
 omega = 1
 beta = 0
 
-
 # Array Initialization
 N = len(wecx)
 bodies,neighbors = array_init.run(wecx,wecy,r)
@@ -42,6 +41,7 @@ a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)
 # Step 5: Loop
 for ii in range(2*N):
     Xi = dyn.solve(initial_hydro,a,omega,bodies)
+    print(phi)
     phi = step4.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
     a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)
-    print(phi)
+
