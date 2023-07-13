@@ -12,6 +12,7 @@ of how it is effecting others. The variables this impacts are only "phi" and "a"
 wecx = [0,100]
 wecy = [0,0]
 r = 10
+T = 5
 
 # Waves
 Amp = 1
@@ -20,7 +21,7 @@ beta = 0
 
 # Array Initialization
 N = len(wecx)
-bodies,neighbors = array_init.run(wecx,wecy,r)
+bodies,neighbors = array_init.run(wecx,wecy,r,T)
 
 # Babarit Step 1: BEM stuff
 ii = 1
@@ -36,11 +37,13 @@ Xi = dyn.solve(initial_hydro,a,omega,bodies)
 
 # Step 4: Wierd PWA equations
 phi = step4.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
+print("=================================================================================")
+print(phi)
 a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)
 
 # Step 5: Loop
+'''
 for ii in range(2*N):
     Xi = dyn.solve(initial_hydro,a,omega,bodies)
-    print(phi)
     phi = step4.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
-    a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)
+    a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)'''

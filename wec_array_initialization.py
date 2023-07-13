@@ -1,10 +1,11 @@
 import capytaine as capy
 import numpy as np
 
-def get_body(r,x,y):
-    mesh = capy.meshes.predefined.mesh_sphere(radius=r,center=(x,y,0))
+def get_body(r,T,x,y):
+    mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=T*2)
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
+    body.keep_immersed_part()
     body = body.immersed_part()
     body.name = f'{x}_{y}'
     body.home = np.array([x,y,0])
@@ -32,7 +33,7 @@ def get_neighbors(bodies):
                 neighbors[body].append(neighbor)
     return neighbors
 
-def run(wecx,wecy,r):
-    bodies = [get_body(r,x,y) for x,y in zip(wecx,wecy)]
+def run(wecx,wecy,r,T):
+    bodies = [get_body(r,T,x,y) for x,y in zip(wecx,wecy)]
     neighbors = get_neighbors(bodies)
     return bodies,neighbors

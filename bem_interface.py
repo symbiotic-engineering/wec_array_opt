@@ -40,7 +40,6 @@ def initial_hydrodynamics(bodies,neighbors,omega,beta):
             else:
                 F[body][neighbor] = F_off[body][neighbor]
                 sig_d[body][neighbor] = sig_d_off[body][neighbor]
-
     initial_hydro = {body:{
                      'A':A[body],
                      'B':B[body],
