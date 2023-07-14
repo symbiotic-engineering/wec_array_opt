@@ -38,7 +38,7 @@ Xi = dyn.solve(initial_hydro,a,omega,bodies)
 # Step 4: Wierd PWA equations
 phi = step4.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
 print("=================================================================================")
-print(phi)
+print(Xi)
 a = step4.new_a_matrix(bodies,neighbors,phi,omega,a)
 
 # Step 5: Loop

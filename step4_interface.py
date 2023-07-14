@@ -21,5 +21,5 @@ def new_a_matrix(bodies,neighbors,phi,omega,a):
     k = omega**2/g
     for body in bodies:
         for neighbor in neighbors[body]:
-            a[body][neighbor] = phi[body][neighbor]/(np.exp(1j*k*(body.home[0]*np.cos(neighbor.theta) + body.home[1]*np.sin(neighbor.theta))))
+            a[body][neighbor] = phi[body][neighbor]*omega/(g*np.exp(1j*k*(body.home[0]*np.cos(neighbor.theta) + body.home[1]*np.sin(neighbor.theta))))
     return a
