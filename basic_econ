@@ -1,30 +1,43 @@
+# LCOE model for heaving point absorber WEC array
+# this model calculates the CAPEX by a mass scaling technique
+# the OPEX is modeled as a percentage (about 5%) of the CAPEX
+# O. Vitale 07/13/2023
+
 import numpy as np
 
-def run(size,Power):
-    nWEC = len(Power)
-    c_vol = 1500                        # [$/m^3] cost of WEC per unit volume (taken from pelamis WEC specs)
-    rWEC = size
-    wec_vol = (4/3)*np.pi*(rWEC**3)     # volume of each WEC
-    cWEC = c_vol*wec_vol*nWEC           # total capital cost of all WECs
-    c_moor = 150000*nWEC                # cost of mooring all WECs
-    c_install = 750000*nWEC             # installation costs for all WECs
-    c_ship = 75000*nWEC                 # shipping cost of each WEC
-    capex = cWEC + c_moor + c_install + c_ship    # total capital expenses
-    
+def econ(N,M,P):
+    # inputs from model
+    # P is the power out for each individual WEC
+    nWEC = N                # number of WECs in array
+    m_wec = M               # mass of each WEC in array [kg]
+    TAEP = P*8760           # theoretical annual energy production [kWh] (per WEC)
 
-    t = 25                              # lifetime [years]
-    capex = capex/t
-    main = 40000*nWEC                   # annual maintenance 
-    refit = 40000*nWEC/t                # mid-life refit cost normalized to per yer
-    decomish = 500000/t                 # decomissioning cost normalized to per year
-    opex = main + refit + decomish      # annual operational expenses
-    
-    CW = 0.3                            # capture width (aka WEC efficiency)
-    P = np.sum(Power)
-    #print(f'Power is: {P/1e6} MW')
-    AEP = P*CW                           # annual energy production
-    
-    FCR = 0.101                          # fixed charge rate (value for wind)
-    LCOE = ((FCR*capex) + opex)/AEP     # levelized cost of energy
-    #print('da LCOE',LCOE)
-    return AEP, LCOE
+    # fixed parameters
+    FCR = 0.108             # fixed charge rate reported by DOE for WECs
+    n_trans = 0.945         # transmission line efficiency (from OWT estimates) **conservative**
+    n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
+
+    # mass scaling method
+    m_f2hb = 5704000            # mass of wavebob WEC [kg]
+    MR = m_wec/m_f2hb           # mass ratio for scaling
+
+    CAPEX_oesmed = 9000     # median CAPEX reported by OES for WECs [$/kW]
+    CAPEX_ind = (CAPEX_oesmed + (CAPEX_oesmed*MR))*P    # scaled CAPEX [$] (individual WEC)
+    # ******** ATTN NATE *********
+    # so here, all the CAPEX_ind need to be summed. not sure how u wanna do that
+    # but this is the spot to do that
+    #CAPEX =                         # array CAPEX [$]
+
+    OPEX_oesmed = CAPEX_oesmed*0.05                 # OPEX represented as percentage of CAPEX [$/kW]
+    OPEX_ind = (OPEX_oesmed + (OPEX_oesmed*MR))*P   # scaled OPEX [$] (individual WEC)
+    # ******* ATTN NATE ***********
+    # same note as before for OPEX
+    #OPEX =                           # array OPEX [$]
+
+    # calculating AEP
+    AEC = n_avail*TAEP              # annual energy capture [kWh]
+    AEP = n_trans*AEC               # annual energy production [kWh]
+
+    # calculating LCOE
+    LCOE = ((FCR*CAPEX) + OPEX)/AEP     # levelized cost of energy [$/kWh]
+    return LCOE
