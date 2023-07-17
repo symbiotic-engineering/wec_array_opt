@@ -28,4 +28,5 @@ def run(bodies,neighbors,omega,Amp,beta):
                 a_diff.append(numps.abs(a[body1][body2] - a_old[body1][body2]))
         if max(a_diff) <= 0.003:
             converged = True
-    return Xi
+    M ={body:initial_hydro[body]['M'] for body in bodies}
+    return Xi,M
