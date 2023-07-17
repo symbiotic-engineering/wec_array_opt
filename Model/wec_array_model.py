@@ -39,7 +39,9 @@ def run(x,p):
     # Initialize WEC Array
     bodies,neighbors = array_init.run(wecx,wecy,r,L,d)
     # Run BEM-PWA combo hydrodynamics module
-    Xi = hydro.run(bodies,neighbors,omega,A,beta)
+    Xi,M = hydro.run(bodies,neighbors,omega,A,beta)
     # Calculate Time Average Power
-    P = power.run(bodies,Xi,omega)
+    P,P_indv = power.run(bodies,Xi,omega)
+    # Economics
+    
     return P
