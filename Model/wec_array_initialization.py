@@ -1,8 +1,8 @@
 import capytaine as capy
 import numpy as np
 
-def get_body(r,T,x,y):
-    mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=T*2)
+def get_body(r,L,x,y,d):
+    mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L)
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
     body.keep_immersed_part()
@@ -13,6 +13,7 @@ def get_body(r,T,x,y):
     body.center_of_mass=(x, y, 0)
     body.keep_only_dofs(['Heave'])
     body.rotation_center=(x,y,0)
+    body.PTOdamp = d
     return body
 
 def calc_theta(body,neighbor):
@@ -33,7 +34,7 @@ def get_neighbors(bodies):
                 neighbors[body].append(neighbor)
     return neighbors
 
-def run(wecx,wecy,r,T):
-    bodies = [get_body(r,T,x,y) for x,y in zip(wecx,wecy)]
+def run(wecx,wecy,rs,Ls,ds):
+    bodies = [get_body(r,L,x,y,d) for x,y,r,L,d in zip(wecx,wecy,rs,Ls,ds)]
     neighbors = get_neighbors(bodies)
     return bodies,neighbors
