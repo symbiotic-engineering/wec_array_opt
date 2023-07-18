@@ -20,15 +20,17 @@ r = 10*np.ones(N)
 L = 10*np.ones(N)
 d = 1000*np.ones(N)
 
-# Design vector
-x = WAM.pack_x(N,wecx,wecy,r,L,d)
-
 # Parameters
 omega = 0.5
 A = 1
 beta = 0
 p = [omega,A,beta]
     
-P,LCOE = WAM.run(x,p)
-print(f"Total Power: {P} kW")
-print(f"LCOE: {LCOE} $/kWh")
+d_val = np.logspace(0,7,100)
+P = np.zeros(100)
+for ii in range(len(d_val)):
+    d = d_val[ii]*np.ones(N)
+    x = WAM.pack_x(N,wecx,wecy,r,L,d)
+    P[ii] = WAM.run(x,p)
+plt.plot(d_val,P)
+plt.show()    

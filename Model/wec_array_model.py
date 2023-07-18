@@ -2,7 +2,7 @@ import numpy as np
 import Model.wec_array_initialization as array_init
 import Model.hydrodynamics as hydro
 import Model.time_avg_power as power
-
+import Model.econ as econ
 # x = [r_1, L_1, x_1, y_1, d_1, r_2, L_2, x_2, y_2, d_2, ..., r_n, L_n, x_n, y_n, d_n]
 # p = [omega, A, beta]
 def unpack_x(x):
@@ -43,5 +43,5 @@ def run(x,p):
     # Calculate Time Average Power
     P,P_indv = power.run(bodies,Xi,omega)
     # Economics
-    
-    return P
+    LCOE = econ.run(N,M,P_indv,bodies)
+    return P,LCOE

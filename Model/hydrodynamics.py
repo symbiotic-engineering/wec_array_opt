@@ -16,17 +16,19 @@ def run(bodies,neighbors,omega,Amp,beta):
     phi = PWA.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
     a = PWA.new_a_matrix(bodies,neighbors,phi,omega,a)
     # Step 5: Loop
-    converged = False
-    while not converged:
-        a_old = a
-        Xi = dynamics.solve(initial_hydro,a,omega,bodies)
-        phi = PWA.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
-        a = PWA.new_a_matrix(bodies,neighbors,phi,omega,a)
-        a_diff =[]
-        for body1 in bodies:
-            for body2 in bodies:
-                a_diff.append(numps.abs(a[body1][body2] - a_old[body1][body2]))
-        if max(a_diff) <= 0.003:
-            converged = True
+    if len(bodies) > 1:
+        converged = False
+        while not converged:
+            a_old = a
+            Xi = dynamics.solve(initial_hydro,a,omega,bodies)
+            phi = PWA.calc_phi(bodies,neighbors,Xi,initial_hydro,a,omega)
+            a = PWA.new_a_matrix(bodies,neighbors,phi,omega,a)
+            a_diff =[]
+            
+            for body1 in bodies:
+                for body2 in bodies:
+                    a_diff.append(numps.abs(a[body1][body2] - a_old[body1][body2]))
+            if max(a_diff) <= 0.003:
+                converged = True
     M ={body:initial_hydro[body]['M'] for body in bodies}
     return Xi,M
