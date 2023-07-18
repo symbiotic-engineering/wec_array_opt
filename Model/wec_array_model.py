@@ -4,7 +4,7 @@ import Model.hydrodynamics as hydro
 import Model.time_avg_power as power
 import Model.econ as econ
 # x = [r_1, L_1, x_1, y_1, d_1, r_2, L_2, x_2, y_2, d_2, ..., r_n, L_n, x_n, y_n, d_n]
-# p = [omega, A, beta]
+# p = [omega, A, beta, N]
 def unpack_x(x):
     N = int(len(x)/5)
     wecx = np.zeros(N)

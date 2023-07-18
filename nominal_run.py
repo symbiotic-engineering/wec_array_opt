@@ -27,7 +27,7 @@ x = WAM.pack_x(N,wecx,wecy,r,L,d)
 omega = 0.5
 A = 1
 beta = 0
-p = [omega,A,beta]
+p = [omega,A,beta,N]
     
 P,LCOE = WAM.run(x,p)
 print(f"Total Power: {P} kW")
