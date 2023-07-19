@@ -11,4 +11,6 @@ p = numps.array([omega,A,beta,N])
 # Limits on Design variables
 limits = {'r':[2,20], 'L':[2,20], 'x':[-1000,1000], 'y':[-1000,1000], 'd':[0,7]}
 
-opt.GA(p,limits)
+X,F,H = opt.GA(p,limits)
+print(X)
+print(F)
