@@ -21,7 +21,7 @@ class sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
         xu[1] = limits['L'][1]
         xl[2] = limits['d'][0]
         xu[2] = limits['d'][1]
-        for i in range(nwec):
+        for i in range(nwec-1):
             xl[3+i*3] = limits['x'][0]
             xu[3+i*3] = limits['x'][1]
             xl[4+i*3] = limits['y'][0]
@@ -38,7 +38,7 @@ class sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
         f1 = LCOE_calc.run(x,p)                         #   Run the model
-        g1 = 10*x[0] - dis.min_d.run(x,p)     #   Check constraint on minimum distance
+        g1 = 10*x[0] - dis.min_d(x,p)     #   Check constraint on minimum distance
         out["F"] = [f1]
         out["G"] = [g1]
 

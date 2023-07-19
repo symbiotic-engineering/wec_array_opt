@@ -5,8 +5,8 @@ import modules.hydro_terms as hydro
 import modules.econ as econ
 from modules.dynamics_controls import wec_dyn 
 from modules.dynamics_controls import time_avg_power 
+import time
 # x = [radius all wecs, lenght all wecs, x location, y location, pto damping, ... other wecs x y and d]
-# p = [Wave Frequency, Wave Amplitude, density of WEC material, number of WECs]
 def unpack_x(x,nWEC):
     wec_radius = x[0]
     wec_length = x[1]
@@ -31,6 +31,7 @@ def pack_x(N,wecx,wecy,r,L,d):
     return x
 
 def run(x,p):
+    start_time = time.time()
     nWEC = int(p[3])
     
     # Unpack Design Variables
@@ -40,17 +41,22 @@ def run(x,p):
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    
+    max_loc = p[4]
+    gp_rate = p[5]
+    gps = int(max_loc*gp_rate)
     # Create Bodies
     bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)
-
+    end_time = time.time()
+    print(f'Body set up time:  {end_time-start_time}')
     # Hydro Module
-    A,B,C,F,M = hydro.run(bodies,beta,omega)
+    A,B,C,F,M,kd = hydro.run(bodies,beta,omega,max_loc,gps)
     
     # Dynamics and Controls Modules
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp)
+    start_time = time.time()
+    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,kd)
     P,P_indv = time_avg_power(bodies,Xi,omega)
-    
     # Power Transmission and Economics Module
     LCOE,AEP = econ.run(nWEC,M,P_indv,bodies)
-    return LCOE
+    end_time = time.time()
+    print(f'Power/LCOE time:   {end_time-start_time}')
+    return LCOE,AEP,
