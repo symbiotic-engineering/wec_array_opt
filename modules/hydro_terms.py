@@ -44,4 +44,5 @@ def run(bodies,beta,omega,max_loc,gps):
     kd = kd_at_loc(bodies,Kd,X,Y)
     end_time = time.time()
     print(f'Disturbances time: {end_time-start_time}')
-    return A,B,C,F,M,kd
+    kd_time = end_time-start_time
+    return A,B,C,F,M,kd, kd_time
