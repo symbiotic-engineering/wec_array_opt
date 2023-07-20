@@ -11,3 +11,4 @@ print(f'The LCOE is {LCOE} $/kWh')
 print(f'The AEP is {AEP} kWh')
 mind = dis.min_d(x,p)
 print(f'The mind is {mind} m')
+
