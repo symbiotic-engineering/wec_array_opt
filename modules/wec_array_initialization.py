@@ -14,6 +14,8 @@ def get_body(r,L,x,y,d):
     body.keep_only_dofs(['Heave'])
     body.rotation_center=(x,y,0)
     body.PTOdamp = d
+    body.compute_rigid_body_inertia()
+    body.compute_hydrostatic_stiffness()
     return body
 
 def calc_theta(body,neighbor):
