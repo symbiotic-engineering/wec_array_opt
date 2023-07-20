@@ -51,14 +51,14 @@ def run(x,p):
     end_time = time.time()
     print(f'Body set up time:  {end_time-start_time}')
     # Hydro Module
-    A,B,C,F,M,kd,kd_time = hydro.run(bodies,beta,omega,max_loc,gps)
+    A,B,C,F,M = hydro.run(bodies,beta,omega,max_loc,gps)
     
     # Dynamics and Controls Modules
     start_time = time.time()
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,kd)
+    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp)
     P,P_indv = time_avg_power(bodies,Xi,omega)
     # Power Transmission and Economics Module
     LCOE,AEP = econ.run(nWEC,M,P_indv,bodies)
     end_time = time.time()
     print(f'Power/LCOE time:   {end_time-start_time}')
-    return LCOE.item(),AEP.item(),kd_time
+    return LCOE.item(),AEP.item()
