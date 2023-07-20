@@ -1,3 +1,4 @@
+from capytaine.post_pro.rao import rao
 def wec_dyn(bodies,A,B,C,F,m,omega,Amp,kd):
     k = {body:(omega**2)*(m[body]+A[body]) - C[body] for body in bodies}    #   Calculate Optimal PTO stiffness
     for body in bodies:
