@@ -7,6 +7,8 @@ from modules.dynamics_controls import wec_dyn
 from modules.dynamics_controls import time_avg_power 
 import time
 # x = [radius all wecs, lenght all wecs, x location, y location, pto damping, ... other wecs x y and d]
+# p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, free surface reach, grid point rates in free surface]
+
 def unpack_x(x,nWEC):
     wec_radius = x[0]
     wec_length = x[1]
