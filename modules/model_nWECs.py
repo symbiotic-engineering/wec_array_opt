@@ -1,7 +1,7 @@
 from numpy import pi as pi
 import numpy as np
 import modules.wec_array_initialization as array_init
-import modules.hydro_terms as hydro
+import modules.hydrodynamics as hydro
 import modules.econ as econ
 from modules.dynamics_controls import wec_dyn 
 from modules.dynamics_controls import time_avg_power 
@@ -50,15 +50,13 @@ def run(x,p):
     bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)
     end_time = time.time()
     print(f'Body set up time:  {end_time-start_time}')
-    # Hydro Module
-    A,B,C,F,M,kd,kd_time = hydro.run(bodies,beta,omega,max_loc,gps)
     
-    # Dynamics and Controls Modules
-    start_time = time.time()
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,kd)
-    P,P_indv = time_avg_power(bodies,Xi,omega)
+    # Hydro Module
+    Xi = hydro.hydro_dyn(bodies,omega,beta,wave_amp)    
+    
+    return 0,0,0
     # Power Transmission and Economics Module
-    LCOE,AEP = econ.run(nWEC,M,P_indv,bodies)
-    end_time = time.time()
-    print(f'Power/LCOE time:   {end_time-start_time}')
-    return LCOE.item(),AEP.item(),kd_time
+    #LCOE,AEP = econ.run(nWEC,M,P_indv,bodies)
+    #end_time = time.time()
+    #print(f'Power/LCOE time:   {end_time-start_time}')
+    #return LCOE.item(),AEP.item(),kd_time

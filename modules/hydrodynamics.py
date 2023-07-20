@@ -2,7 +2,37 @@ import numpy as np
 import capytaine as capy
 from modules.kd_ratio import disturbance, kd_at_loc
 from capytaine.bem.airy_waves import froude_krylov_force
+from capytaine.io.xarray import assemble_dataset
 import time
+
+def build_dataset(bodies,beta,omega):
+    start_time = time.time()
+    wec_array = bodies[0]
+    for ii in range(len(bodies)-1):
+        wec_array+=bodies[ii+1]
+    end_time = time.time()
+    print(f'Array set up time: {end_time-start_time}')
+
+    # Solve radiation problems, and diffraction problem
+    start_time = time.time()
+    solver = capy.BEMSolver()
+    dofs = {body:f'{body.name}__Heave' for body in bodies}
+    rad_prob = [capy.RadiationProblem(body=wec_array,omega=omega,radiating_dof=dofs[body]) for body in bodies]
+    rad_result = solver.solve_all(rad_prob,keep_details=(True))
+    diff_prob = capy.DiffractionProblem(body=wec_array, wave_direction=beta, omega=omega)
+    diff_result = solver.solve(diff_prob,keep_details=(True))
+    end_time = time.time()
+    print(f'Rad and Diff time: {end_time-start_time}')
+    
+    # Hydrostatics
+    start_time = time.time()
+    hydrostatics = [body.compute_hydrostatics() for body in bodies]
+    end_time = time.time()
+    print(f'Hydrostatics time: {end_time-start_time}')
+    dataset = assemble_dataset(rad_result + [diff_result], hydrostatics = True)
+    M = {body:np.array(dataset['inertia_matrix'].sel(radiating_dof = dofs[body], influenced_dof = dofs[body])) for body in bodies}
+    return dataset,dofs
+
 def run(bodies,beta,omega,max_loc,gps):
     start_time = time.time()
     wec_array = bodies[0]
@@ -46,3 +76,7 @@ def run(bodies,beta,omega,max_loc,gps):
     print(f'Disturbances time: {end_time-start_time}')
     kd_time = end_time-start_time
     return A,B,C,F,M,kd, kd_time
+
+def hydro_dyn(bodies,omega,beta,Amp):
+    dataset,dofs = build_dataset(bodies,beta,omega)
+    return 0
