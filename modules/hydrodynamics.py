@@ -1,6 +1,5 @@
 import numpy as np
 import capytaine as capy
-from modules.kd_ratio import disturbance, kd_at_loc
 from capytaine.bem.airy_waves import froude_krylov_force
 from capytaine.io.xarray import assemble_dataset, hydrostatics_dataset
 from capytaine.post_pro.rao import rao
@@ -77,17 +76,4 @@ def run(bodies,beta,omega,max_loc,gps):
     F = {body:diff_F[body] + FK_F[body] for body in bodies}
     end_time = time.time()
     print(f'Hydro terms time:  {end_time-start_time}')
-
-    # Get the Kd for each wec
-    start_time = time.time()
-    Kd, X, Y = disturbance(bodies,diff_result,rad_result,max_loc,gps)
-    kd = kd_at_loc(bodies,Kd,X,Y)
-    end_time = time.time()
-    print(f'Disturbances time: {end_time-start_time}')
-    kd_time = end_time-start_time
-    return A,B,C,F,M,kd, kd_time
-
-def hydro_dyn(bodies,omega,beta,Amp):
-    dataset,dofs = build_dataset(bodies,beta,omega)
-    #rao(dataset)
-    return 0
+    return A,B,C,F,M
