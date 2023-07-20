@@ -2,7 +2,8 @@ import numpy as np
 import capytaine as capy
 from modules.kd_ratio import disturbance, kd_at_loc
 from capytaine.bem.airy_waves import froude_krylov_force
-from capytaine.io.xarray import assemble_dataset
+from capytaine.io.xarray import assemble_dataset, hydrostatics_dataset
+from capytaine.post_pro.rao import rao
 import time
 
 def build_dataset(bodies,beta,omega):
@@ -29,8 +30,17 @@ def build_dataset(bodies,beta,omega):
     hydrostatics = [body.compute_hydrostatics() for body in bodies]
     end_time = time.time()
     print(f'Hydrostatics time: {end_time-start_time}')
-    dataset = assemble_dataset(rad_result + [diff_result], hydrostatics = True)
+    dataset = assemble_dataset(rad_result + [diff_result])
+    hydrostatics_data = hydrostatics_dataset(bodies)
+
+    print(hydrostatics_data)
+   # dataset.attrs.update("inertia_matrix")
+    dataset.update({"inertia_matrix":hydrostatics_data["inertia_matrix"]})
+    dataset.update({"hydrostatic_stiffness":hydrostatics_data["hydrostatic_stiffness"]})
+    print(dataset)
+    
     M = {body:np.array(dataset['inertia_matrix'].sel(radiating_dof = dofs[body], influenced_dof = dofs[body])) for body in bodies}
+    print(M)
     return dataset,dofs
 
 def run(bodies,beta,omega,max_loc,gps):
@@ -79,4 +89,5 @@ def run(bodies,beta,omega,max_loc,gps):
 
 def hydro_dyn(bodies,omega,beta,Amp):
     dataset,dofs = build_dataset(bodies,beta,omega)
+    #rao(dataset)
     return 0
