@@ -6,7 +6,7 @@ from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
 from pymoo.termination import get_termination
 from pymoo.optimize import minimize
-import modules.model_nWECs as LCOE_calc
+import modules.model_nWECs as model
 import modules.distances as dis
 
 ####################################################################
@@ -43,7 +43,7 @@ class LCOE_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
 
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
-        fs = LCOE_calc.run(x,p)                         #   Run the model
+        fs = model.run(x,p)                         #   Run the model
         f1 = fs[0]
         g1 = 10*x[0] - dis.min_d(x,p)     #   Check constraint on minimum distance
         out["F"] = [f1]
@@ -99,7 +99,7 @@ class AEP_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
 
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
-        fs = LCOE_calc.run(x,p)                         #   Run the model
+        fs = model.run(x,p)                         #   Run the model
         f1 = -fs[1]
         g1 = 10*x[0] - dis.min_d(x,p)     #   Check constraint on minimum distance
         out["F"] = [f1]
@@ -155,7 +155,7 @@ class P_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
 
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
-        fs = LCOE_calc.run(x,p)                         #   Run the model
+        fs = model.run(x,p)                         #   Run the model
         f1 = -fs[2]
         g1 = 10*x[0] - dis.min_d(x,p)     #   Check constraint on minimum distance
         out["F"] = [f1]
