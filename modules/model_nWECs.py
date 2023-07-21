@@ -43,16 +43,15 @@ def run(x,p):
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    max_loc = p[4]
-    gp_rate = p[5]
-    gps = int(max_loc*gp_rate)
+    time_data = p[3]
+
     # Create Bodies
     bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)
     end_time = time.time()
-    print(f'Body set up time:  {end_time-start_time}')
-    
+    if time_data == 1:
+        print(f'Body set up time:  {end_time-start_time}')
     # Hydro Module
-    A,B,C,F,M = hydro.run(bodies,beta,omega,max_loc,gps)
+    A,B,C,F,M = hydro.run(bodies,beta,omega,time_data)
     
     # Dynamics and Controls Modules
     start_time = time.time()
@@ -61,5 +60,6 @@ def run(x,p):
     # Power Transmission and Economics Module
     LCOE,AEP = econ.run(nWEC,M,P_indv,bodies)
     end_time = time.time()
-    print(f'Power/LCOE time:   {end_time-start_time}')
-    return LCOE.item(),AEP.item()
+    if time_data == 1:
+        print(f'Power/LCOE time:   {end_time-start_time}')
+    return LCOE.item(),AEP.item(),P
