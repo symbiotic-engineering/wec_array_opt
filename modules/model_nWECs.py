@@ -58,8 +58,8 @@ def run(x,p):
     Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp)
     P,P_indv = time_avg_power(bodies,Xi,omega)
     # Power Transmission and Economics Module
-    LCOE,AEP = econ.run(nWEC,M,P_indv,bodies)
+    LCOE,AEP = econ.run(nWEC,M,P_indv,bodies,wec_radius)
     end_time = time.time()
     if time_data == 1:
         print(f'Power/LCOE time:   {end_time-start_time}')
-    return LCOE.item(),AEP.item(),P
+    return LCOE.item(),AEP.item(),P.item()

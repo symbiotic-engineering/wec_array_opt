@@ -5,7 +5,8 @@
 
 import numpy as np
 
-def run(N,M,P,bodies):
+def run(N,M,P,bodies,r):
+    rated_P = (r - 2)*100/8 + 900
     # inputs from model
     # P is the power out for each individual WEC
     nWEC = N                # number of WECs in array
@@ -22,14 +23,14 @@ def run(N,M,P,bodies):
     MR = {body:m_wec[body]/m_f2hb for body in bodies}   # mass ratio for scaling
 
     CAPEX_oesmed = 9000     # median CAPEX reported by OES for WECs [$/kW]
-    CAPEX_ind = {body:(CAPEX_oesmed + (CAPEX_oesmed*MR[body]))*P[body] for body in bodies}  # scaled CAPEX [$] (individual WEC)
+    CAPEX_ind = {body:(CAPEX_oesmed + (CAPEX_oesmed*MR[body]))*rated_P for body in bodies}  # scaled CAPEX [$] (individual WEC)
     # ******** ATTN NATE *********
     # so here, all the CAPEX_ind need to be summed. not sure how u wanna do that
     # but this is the spot to do that
     CAPEX = sum(CAPEX_ind.values())                 # array CAPEX [$]
 
     OPEX_oesmed = CAPEX_oesmed*0.05                 # OPEX represented as percentage of CAPEX [$/kW]
-    OPEX_ind = {body:(OPEX_oesmed + (OPEX_oesmed*MR[body]))*P[body] for body in bodies} # scaled OPEX [$] (individual WEC)
+    OPEX_ind = {body:(OPEX_oesmed + (OPEX_oesmed*MR[body]))*rated_P for body in bodies} # scaled OPEX [$] (individual WEC)
     # ******* ATTN NATE ***********
     # same note as before for OPEX
     OPEX = sum(OPEX_ind.values())   # array OPEX [$]
