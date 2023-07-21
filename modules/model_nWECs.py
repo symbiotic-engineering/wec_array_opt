@@ -43,7 +43,7 @@ def run(x,p):
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    time_data = p[3]
+    time_data = p[4]
 
     # Create Bodies
     bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)
