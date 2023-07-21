@@ -2,6 +2,8 @@ import modules.model_nWECs as model
 import numpy as np
 def min_d(x,p):
     nwec = int(p[3])                 # Number of WECs
+    if nwec == 1:
+        return np.inf
     wec_radius, wec_length, wecx, wecy, damp = model.unpack_x(x,nwec)
     d = []
     for i in range(nwec):
