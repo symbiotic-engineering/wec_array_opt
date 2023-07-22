@@ -3,7 +3,7 @@ import numpy as np
 import csv
 import time
 # Define Parameters
-N = 3
+N = 10
 omega = 0.5
 beta = 0
 A = 1
@@ -11,12 +11,12 @@ p = np.array([omega,A,beta,N,0])
 # p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, display time stamps?]
 
 # Limits on Design variables
-limits = {'r':[2,20], 'L':[2,20], 'x':[-1000,1000], 'y':[-1000,1000], 'd':[0,7]}
+limits = {'r':[2,10], 'L':[0.1,0.5], 'x':[-5000,5000], 'y':[-5000,5000], 'd':[0,7]}
 
 # Opt paramaters
-p_size = 100
-gens = 50
-n_offspring = 50
+p_size = 500
+gens = 400
+n_offspring = 100
 
 start_time = time.time()
 X,F,H = opt.MOCHA(p,limits,p_size,gens,n_offspring)

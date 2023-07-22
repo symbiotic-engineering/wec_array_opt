@@ -2,9 +2,9 @@ import modules.model_nWECs as model
 import modules.distances as dis
 import numpy as np
 
-p = np.array([1.047,1,0,1,1])
+p = np.array([1.047,1,0,10,1])
             #  r  L d  x  y d
-x = np.array([10,5,5])
+x = np.array([10,1,5,100,0,5,200,0,5,300,0,5,400,0,5,500,0,5,600,0,5,700,0,5,800,0,5,900,0,5])
 
 LCOE,AEP,P = model.run(x,p)
 print(f'The LCOE is {LCOE} $/kWh')
