@@ -11,7 +11,7 @@ import time
 
 def unpack_x(x,nWEC):
     wec_radius = x[0]
-    wec_length = x[1]
+    wec_length = x[1]*x[0]
     wecx = np.zeros(nWEC)
     wecy = np.zeros(nWEC)
     damp = np.zeros(nWEC)
@@ -24,7 +24,7 @@ def unpack_x(x,nWEC):
 def pack_x(N,wecx,wecy,r,L,d):
     x = np.zeros(3*(N-1) + 3)
     x[0] = r
-    x[1] = L
+    x[1] = L/r
     x[2] = np.log10(d[0])
     for ii in range(N-1):
         x[3+3*ii] = wecx[ii+1]
