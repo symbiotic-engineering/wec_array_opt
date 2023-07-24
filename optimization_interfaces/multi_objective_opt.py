@@ -6,6 +6,14 @@ from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
 from pymoo.termination import get_termination
 from pymoo.optimize import minimize
+
+# from dask.distributed import Client
+# from pymoo.core.problem import DaskParallelization
+
+import multiprocessing
+from multiprocessing.pool import ThreadPool
+from pymoo.core.problem import StarmapParallelization
+
 import modules.model_nWECs as model
 import modules.distances as dis
 
@@ -17,7 +25,7 @@ import modules.distances as dis
 
 class mooProblem(ElementwiseProblem):    # same problem as before, except 2 objectives
     
-    def __init__(self,p,limits):
+    def __init__(self,p,limits,**kwargs):
         nwec = int(p[3])
         n_var=3*(nwec-1) + 3
         xl = np.zeros(n_var)                #   bounds
@@ -51,9 +59,22 @@ class mooProblem(ElementwiseProblem):    # same problem as before, except 2 obje
         out["F"] = [f1,f2]
         out["G"] = [g1]
 
-def MOCHA(p,limits,p_size,gens,n_offspring):       #   Multi Objective Constrained Heuristic Algorithim
-    problem = mooProblem(p,limits)
-    algorithm = NSGA2(
+def MOCHA(p,limits,p_size,gens,n_offspring):
+           #   Multi Objective Constrained Heuristic Algorithim
+
+#    client = Client()
+#    client.restart()
+#    print("DASK STARTED")
+#         # initialize the thread pool and create the runner
+#    runner = DaskParallelization(client)
+
+# define the problem by passing the starmap interface of the thread pool
+    # initialize the thread pool and create the runner
+   n_proccess = 8
+   pool = multiprocessing.Pool(n_proccess)
+   runner = StarmapParallelization(pool.starmap)
+   problem = mooProblem(p,limits,elementwise_runner=runner)
+   algorithm = NSGA2(
         pop_size=p_size,
         n_offsprings=n_offspring,
         sampling=FloatRandomSampling(),
@@ -61,15 +82,16 @@ def MOCHA(p,limits,p_size,gens,n_offspring):       #   Multi Objective Constrain
         mutation=PM(eta=20),
         eliminate_duplicates=True
     )
-    termination = get_termination("n_gen", gens)
-    res = minimize(problem,
+
+   termination = get_termination("n_gen", gens)
+   res = minimize(problem,
                algorithm,
                termination,
                seed=1,
                save_history=True,
                verbose=True)
     
-    X = res.X
-    F = res.F
-    H = res.history
-    return X,F,H
+   X = res.X
+   F = res.F
+   H = res.history
+   return X,F,H
