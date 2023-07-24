@@ -19,7 +19,6 @@ if __name__ == "__main__":
     p_size = 500
     gens = 400
     n_offspring = 100
-
     start_time = time.time()
     X,F,H = opt.MOCHA(p,limits,p_size,gens,n_offspring)
     end_time = time.time()
