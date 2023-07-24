@@ -24,14 +24,14 @@ def run(bodies,beta,omega,time_data):
 
     # Solve radiation problems, and diffraction problem
     start_time = time.time()
-    engine = capy.HierarchicalToeplitzMatrixEngine(Aca_distance = 3,ACA_tol = 1e-1) #at least three radius
-    solver = capy.BEMSolver()
+    engine = capy.HierarchicalToeplitzMatrixEngine(ACA_distance = 10,ACA_tol = 1e-1) #at least three radius
+    solver = capy.BEMSolver(engine = engine)
     if len(bodies) > 1:
         dofs = {body:f'{body.name}__Heave' for body in bodies}
     else:
         dofs = {body:'Heave' for body in bodies} 
     rad_prob = [capy.RadiationProblem(body=wec_array,omega=omega,radiating_dof=dofs[body]) for body in bodies]
-    rad_result = solver.solve_all(rad_prob,keep_details=(True))
+    rad_result = solver.solve_all(rad_prob,keep_details=(True),n_jobs=10)
     diff_prob = capy.DiffractionProblem(body=wec_array, wave_direction=beta, omega=omega)
     diff_result = solver.solve(diff_prob,keep_details=(True))
     
