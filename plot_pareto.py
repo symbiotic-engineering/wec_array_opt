@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import csv
 
 f1,f2 = [],[]
-with open('paretos\.csv', newline='') as csvfile:
+with open('./paretos/domF_0.5_1_0_10__500_400_100.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
