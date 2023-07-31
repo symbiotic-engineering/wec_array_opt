@@ -6,7 +6,7 @@ import time
 
 if __name__ == "__main__":
     N = 10
-    omega = 0.5
+    omega = 1.047
     beta = 0
     A = 1
     p = np.array([omega,A,beta,N,0])
