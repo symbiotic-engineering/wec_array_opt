@@ -5,6 +5,7 @@ from pymoo.operators.crossover.sbx import SBX
 from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
 from pymoo.termination import get_termination
+from pymoo.termination.ftol import MultiObjectiveSpaceTermination
 from pymoo.optimize import minimize
 
 # from dask.distributed import Client
@@ -83,7 +84,8 @@ def MOCHA(p,limits,p_size,gens,n_offspring):
         eliminate_duplicates=True
     )
 
-   termination = get_termination("n_gen", gens)
+   termination = RobustTermination(
+                                    MultiObjectiveSpaceTermination(tol=0.005, n_skip=5), period=20)
    res = minimize(problem,
                algorithm,
                termination,
