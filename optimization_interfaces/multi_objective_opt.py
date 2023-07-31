@@ -5,6 +5,7 @@ from pymoo.operators.crossover.sbx import SBX
 from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
 from pymoo.termination import get_termination
+from pymoo.termination.robust import RobustTermination
 from pymoo.termination.ftol import MultiObjectiveSpaceTermination
 from pymoo.optimize import minimize
 
