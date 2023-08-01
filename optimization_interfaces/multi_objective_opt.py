@@ -57,7 +57,7 @@ class mooProblem(ElementwiseProblem):    # same problem as before, except 2 obje
         fs = model.run(x,p)
         f1 = fs[0]
         f2 = dis.max_d(x,p)                #   2nd objective is minimizing the maximum spacing between wecs
-        g1 = 10*x[0] - dis.min_d(x,p)     #   Check constraint on minimum distance
+        g1 = 5*x[0] - dis.min_d(x,p)     #   Check constraint on minimum distance
         out["F"] = [f1,f2]
         out["G"] = [g1]
 
@@ -86,7 +86,7 @@ def MOCHA(p,limits,p_size,gens,n_offspring):
     )
 
    termination = RobustTermination(
-                                    MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=80)
+                                    MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=gens)
 
    
    
