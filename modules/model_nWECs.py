@@ -46,7 +46,18 @@ def run(x,p):
     time_data = p[4] # this is not real dvs
 
     # Create Bodies
-    bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)
+    if len(p)>5:
+        shape = p[5]
+        if shape == 1:
+            bodies = array_init.grid(wec_radius,wec_length,damp)
+        elif shape == 2:
+            bodies = array_init.line(wec_radius,wec_length,damp)
+        elif shape == 3:
+            bodies = array_init.random(wec_radius,wec_length,damp)
+        else:
+            print('Not a real shape')
+    else:
+        bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)
     end_time = time.time()
     if time_data == 1:
         print(f'Body set up time:  {end_time-start_time}')
