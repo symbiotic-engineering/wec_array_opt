@@ -4,11 +4,16 @@ from pymoo.core.problem import ElementwiseProblem
 from pymoo.operators.crossover.sbx import SBX
 from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
+from pymoo.termination.robust import RobustTermination
+from pymoo.termination.ftol import MultiObjectiveSpaceTermination
 from pymoo.termination import get_termination
 from pymoo.optimize import minimize
 import modules.model_nWECs as model
 import modules.distances as dis
 
+import multiprocessing
+from multiprocessing.pool import ThreadPool
+from pymoo.core.problem import StarmapParallelization
 ####################################################################
 #                                                                  #
 #           Single Objective Problems and Solvers                  #
@@ -16,7 +21,7 @@ import modules.distances as dis
 ####################################################################
 
 class LCOE_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
-    def __init__(self,p,limits):            #   P is parameters, limits is the bounds on each var type
+    def __init__(self,p,limits,**kwargs):            #   P is parameters, limits is the bounds on each var type
         nwec = int(p[3])
         n_var=3*(nwec-1) + 3
         xl = np.zeros(n_var)                #   bounds
@@ -49,8 +54,13 @@ class LCOE_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
         out["F"] = [f1]
         out["G"] = [g1]
 
-def LCOE_GA(p,limits,p_size,gens,n_offspring):       #   GA method search algorithm
+def LCOE_GA(p,limits,p_size,gens,n_offspring):  
+     #   GA method search algorithm
     problem = P_sooProblem(p,limits)
+    n_proccess = 20
+    pool = multiprocessing.Pool(n_proccess)
+    runner = StarmapParallelization(pool.starmap)
+    problem = LCOE_sooProblem(p,limits,elementwise_runner=runner)
     algorithm = NSGA2(
         pop_size=p_size,
         n_offsprings=n_offspring,
@@ -59,13 +69,20 @@ def LCOE_GA(p,limits,p_size,gens,n_offspring):       #   GA method search algori
         mutation=PM(eta=20),
         eliminate_duplicates=True
     )
-    termination = get_termination("n_gen", gens)
+
+    termination = RobustTermination(
+                                    MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=gens)
+
+
+
+    #termination = get_termination("n_gen", gens)
     res = minimize(problem,
                algorithm,
                termination,
                seed=1,
                save_history=True,
                verbose=True)
+
     X = res.X
     F = res.F
     H = res.history
