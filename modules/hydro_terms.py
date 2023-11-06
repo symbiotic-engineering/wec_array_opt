@@ -29,7 +29,7 @@ def run(bodies,beta,omega,time_data):
     else:
         dofs = {body:'Heave' for body in bodies} 
     rad_prob = [capy.RadiationProblem(body=wec_array,omega=omega,radiating_dof=dofs[body]) for body in bodies]
-    rad_result = solver.solve_all(rad_prob,keep_details=(True),n_jobs=10)
+    rad_result = solver.solve_all(rad_prob,keep_details=(True))
     diff_prob = capy.DiffractionProblem(body=wec_array, wave_direction=beta, omega=omega)
     diff_result = solver.solve(diff_prob,keep_details=(True))
     
