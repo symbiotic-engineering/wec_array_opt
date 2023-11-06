@@ -54,6 +54,7 @@ class mooProblem(ElementwiseProblem):    # same problem as before, except 2 obje
 
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
+        #print(f'x is {x}')
         fs = model.run(x,p)
         f1 = fs[0]
         f2 = dis.max_d(x,p)                #   2nd objective is minimizing the maximum spacing between wecs

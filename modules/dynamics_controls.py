@@ -3,6 +3,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):
     for body in bodies:
         if k[body] > 1e7:                       # if k is too big
             k[body] = k[body]/abs(k[body])*1e7  #   Cap it, but let it keep it's sign
+    k = {body:0 for body in bodies}
     Xi = {body:F[body]*Amp/(-(A[body]+m[body])*omega**2 - (B[body]+body.PTOdamp)*omega*1j + C[body] + k[body]) for body in bodies}
     return Xi
 
