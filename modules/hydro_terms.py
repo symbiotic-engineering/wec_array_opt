@@ -35,8 +35,8 @@ def run(bodies,beta,omega,time_data):
     
     # Get the important stuff
     dataset = capy.assemble_dataset(rad_result + [diff_result])
-    A = {body:np.array(dataset['added_mass'].sel(radiating_dof = dofs[body], influenced_dof = dofs[body])) for body in bodies}
-    B = {body:np.array(dataset['radiation_damping'].sel(radiating_dof = dofs[body], influenced_dof = dofs[body])) for body in bodies}
+    A = {effected:{effecting:np.array(dataset['added_mass'].sel(radiating_dof = dofs[effecting], influenced_dof = dofs[effected])) for effecting in bodies} for effected in bodies}
+    B = {effected:{effecting:np.array(dataset['radiation_damping'].sel(radiating_dof = dofs[effecting], influenced_dof = dofs[effected])) for effecting in bodies} for effected in bodies}
     diff_F = {body:np.array(dataset['diffraction_force'].sel(influenced_dof = dofs[body])) for body in bodies}
     FK_F =  {body:np.array(dataset['Froude_Krylov_force'].sel(influenced_dof = dofs[body])) for body in bodies}
     F = {body:diff_F[body] + FK_F[body] for body in bodies}
