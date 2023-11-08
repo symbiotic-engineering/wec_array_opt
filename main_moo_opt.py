@@ -5,7 +5,7 @@ import time
 # Define Parameters
 
 if __name__ == "__main__":
-    N = 10
+    N = 4
     omega = 1.047
     beta = 0
     A = 1

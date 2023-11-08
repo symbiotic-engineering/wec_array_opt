@@ -45,20 +45,20 @@ def run(wecx,wecy,r,L,ds):
 
 
 def grid(r,L,ds): #generate a grid layout and passes bodies for optimization
-    wecX, wecY = np.meshgrid(np.linspace(0,50,2),np.linspace(0,250,5))
+    wecX, wecY = np.meshgrid(np.linspace(0,50,2),np.linspace(0,50,2))
     wecx = wecX.flatten()
     wecy = wecY.flatten()
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
 def line(r,L,ds): #generate line and pass bodies for optimization 
-    wecx = np.zeros(10)
-    wecy = np.linspace(0,500,10)
+    wecx = np.zeros(4)
+    wecy = np.linspace(0,200,4)
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
 def random(r,L,ds): #pass optimal random WEC
-    wecx = np.array([0,4383,2091,2630,3775,3172,2314,1967,717,3129])*(50/324) #scale down factor for matching with other layouts
-    wecy = np.array([0,3262,1414,3180,-1199,2199,3250,4197,3123,2870])*(50/324)
+    wecx = np.array([0,30,10,-30])
+    wecy = np.array([0,30,-40,20])
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
