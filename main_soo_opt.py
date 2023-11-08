@@ -4,7 +4,7 @@ import csv
 import time
 
 # Define Parameters
-N = 10
+N = 4
 omega = 1.047
 beta = 0
 A = 1

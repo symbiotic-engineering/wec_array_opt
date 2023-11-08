@@ -22,8 +22,9 @@ def run(bodies,beta,omega,time_data):
 
     # Solve radiation problems, and diffraction problem
     start_time = time.time()
-    engine = capy.HierarchicalToeplitzMatrixEngine(ACA_distance = 20,ACA_tol = 1e-1,matrix_cache_size=2) #at least three radius
-    solver = capy.BEMSolver(engine = engine)
+    #engine = capy.HierarchicalToeplitzMatrixEngine(ACA_distance = 20,ACA_tol = 1e-1,matrix_cache_size=2) #at least three radius
+    #engine = capy.BasicMatrixEngine()
+    solver = capy.BEMSolver()
     if len(bodies) > 1:
         dofs = {body:f'{body.name}__Heave' for body in bodies}
     else:
