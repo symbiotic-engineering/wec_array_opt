@@ -29,7 +29,6 @@ plt.rcParams.update({'font.size': 16})  # Increase font size
 fig = plt.figure(1, facecolor='none')
 ax = plt.axes()
 ax.set_facecolor('none')
-
 # Increase marker size and linewidth for better visibility
 plt.scatter(f1, f2, marker='o', c='tab:blue', label='Pareto Front', s=100, edgecolors='k', zorder=2)
 plt.scatter(utop1, utop2, marker='*', color='tab:green', label='Utopia Point', s=200, edgecolors='k', zorder=3)
