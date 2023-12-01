@@ -10,7 +10,7 @@ from scipy.interpolate import make_interp_spline
 
 
 f1, f2 = [], []
-with open('./paretos/domF_UMERC.csv', newline='') as csvfile:
+with open('./paretos/domF_1.047_1_0_4__500_100_100.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
