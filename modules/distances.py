@@ -3,6 +3,8 @@ import numpy as np
 # This module is used to find the maximum and minimum spacing in the WEC array
 
 def min_d(x,p):                     # Minimum spacing
+    #   x   ->  design vector
+    #   p   ->  parameters
     nwec = int(p[3])                # Number of WECs
     if nwec == 1:
         return np.inf               # If there are no other wecs, it is not very close to anyone
@@ -15,6 +17,8 @@ def min_d(x,p):                     # Minimum spacing
     return (mind)
 
 def max_d(x,p):                     # Maximum spaceing
+    #   x   ->  design vector
+    #   p   ->  parameters
     nwec = int(p[3])                # Number of WECs
     if nwec == 1:
         return 0                    # if there are no other wecs, the array is small

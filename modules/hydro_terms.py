@@ -5,6 +5,10 @@ import time
 # This module is used to get all the hydro terms. Forces, added mass, damping, hydrostatic stiffness, and mass
 
 def run(bodies,beta,omega,time_data):
+    # bodies    ->  list of the wec floating bodies
+    # beta      ->  wave direction
+    # omega     ->  wave frequency
+    # time_data ->  switch for outputting time data
     start_time = time.time()
     wec_array = bodies[0]           # build the array by putting all the bodies together
     for ii in range(len(bodies)-1):

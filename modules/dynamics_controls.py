@@ -2,6 +2,14 @@ import numpy as np
 # This module is used to calculate the motion and the power of the WEC
 
 def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hydro outputs
+    #   bodies  ->  list of wec bodies
+    #   A       ->  added mass dictionary
+    #   B       ->  wave damping dictionary
+    #   C       ->  hydrostatic stiffness dictionary
+    #   F       ->  wave force dictionary
+    #   m       ->  mass/inertia dictionary
+    #   omega   ->  wave frequency
+    #   Amp     ->  wave amplitude
     k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies}    #   Calculate Optimal PTO stiffness
     for body in bodies:
         if k[body] > 1e7:                       # if k is too big
@@ -28,6 +36,9 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hyd
     return Xi
 
 def time_avg_power(bodies,Xi,omega):    # Calculates power
+    #   bodies  ->  list of wec bodies
+    #   Xi      ->  wec motion dictionary
+    #   omega   ->  wave frequency
     P_indv = {body:(1/2)*body.PTOdamp*abs(Xi[body]*omega*1j)**2/1000 for body in bodies} # KW
     P = sum(P_indv.values())            # add up the power from each individual WEC
     return P,P_indv
