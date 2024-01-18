@@ -1,7 +1,8 @@
 import capytaine as capy
 import numpy as np
+# This module is used to create the array of bodies, also can be used to get neighbor lists and angles if PWAing
 
-def get_body(r,L,x,y,d):
+def get_body(r,L,x,y,d):    # creates one WEC body
     mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L)
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
@@ -18,7 +19,7 @@ def get_body(r,L,x,y,d):
     body.compute_hydrostatic_stiffness()
     return body
 
-def calc_theta(body,neighbor):
+def calc_theta(body,neighbor):  # old function, useful for PWA
     x_1 = body.home[0]
     y_1 = body.home[1]
     x_2 = neighbor.home[0]
@@ -27,7 +28,7 @@ def calc_theta(body,neighbor):
     return theta
 
 
-def get_neighbors(bodies):
+def get_neighbors(bodies):  # old function, useful for PWA
     neighbors = {body:[] for body in bodies}
     for body in bodies:
         for neighbor in bodies:
@@ -38,12 +39,13 @@ def get_neighbors(bodies):
 
 
 
-
-def run(wecx,wecy,r,L,ds):
+def run(wecx,wecy,r,L,ds): # Initializes the WEC Array, creates the bodies
     bodies = [get_body(r,L,x,y,d) for x,y,d in zip(wecx,wecy,ds)]
     return bodies
 
 
+
+# Predefined Layouts
 def grid(r,L,ds): #generate a grid layout and passes bodies for optimization
     wecX, wecY = np.meshgrid(np.linspace(0,50,2),np.linspace(0,50,2))
     wecx = wecX.flatten()
