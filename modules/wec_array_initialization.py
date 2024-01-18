@@ -3,6 +3,11 @@ import numpy as np
 # This module is used to create the array of bodies, also can be used to get neighbor lists and angles if PWAing
 
 def get_body(r,L,x,y,d):    # creates one WEC body
+    # r ->  wec radius
+    # L ->  wec length
+    # x ->  x location
+    # y ->  y location
+    # d ->  pto damping
     mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L)
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
@@ -20,6 +25,8 @@ def get_body(r,L,x,y,d):    # creates one WEC body
     return body
 
 def calc_theta(body,neighbor):  # old function, useful for PWA
+    # bodies    ->  list of wec bodies 
+    # neighbors ->  dictionary of other bodies for each body
     x_1 = body.home[0]
     y_1 = body.home[1]
     x_2 = neighbor.home[0]
@@ -29,6 +36,7 @@ def calc_theta(body,neighbor):  # old function, useful for PWA
 
 
 def get_neighbors(bodies):  # old function, useful for PWA
+    # bodies->  list of wec bodies 
     neighbors = {body:[] for body in bodies}
     for body in bodies:
         for neighbor in bodies:
@@ -40,6 +48,11 @@ def get_neighbors(bodies):  # old function, useful for PWA
 
 
 def run(wecx,wecy,r,L,ds): # Initializes the WEC Array, creates the bodies
+    # wecx  ->  list of wec x locations
+    # wecy  ->  list of wec y locations
+    # r     ->  radius of wec
+    # L     ->  wec length
+    # ds    ->  list of pto dampings
     bodies = [get_body(r,L,x,y,d) for x,y,d in zip(wecx,wecy,ds)]
     return bodies
 
@@ -47,6 +60,9 @@ def run(wecx,wecy,r,L,ds): # Initializes the WEC Array, creates the bodies
 
 # Predefined Layouts
 def grid(r,L,ds): #generate a grid layout and passes bodies for optimization
+    # r     ->  radius of wec
+    # L     ->  wec length
+    # ds    ->  list of pto dampings
     wecX, wecY = np.meshgrid(np.linspace(0,50,2),np.linspace(0,50,2))
     wecx = wecX.flatten()
     wecy = wecY.flatten()
@@ -54,12 +70,18 @@ def grid(r,L,ds): #generate a grid layout and passes bodies for optimization
     return bodies
 
 def line(r,L,ds): #generate line and pass bodies for optimization 
+    # r     ->  radius of wec
+    # L     ->  wec length
+    # ds    ->  list of pto dampings
     wecx = np.zeros(4)
     wecy = np.linspace(0,200,4)
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
 def random(r,L,ds): #pass optimal random WEC
+    # r     ->  radius of wec
+    # L     ->  wec length
+    # ds    ->  list of pto dampings
     wecx = np.array([0,30,10,-30])
     wecy = np.array([0,30,-40,20])
     bodies = run(wecx,wecy,r,L,ds)

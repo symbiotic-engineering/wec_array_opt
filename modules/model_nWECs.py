@@ -7,9 +7,11 @@ from modules.dynamics_controls import wec_dyn
 from modules.dynamics_controls import time_avg_power 
 import time
 # x = [radius all wecs, lenght all wecs, x location, y location, pto damping, ... other wecs x y and d]
-# p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, free surface reach, grid point rates in free surface]
+# p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, time info switch, layout preset(optional)]
 
 def unpack_x(x,nWEC):       # this function unpacks the design vector into the design variables
+    #   x       ->  design vector
+    #   nWEC    ->  number of WECs
     wec_radius = x[0]
     wec_length = x[1]*x[0]  # this variable is important to note, is is the length ratio, not the actual length
     wecx = np.zeros(nWEC)
@@ -21,7 +23,14 @@ def unpack_x(x,nWEC):       # this function unpacks the design vector into the d
         wecy[i+1] = x[4+i*3]
         damp[i+1] = 10**x[5+i*3]
     return wec_radius, wec_length, wecx, wecy, damp
+
 def pack_x(N,wecx,wecy,r,L,d):  # packs variables into design vector
+    #   N       ->  number of wecs in array
+    #   wecx    ->  x locations
+    #   wecy    ->  y location2
+    #   r       ->  wec radius
+    #   L       ->  wec length
+    #   d       ->  pto damping coefficient
     x = np.zeros(3*(N-1) + 3)
     x[0] = r
     x[1] = L/r
@@ -32,7 +41,10 @@ def pack_x(N,wecx,wecy,r,L,d):  # packs variables into design vector
         x[5+3*ii] = d[ii+1]
     return x
 
+
 def run(x,p):   # the big one, runs the whole thing
+    #   x   ->  design vector
+    #   p   ->  parameter vector
     start_time = time.time()
     nWEC = int(p[3])
     
