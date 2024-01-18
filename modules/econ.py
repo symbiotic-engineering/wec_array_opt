@@ -27,12 +27,14 @@ def run(N,M,P,bodies,r):
     # ******** ATTN NATE *********
     # so here, all the CAPEX_ind need to be summed. not sure how u wanna do that
     # but this is the spot to do that
+    # Response from Nate: done
     CAPEX = sum(CAPEX_ind.values())                 # array CAPEX [$]
 
     OPEX_oesmed = CAPEX_oesmed*0.05                 # OPEX represented as percentage of CAPEX [$/kW]
     OPEX_ind = {body:(OPEX_oesmed + (OPEX_oesmed*MR[body]))*rated_P for body in bodies} # scaled OPEX [$] (individual WEC)
     # ******* ATTN NATE ***********
     # same note as before for OPEX
+    # Response from Nate: done
     OPEX = sum(OPEX_ind.values())   # array OPEX [$]
 
     # calculating AEP
