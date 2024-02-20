@@ -14,8 +14,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hyd
     for body in bodies:
         if k[body] > 1e7:                       # if k is too big
             k[body] = k[body]/abs(k[body])*1e7  #   Cap it, but let it keep it's sign
-    #k = {body:0 for body in bodies}
-    #Xi = {body:F[body]*Amp/(-(A[body]+m[body])*omega**2 - (B[body]+body.PTOdamp)*omega*1j + C[body] + k[body]) for body in bodies}
+    k = {body:np.array([[0]]) for body in bodies}
     
     # this section puts everything into vectors and matricies
     F_vec = np.array([F[body][0] for body in bodies])
@@ -30,8 +29,18 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hyd
     A_mat = np.array([[A[effected][effecting][0] for effecting in bodies] for effected in bodies])
     B_mat = np.array([[B[effected][effecting][0] for effecting in bodies] for effected in bodies])
     
+    if len(bodies) > 1:
+        for ii in range(len(bodies)):
+            for jj in range(len(bodies)):
+                if ii != jj:
+                    if (A_mat[ii][jj] - 1000 > A_mat[jj][ii]) or (A_mat[ii][jj] + 1000 < A_mat[jj][ii]):
+                        print(f'problem at {ii},{jj}')
+                        print(f'{A_mat[ii][jj]} != {A_mat[jj][ii]}')
+
     # calculate Xi, WEC Motion, and the package result as a dictionary
-    Xi_vec = np.matmul(np.linalg.inv(-(omega**2)*(A_mat+m_mat) - 1j*omega*(B_mat+d_mat) + k_mat + C_mat),F_vec)
+    H = -(omega**2)*(A_mat+m_mat) - 1j*omega*(B_mat+d_mat) + k_mat + C_mat
+    #solve it for Xi
+    Xi_vec = np.linalg.solve(H,F_vec)
     Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
     return Xi
 
