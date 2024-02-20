@@ -38,7 +38,7 @@ def pack_x(N,wecx,wecy,r,L,d):  # packs variables into design vector
     for ii in range(N-1):
         x[3+3*ii] = wecx[ii+1]
         x[4+3*ii] = wecy[ii+1]
-        x[5+3*ii] = d[ii+1]
+        x[5+3*ii] = np.log10(d[ii+1])
     return x
 
 

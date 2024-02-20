@@ -1,8 +1,9 @@
 import capytaine as capy
 import numpy as np
+import wecopttool as wot
 # This module is used to create the array of bodies, also can be used to get neighbor lists and angles if PWAing
 
-def get_body(r,L,x,y,d):    # creates one WEC body
+def get_cylinder(r,L,x,y,d):    # creates one WEC body
     # r ->  wec radius
     # L ->  wec length
     # x ->  x location
@@ -22,6 +23,56 @@ def get_body(r,L,x,y,d):    # creates one WEC body
     body.PTOdamp = d
     body.compute_rigid_body_inertia()
     body.compute_hydrostatic_stiffness()
+    return body
+
+def get_sphere(r,L,x,y,d): #creates one spherical WEC body
+    # r ->  wec radius
+    # L ->  wec length (not really needed here but left as a placeholder for consistency)
+    # x ->  x location
+    # y ->  y location
+    # d ->  pto damping
+    mesh = capy.meshes.predefined.mesh_sphere(radius = r, center = (x,y,0))
+    body = capy.FloatingBody(mesh)
+    body.add_translation_dof(name='Heave')
+    body.keep_immersed_part()
+    body = body.immersed_part()
+    body.name = f'{x}_{y}'
+    body.home = np.array([x,y,0])
+    body.radius = r
+    body.center_of_mass=(x, y, 0)
+    body.keep_only_dofs(['Heave'])
+    body.rotation_center=(x,y,0)
+    body.PTOdamp = d
+    print("Volume:", body.volume)
+    print("Center of buoyancy:", body.center_of_buoyancy)
+    print("Wet surface area:", body.wet_surface_area)
+    print("Displaced mass:", body.disp_mass(rho=1025))
+    print("Waterplane center:", body.waterplane_center)
+    print("Waterplane area:", body.waterplane_area)
+    print("Metacentric parameters:",
+        body.transversal_metacentric_radius,
+        body.longitudinal_metacentric_radius,
+        body.transversal_metacentric_height,
+        body.longitudinal_metacentric_height)
+    return body
+
+def get_wavebot(r,L,x,y,d):
+    wb = wot.geom.WaveBot()  # use standard dimensions
+    mesh_size_factor = 0.5 # 1.0 for default, smaller to refine mesh
+    mesh = wb.mesh(mesh_size_factor)
+    body = capy.FloatingBody.from_meshio(mesh, name="WaveBot")
+    body.translate_x(x,inplace=True)
+    body.translate_y(y,inplace=True)
+    body.add_translation_dof(name='Heave')
+    body.keep_immersed_part()
+    body = body.immersed_part()
+    body.name = f'{x}_{y}'
+    body.home = np.array([x,y,0])
+    body.radius = r
+    body.center_of_mass=(x, y, 0)
+    body.keep_only_dofs(['Heave'])
+    body.rotation_center=(x,y,0)
+    body.PTOdamp = d
     return body
 
 def calc_theta(body,neighbor):  # old function, useful for PWA
@@ -53,7 +104,7 @@ def run(wecx,wecy,r,L,ds): # Initializes the WEC Array, creates the bodies
     # r     ->  radius of wec
     # L     ->  wec length
     # ds    ->  list of pto dampings
-    bodies = [get_body(r,L,x,y,d) for x,y,d in zip(wecx,wecy,ds)]
+    bodies = [get_cylinder(r,L,x,y,d) for x,y,d in zip(wecx,wecy,ds)]
     return bodies
 
 
