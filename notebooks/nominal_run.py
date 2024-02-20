@@ -1,5 +1,5 @@
-import modules.model_nWECs as model
-import modules.distances as dis
+import src.modules.model_nWECs as model
+import src.modules.distances as dis
 import numpy as np
 
 # Set-up to match Balitsky Thesis
