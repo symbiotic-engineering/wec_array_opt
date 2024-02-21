@@ -1,16 +1,15 @@
+import sys
+import os
+parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(parent_folder)
 import matplotlib.pyplot as plt
-
-
-
 import csv
 import numpy as np
 import matplotlib.colors as mcolors
 from scipy.interpolate import make_interp_spline
 
-
-
 f1, f2 = [], []
-with open('./paretos/domF_1.047_1_0_4__500_100_100.csv', newline='') as csvfile:
+with open('../../data/paretos/domF_1.047_1_0_4__500_100_100.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
@@ -45,5 +44,5 @@ plt.xlabel('LCOE [$/kWh]')
 plt.ylabel('Maximum Array Dimension [m]')
 plt.title("")
 
-plt.show()
+plt.savefig('pareto.png')
 
