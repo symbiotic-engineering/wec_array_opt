@@ -27,5 +27,5 @@ for _ in p_shape:
 
 	# save design
 	with open(f'experiments_interaction_{int(p[5])}/XF_{omega}_{A}_{beta}_{N}__{p_size}_{gens}_{n_offspring}.csv', 'w', newline='') as csvfile:
-	    writer = csv.writer(csvfile, delimiter=',')
-	    writer.writerow([X,F])
+		writer = csv.writer(csvfile, delimiter=',')
+		writer.writerow([X,F])
