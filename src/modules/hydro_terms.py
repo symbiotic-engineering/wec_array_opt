@@ -12,7 +12,10 @@ def run(bodies,beta,omega,time_data):
     # omega     ->  wave frequency
     # time_data ->  switch for outputting time data
     start_time = time.time()
-    wec_array = capy.FloatingBody.join_bodies(*bodies)  # join bodies to build array using advice from Mathieu, capy issue #457
+    #wec_array = capy.FloatingBody.join_bodies(*bodies)  # join bodies to build array using advice from Mathieu, capy issue #457
+    wec_array = bodies[0]
+    for ii in range(len(bodies)-1):
+        wec_array+=bodies[ii+1]
     end_time = time.time()
     if time_data == 1:  # prints time info if switched on
         print(f'Array set up time: {end_time-start_time}')
@@ -28,8 +31,13 @@ def run(bodies,beta,omega,time_data):
 
     # Solve radiation problems, and diffraction problem
     start_time = time.time()
-    engine = capy.HierarchicalToeplitzMatrixEngine(ACA_distance = 30,ACA_tol = 1e-1,matrix_cache_size=2) #at least three radius - ???
-    #engine = capy.BasicMatrixEngine()
+    
+    engine = capy.HierarchicalToeplitzMatrixEngine(ACA_distance = 7*bodies[0].radius,ACA_tol = 1e-2,matrix_cache_size=2) # at least seven radius, the good
+    
+    #engine = capy.BasicMatrixEngine() # the bad
+
+    #engine = capy.HierarchicalToeplitzMatrixEngine(ACA_distance = 30,ACA_tol = 1e-1,matrix_cache_size=2) # the ugly
+    
     solver = capy.BEMSolver(engine = engine)    # creates the solver using the defined engine
     
     # select DOFs
