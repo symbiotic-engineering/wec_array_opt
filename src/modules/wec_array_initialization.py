@@ -1,6 +1,5 @@
 import capytaine as capy
 import numpy as np
-import wecopttool as wot
 # This module is used to create the array of bodies, also can be used to get neighbor lists and angles if PWAing
 
 def get_cylinder(r,L,x,y,d):    # creates one WEC body
@@ -52,25 +51,6 @@ def get_sphere(r,L,x,y,d): #creates one spherical WEC body
         body.longitudinal_metacentric_radius,
         body.transversal_metacentric_height,
         body.longitudinal_metacentric_height)
-    return body
-
-def get_wavebot(r,L,x,y,d):
-    wb = wot.geom.WaveBot()  # use standard dimensions
-    mesh_size_factor = 0.5 # 1.0 for default, smaller to refine mesh
-    mesh = wb.mesh(mesh_size_factor)
-    body = capy.FloatingBody.from_meshio(mesh, name="WaveBot")
-    body.translate_x(x,inplace=True)
-    body.translate_y(y,inplace=True)
-    body.add_translation_dof(name='Heave')
-    body.keep_immersed_part()
-    body = body.immersed_part()
-    body.name = f'{x}_{y}'
-    body.home = np.array([x,y,0])
-    body.radius = r
-    body.center_of_mass=(x, y, 0)
-    body.keep_only_dofs(['Heave'])
-    body.rotation_center=(x,y,0)
-    body.PTOdamp = d
     return body
 
 def calc_theta(body,neighbor):  # old function, useful for PWA
