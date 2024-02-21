@@ -1,27 +1,18 @@
+import sys
+import os
+parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(parent_folder)
 import matplotlib.pyplot as plt
 import modules.model_nWECs as model
 import numpy as np
 
 # Design to plot
 N = 4
-x = [2.0016200525777434,0.10000249298379714,2.867765962701866,-8.958046230230694,-5.754094162055907,3.2342380447161108,-8.67560571496843,9.809968695344995,3.3069956247436254,-15.558692996975106,1.8526743275462612,2.57270056436542]
+x =np.array([5.325203438444657,0.14353262885406554,1.2530055440922019,-589.4684883771776,351.18125657271526,4.426026020185715,-674.6244906553854,-108.97963359757523,3.899335279090678,-115.35450094492194,-62.74147042703967,3.3221155388429606])
+
 # get x and y
 r, L, x, y, d  = model.unpack_x(x,N)
 print(d)
-wecX, wecY = np.meshgrid(np.linspace(0,50,2),np.linspace(0,50,2))
-x = wecX.flatten()
-y = wecY.flatten()
-r = 9.86
-r = 2.2
-
-x = np.zeros(4)
-y = np.linspace(0,200,4)
-r = 2.2
-r = 9.86
-
-#x = np.array([0,30,10,-30])
-#y = np.array([0,30,-40,20])
-#r = 4.958
 
 # plot
 plt.rcParams.update({'font.size': 12})  # Increase font size
@@ -31,8 +22,8 @@ for ii in range(len(x)):
     ax.text(x[ii],y[ii],f'{ii+1}',horizontalalignment = 'center', verticalalignment = 'center',color = 'w')
 ax.set_xlabel('X location [m]')
 ax.set_ylabel('Y location [m]')
-ax.set_xlim([-125,175])
-ax.set_ylim([-75,225])
+#ax.set_xlim([-125,175])
+#ax.set_ylim([-75,225])
 #ax.axis('equal')
 #plt.show()
-plt.savefig('experiments_interaction_2/line_layout.png')
+plt.savefig('design.png')
