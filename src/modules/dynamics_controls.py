@@ -29,13 +29,16 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hyd
     A_mat = np.array([[A[effected][effecting][0] for effecting in bodies] for effected in bodies])
     B_mat = np.array([[B[effected][effecting][0] for effecting in bodies] for effected in bodies])
     
-    if len(bodies) > 1:
+    '''if len(bodies) > 1:
         for ii in range(len(bodies)):
             for jj in range(len(bodies)):
-                if ii != jj:
-                    if (A_mat[ii][jj] - 1000 > A_mat[jj][ii]) or (A_mat[ii][jj] + 1000 < A_mat[jj][ii]):
-                        print(f'problem at {ii},{jj}')
-                        print(f'{A_mat[ii][jj]} != {A_mat[jj][ii]}')
+                if ii != jj:'''
+    
+    # https://www.sciencedirect.com/science/article/pii/S0889974620305995 why we picked 500
+    if np.linalg.cond(A_mat) > 500 or np.linalg.cond(B_mat) > 500 :
+        print(f'ill conditioned {np.linalg.cond(A_mat)} {np.linalg.cond(B_mat)}')
+        Xi = {body:1e-5/np.linalg.cond(A_mat) for body in bodies}
+        return Xi
 
     # calculate Xi, WEC Motion, and the package result as a dictionary
     H = -(omega**2)*(A_mat+m_mat) - 1j*omega*(B_mat+d_mat) + k_mat + C_mat
