@@ -1,9 +1,16 @@
+import sys
+import os
+parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(parent_folder)
+grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
 import capytaine as cpt
 import capytaine as capy
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+import pyplotutilities.colors as colors
 # import meshmagick
 # import meshmagick.mesh as mm
 # from packaging import version
@@ -14,7 +21,7 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 
 import modules.wec_array_initialization as array_init
 import modules.model_nWECs as model
-omega,beta = 1.047,0
+omega,beta = 1.047,4
 # optimal parameters and design variables
 x_optimal = [6.767664116492389,0.4243817925685805,4.962817393662435,
      4383.557774446713,3262.042695725369,5.849118310687371,
@@ -73,19 +80,20 @@ kd = h_t/h_i
 
 
 # plots
+colors.get_colors()
 x = np.linspace(-5000,5000,ngridx)
 y = np.linspace(-5000,5000,ngridy)
 X, Y = np.meshgrid(x, y)
 Z = kd.reshape(ngridx,ngridy)
 fig, ax = plt.subplots()
-top = cm.get_cmap('Blues_r', 128)
-bottom = cm.get_cmap('Reds', 128)
-newcolors = np.vstack((top(np.linspace(0, 1, 128)),
-                       bottom(np.linspace(0, 1, 128))))
-cmap = ListedColormap(newcolors, name='OrangeBlue')
+#top = 
+#bottom = cm.get_cmap('Reds', 128)
+#newcolors = np.vstack((top(np.linspace(0, 1, 128)),
+#                       bottom(np.linspace(0, 1, 128))))
+cmap = LinearSegmentedColormap.from_list("newcolors", colors = [colors.blue, 'w', colors.red], N = 256)
 CS = ax.contourf(X,Y,Z,cmap=cmap,vmin=0.5,vmax=1.5)
 
-plt.plot(wecx,wecy, linestyle = 'none', marker = 'o', color = (0/256,158/256,115/256), markersize = 10)
+plt.plot(wecx,wecy, linestyle = 'none', marker = 'o', color = colors.black, markersize = 10)
 cbar = fig.colorbar(CS)
 cbar.set_label(label='$K_{D}$',fontsize=17)
 cbar.ax.tick_params(labelsize=12)
@@ -96,6 +104,5 @@ ax.annotate(r'$\beta$ = $\pi$/2',xy=(-100,-150),xytext=(-185,-150),fontsize=15)
 plt.arrow(-175,-175,50,0,length_includes_head=True,head_width=10,head_length=10)
 
 plt.savefig("field.pdf")
-plt.show()
 
 # plt.savefig('SSSSS.pdf')
