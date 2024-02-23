@@ -25,6 +25,7 @@ print(f"WEC Radius: {wec_radius}")
 print(f"WEC Length: {wec_length}")
 print(f"X Locations: {wecx}")
 print(f"Y Locations: {wecy}")
+
 print("==================================================================================")
 
 LCOE,AEP,P = model.run(x,p)
