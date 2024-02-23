@@ -33,12 +33,12 @@ if __name__ == "__main__":
     print(Xtable)
 
     X = [Xtable[i] for i in F1]
-    with open(f'paretos/domF_{omega}_{A}_{beta}_{N}__{p_size}_{gens}_{n_offspring}.csv', 'w', newline='') as csvfile:
+    with open(f'../data/paretos/domObjective.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         for i in range(len(F)):
-            writer.writerow([F1[i],F2[i]])
+            writer.writerow([F1[i],F2[i]]) # LCOE, max spacing
 
-    with open(f'paretos/domX_{omega}_{A}_{beta}_{N}__{p_size}_{gens}_{n_offspring}.csv', 'w', newline='') as csvfile:
+    with open(f'../data/paretos/domDesign.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         for i in range(len(X)):
             writer.writerow(X[i])
