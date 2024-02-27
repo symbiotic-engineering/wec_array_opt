@@ -12,7 +12,7 @@ from scipy.interpolate import make_interp_spline
 import pyplotutilities.colors as colors
 
 f1, f2 = [], []
-with open('../data/paretos/domF_UMERC.csv', newline='') as csvfile:
+with open('../data/paretos/domObjective.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))

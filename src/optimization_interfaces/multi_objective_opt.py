@@ -87,7 +87,7 @@ def MOCHA(p,limits,p_size,gens,n_offspring):
     )
 
    termination = RobustTermination(
-                                    MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=gens)
+                                    MultiObjectiveSpaceTermination(tol=0.005, n_skip=5), period=gens)
 
    
    
@@ -96,10 +96,9 @@ def MOCHA(p,limits,p_size,gens,n_offspring):
                algorithm,
                termination,
                seed=1,
-               save_history=True,
+               save_history=False, # might be a good idea to remove
                verbose=True)
     
    X = res.X
    F = res.F
-   H = res.history
-   return X,F,H
+   return X,F
