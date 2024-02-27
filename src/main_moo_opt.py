@@ -13,14 +13,14 @@ if __name__ == "__main__":
     # p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, display time stamps?]
 
     # Limits on Design variables
-    limits = {'r':[2,10], 'L':[0.1,0.5], 'x':[-2500,2500], 'y':[-2500,2500], 'd':[0,7]}
+    limits = {'r':[2,10], 'L':[0.1,0.5], 'x':[-500,500], 'y':[-500,500], 'd':[0,7]}
 
     # Opt paramaters
-    p_size = 500
+    p_size = 250
     gens = 100
-    n_offspring = 100
+    n_offspring = 50
     start_time = time.time()
-    X,F,H = opt.MOCHA(p,limits,p_size,gens,n_offspring)
+    X,F = opt.MOCHA(p,limits,p_size,gens,n_offspring)
     end_time = time.time()
     print(f'Optimization took {end_time-start_time} s')
 
@@ -33,12 +33,12 @@ if __name__ == "__main__":
     print(Xtable)
 
     X = [Xtable[i] for i in F1]
-    with open(f'paretos/domF_{omega}_{A}_{beta}_{N}__{p_size}_{gens}_{n_offspring}.csv', 'w', newline='') as csvfile:
+    with open(f'../data/paretos/domObjective.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         for i in range(len(F)):
-            writer.writerow([F1[i],F2[i]])
+            writer.writerow([F1[i],F2[i]]) # LCOE, max spacing
 
-    with open(f'paretos/domX_{omega}_{A}_{beta}_{N}__{p_size}_{gens}_{n_offspring}.csv', 'w', newline='') as csvfile:
+    with open(f'../data/paretos/domDesign.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         for i in range(len(X)):
             writer.writerow(X[i])

@@ -5,6 +5,9 @@
 # non-uniform probability distribution for the omega cause they have non-uniform , non-normal distributions?
 # statistical distribution of wave parameters - omega, waveheadings  only for now
 
+## NOTE FOR KAPIL: invetigating sensitivity of FCR (fixed charge rate), potentially
+# include efficiency terms from econ mod (n_avail and n_trans)
+
 import sys
 import os
 parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
