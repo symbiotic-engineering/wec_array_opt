@@ -7,8 +7,9 @@
 
 import sys
 import os
-parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append("/".join((parent_folder,'src')))
+parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
+sys.path.insert(0,parent_folder)
+
 import modules.model_nWECs as model
 import modules.distances as dis
 import numpy as np
@@ -34,19 +35,26 @@ dv_problem = {
 #array of wecx and wecy neeeded
 # generate the input sample
 N_samples = 1000
-Y = np.empty([sample.shape[0]])
+Y = np.empty([N_samples])
 
 #run sampler
 param_values = saltelli.sample(parameter_problem, N_samples)
 
-N = 10
 #optimal locations
-wecx,wecy,r,L,damp = 0,0,0,0 #update this with optimal locations
+N = 18
+r = 5
+L = 2*2
+basex = np.array([0,0,0,0,0,-30,-30,-30,-30]) # used to make wecx easier
+wecx = np.concatenate((basex,basex + 500))
+wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
+damp = 3.6e5*np.ones(wecx.shape)
+ #update this with optimal locations
 x = model.pack_x(N,wecx,wecy,r,L,damp)
 #run theh 'nominal' values picked by sampler 
 for i, X in enumerate(param_values):
-    p = [X,N,0]
-    Y[i] = model.run(x,p)
+    p = [*X,N,0]
+    print(p)
+    Y[i] = model.run(x,p)[0] #one objective at a time
 
 
 Si = sobol.analyze(parameter_problem, Y)
