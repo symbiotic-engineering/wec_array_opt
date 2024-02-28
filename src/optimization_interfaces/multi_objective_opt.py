@@ -73,7 +73,7 @@ def MOCHA(p,limits,p_size,gens,n_offspring):
 
 # define the problem by passing the starmap interface of the thread pool
     # initialize the thread pool and create the runner
-   n_proccess = 20
+   n_proccess = 24
    pool = multiprocessing.Pool(n_proccess)
    runner = StarmapParallelization(pool.starmap)
    problem = mooProblem(p,limits,elementwise_runner=runner)
