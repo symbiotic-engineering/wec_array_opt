@@ -22,9 +22,9 @@ i = 0.07                # interest rate
 n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
 life = 25                  # lifetime of WEC
 array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
-p = [wave_freq, wave_amp, wave_dir, i,n_avail,life,array_scaling_factor, N, 0]
-x = model.pack_x(N,wecx,wecy,r,L,damp)
-wec_radius, wec_length, wecx, wecy, damp = model.unpack_x(x,N)
+p = [wave_freq, wave_amp, wave_dir, i,n_avail,life,array_scaling_factor]
+x = model.pack_x(wecx,wecy,r,L,damp)
+wec_radius, wec_length, wecx, wecy, damp, N = model.unpack_x(x)
 print(f"WEC Radius: {wec_radius}")
 print(f"WEC Length: {wec_length}")
 print(f"X Locations: {wecx}")

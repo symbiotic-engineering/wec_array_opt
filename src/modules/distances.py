@@ -5,10 +5,10 @@ import numpy as np
 def min_d(x,p):                     # Minimum spacing
     #   x   ->  design vector
     #   p   ->  parameters
-    nwec = int(p[3])                # Number of WECs
+    wec_radius, wec_length, wecx, wecy, damp, nwec = model.unpack_x(x)
     if nwec == 1:
         return np.inf               # If there are no other wecs, it is not very close to anyone
-    wec_radius, wec_length, wecx, wecy, damp = model.unpack_x(x,nwec)
+    
     d = []
     for i in range(nwec):
         for j in range(i+1,nwec):
@@ -19,10 +19,9 @@ def min_d(x,p):                     # Minimum spacing
 def max_d(x,p):                     # Maximum spaceing
     #   x   ->  design vector
     #   p   ->  parameters
-    nwec = int(p[3])                # Number of WECs
+    wec_radius, wec_length, wecx, wecy, damp, nwec = model.unpack_x(x)
     if nwec == 1:
         return 0                    # if there are no other wecs, the array is small
-    wec_radius, wec_length, wecx, wecy, damp = model.unpack_x(x,nwec)
     d = []
     for i in range(nwec):
         for j in range(i+1,nwec):

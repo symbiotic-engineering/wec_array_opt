@@ -9,11 +9,10 @@ import modules.model_nWECs as model
 import numpy as np
 import pyplotutilities.colors as colors
 # Design to plot
-N = 4
 x =np.array([6.299197279076497,0.10007673575582875,5.939685563058021,49.182921347145985,7.320310446259552,5.885220747485372,35.81817865532949,-21.72754886674548,5.972333841463968,19.11948545539301,25.042376603446414,5.880815678820527])
 
 # get x and y
-r, L, x, y, d  = model.unpack_x(x,N)
+r, L, x, y, d, N = model.unpack_x(x)
 print(d)
 
 # plot
