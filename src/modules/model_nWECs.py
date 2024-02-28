@@ -46,7 +46,7 @@ def run(x,p):   # the big one, runs the whole thing
     #   x   ->  design vector
     #   p   ->  parameter vector
     start_time = time.time()
-    nWEC = int(p[3])
+    nWEC = int(p[7])
     
     # Unpack Design Variables
     wec_radius, wec_length, wecx, wecy, damp = unpack_x(x,nWEC)
@@ -55,11 +55,11 @@ def run(x,p):   # the big one, runs the whole thing
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    time_data = p[4] # switch parameter for if you want the time info or not, useful for a nominal run
+    time_data = p[8] # switch parameter for if you want the time info or not, useful for a nominal run
 
     # Create Bodies
-    if len(p)>5:        
-        shape = p[5]    # these are our predefined geometries, parameter 6 is an optional way to use them
+    if len(p)>9:        
+        shape = p[9]    # these are our predefined geometries, parameter 6 is an optional way to use them
         if shape == 1:
             bodies = array_init.grid(wec_radius,wec_length,damp)
         elif shape == 2:
@@ -83,7 +83,8 @@ def run(x,p):   # the big one, runs the whole thing
     P,P_indv = time_avg_power(bodies,Xi,omega)      # Power calculation
     
     # Power Transmission and Economics Module
-    LCOE,AEP,rated_P = econ.run(M,P_indv,bodies)
+    econ_pvec = np.array([p[3],p[4],p[5],p[6]])
+    LCOE,AEP,rated_P = econ.run(M,P_indv,bodies,econ_pvec)
     end_time = time.time()
     if time_data == 1:  # prints time info if switched on
         print(f'Power/LCOE time:   {end_time-start_time}')
