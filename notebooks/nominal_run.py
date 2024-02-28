@@ -28,11 +28,11 @@ print(f"Y Locations: {wecy}")
 
 print("==================================================================================")
 
-LCOE,AEP,P = model.run(x,p)
+LCOE,AEP,rated_P = model.run(x,p)
 print("==================================================================================")
 print(f'The LCOE is {LCOE} $/kWh')
 print(f'The AEP is {AEP} kWh')
-print(f'The Power is {P} kW')
+print(f'The Rated Power is {rated_P} kW')
 mind = dis.min_d(x,p)
 print(f'The min spacing is {mind} m')
 maxd = dis.max_d(x,p)
