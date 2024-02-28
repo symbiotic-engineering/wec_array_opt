@@ -7,11 +7,12 @@ from modules.dynamics_controls import wec_dyn
 from modules.dynamics_controls import time_avg_power 
 import time
 # x = [radius all wecs, lenght all wecs, x location, y location, pto damping, ... other wecs x y and d]
-# p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, time info switch, layout preset(optional)]
+# p = [Wave Frequency, Wave Amplitude, wave direction, interest rate, wave availability, life span, array scaling factor, time info switch, layout preset(optional)]
 
-def unpack_x(x,nWEC):       # this function unpacks the design vector into the design variables
+def unpack_x(x):       # this function unpacks the design vector into the design variables
     #   x       ->  design vector
     #   nWEC    ->  number of WECs
+    nWEC = int(len(x)/3)
     wec_radius = x[0]
     wec_length = x[1]*x[0]  # this variable is important to note, is is the length ratio, not the actual length
     wecx = np.zeros(nWEC)
@@ -22,15 +23,15 @@ def unpack_x(x,nWEC):       # this function unpacks the design vector into the d
         wecx[i+1] = x[3+i*3]
         wecy[i+1] = x[4+i*3]
         damp[i+1] = 10**x[5+i*3]
-    return wec_radius, wec_length, wecx, wecy, damp
+    return wec_radius, wec_length, wecx, wecy, damp, nWEC
 
-def pack_x(N,wecx,wecy,r,L,d):  # packs variables into design vector
-    #   N       ->  number of wecs in array
+def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
     #   wecx    ->  x locations
     #   wecy    ->  y location2
     #   r       ->  wec radius
     #   L       ->  wec length
     #   d       ->  pto damping coefficient
+    N = int(len(wecx))
     x = np.zeros(3*(N-1) + 3)
     x[0] = r
     x[1] = L/r
@@ -46,20 +47,21 @@ def run(x,p):   # the big one, runs the whole thing
     #   x   ->  design vector
     #   p   ->  parameter vector
     start_time = time.time()
-    nWEC = int(p[7])
     
     # Unpack Design Variables
-    wec_radius, wec_length, wecx, wecy, damp = unpack_x(x,nWEC)
+    wec_radius, wec_length, wecx, wecy, damp, nWEC = unpack_x(x)
     
     # Unpack Parameters
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    time_data = p[8] # switch parameter for if you want the time info or not, useful for a nominal run
+    time_data = 0
+    if len(p) > 7:
+        time_data = p[7] # switch parameter for if you want the time info or not, useful for a nominal run
 
     # Create Bodies
-    if len(p)>9:        
-        shape = p[9]    # these are our predefined geometries, parameter 6 is an optional way to use them
+    if len(p)>8:        
+        shape = p[8]    # these are our predefined geometries, parameter 6 is an optional way to use them
         if shape == 1:
             bodies = array_init.grid(wec_radius,wec_length,damp)
         elif shape == 2:
