@@ -11,20 +11,21 @@ if __name__ == "__main__":
     A = 1
     i = 0.07                # interest rate
     n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
-    L = 25                  # lifetime of WEC
+    life_time = 25          # lifetime of WEC
     array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
-    p = np.array([omega,A,beta,i,n_avail,L,array_scaling_factor])
-    # p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, display time stamps?]
+    p = np.array([omega,A,beta,i,n_avail,life_time,array_scaling_factor])
+    # p = [Wave Frequency, Wave Amplitude, wave direction, interest, availability, lifetime, array scaling factor]
 
     # Limits on Design variables
     limits = {'r':[2,10], 'L':[0.1,0.2], 'x':[-500,500], 'y':[-500,500], 'd':[0,7]}
 
     # Opt paramaters
-    p_size = 250
-    gens = 100
-    n_offspring = 50
+    nWEC = 4
+    p_size = 2
+    gens = 1
+    n_offspring = 1
     start_time = time.time()
-    X,F = opt.MOCHA(p,limits,p_size,gens,n_offspring)
+    X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,n_offspring)
     end_time = time.time()
     print(f'Optimization took {end_time-start_time} s')
 
