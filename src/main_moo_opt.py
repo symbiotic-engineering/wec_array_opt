@@ -9,7 +9,11 @@ if __name__ == "__main__":
     omega = 1.047
     beta = 0
     A = 1
-    p = np.array([omega,A,beta,N,0])
+    i = 0.07                # interest rate
+    n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
+    L = 25                  # lifetime of WEC
+    array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
+    p = np.array([omega,A,beta,i,n_avail,L,array_scaling_factor,N,0])
     # p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, display time stamps?]
 
     # Limits on Design variables

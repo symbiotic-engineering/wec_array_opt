@@ -3,18 +3,23 @@
 # the OPEX is modeled as a percentage (about 5%) of the CAPEX
 # O. Vitale 02/27/2024
 
+# i = 0.07                # interest rate
+# n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
+# L = 25                  # lifetime of WEC
+# array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
+
 import numpy as np
 
-def run(M,P,bodies):
+def run(M,P,bodies,econ_pvec):
     # is this rated P just a random value? where did we get this?
     # rated P should just be equal to P. 
-    rated_P = P                     # (r - 2)*100/8 + 900 
-
+    rated_P = P                     # rated power 
     # parameters
-    i = 0.07                # interest rate
-    n_trans = 0.945         # transmission line efficiency (from OWT estimates) **conservative**
-    n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**  
-    L = 25                  # lifetime of WEC
+    i = econ_pvec[0]
+    n_avail = econ_pvec[1]          # availability coefficient (from global avg estimates) **conservative** 
+    L = econ_pvec[2]                # lifetime of WEC
+    array_scaling_factor = econ_pvec[3]     # account for fact that OPEX does not scale linearly (very simplified)
+    n_trans = 0.945         # transmission line efficiency (from OWT estimates) **conservative** 
     m_wec = M               # mass of each WEC in array [kg]
     m_f2hb = 5704000        # mass of wavebob WEC [kg] for scaling
     MR = {body:m_wec[body]/m_f2hb for body in bodies}   # mass ratio for scaling
@@ -38,7 +43,6 @@ def run(M,P,bodies):
 
     # ideally what i would do is for each WEC after the first WEC i multiply them each by 0.5
     # and then sum them, but this has essentially the same effect
-    array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
     OPEX = sum(OPEX_ind.values())*array_scaling_factor   # array OPEX [$/yr]
 
     # calculating LCOE
