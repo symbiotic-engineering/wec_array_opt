@@ -83,7 +83,7 @@ def run(x,p):   # the big one, runs the whole thing
     P,P_indv = time_avg_power(bodies,Xi,omega)      # Power calculation
     
     # Power Transmission and Economics Module
-    LCOE,AEP = econ.run(nWEC,M,P_indv,bodies,wec_radius)
+    LCOE,AEP,rated_P = econ.run(M,P_indv,bodies)
     end_time = time.time()
     if time_data == 1:  # prints time info if switched on
         print(f'Power/LCOE time:   {end_time-start_time}')
