@@ -27,9 +27,8 @@ import modules.distances as dis
 
 class mooProblem(ElementwiseProblem):    # same problem as before, except 2 objectives
     
-    def __init__(self,p,limits,**kwargs):
-        nwec = int(p[3])
-        n_var=3*(nwec-1) + 3
+    def __init__(self,p,limits,nWEC,**kwargs):
+        n_var=3*(nWEC-1) + 3
         xl = np.zeros(n_var)                #   bounds
         xu = np.zeros(n_var)
         xl[0] = limits['r'][0]
@@ -38,7 +37,7 @@ class mooProblem(ElementwiseProblem):    # same problem as before, except 2 obje
         xu[1] = limits['L'][1]
         xl[2] = limits['d'][0]
         xu[2] = limits['d'][1]
-        for i in range(nwec-1):
+        for i in range(nWEC-1):
             xl[3+i*3] = limits['x'][0]
             xu[3+i*3] = limits['x'][1]
             xl[4+i*3] = limits['y'][0]
@@ -62,7 +61,7 @@ class mooProblem(ElementwiseProblem):    # same problem as before, except 2 obje
         out["F"] = [f1,f2]
         out["G"] = [g1]
 
-def MOCHA(p,limits,p_size,gens,n_offspring):
+def MOCHA(p,limits,nWEC,p_size,gens,n_offspring):
            #   Multi Objective Constrained Heuristic Algorithim
 
 #    client = Client()
@@ -76,7 +75,7 @@ def MOCHA(p,limits,p_size,gens,n_offspring):
    n_proccess = 24
    pool = multiprocessing.Pool(n_proccess)
    runner = StarmapParallelization(pool.starmap)
-   problem = mooProblem(p,limits,elementwise_runner=runner)
+   problem = mooProblem(p,limits,nWEC,elementwise_runner=runner)
    algorithm = NSGA2(
         pop_size=p_size,
         n_offsprings=n_offspring,
