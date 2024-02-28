@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # p = [Wave Frequency, Wave Amplitude, wave direction, number of WECs, display time stamps?]
 
     # Limits on Design variables
-    limits = {'r':[2,10], 'L':[0.1,0.5], 'x':[-500,500], 'y':[-500,500], 'd':[0,7]}
+    limits = {'r':[2,10], 'L':[0.1,0.2], 'x':[-500,500], 'y':[-500,500], 'd':[0,7]}
 
     # Opt paramaters
     p_size = 250
