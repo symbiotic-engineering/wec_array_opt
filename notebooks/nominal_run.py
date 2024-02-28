@@ -18,7 +18,11 @@ wecx = np.concatenate((basex,basex + 500))
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
 
-p = [wave_freq, wave_amp, wave_dir, N, 0]
+i = 0.07                # interest rate
+n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
+life = 25                  # lifetime of WEC
+array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
+p = [wave_freq, wave_amp, wave_dir, i,n_avail,life,array_scaling_factor, N, 0]
 x = model.pack_x(N,wecx,wecy,r,L,damp)
 wec_radius, wec_length, wecx, wecy, damp = model.unpack_x(x,N)
 print(f"WEC Radius: {wec_radius}")
