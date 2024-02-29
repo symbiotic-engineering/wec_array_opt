@@ -23,9 +23,10 @@ from SALib.sample import saltelli
 # distribution is a uniform distribution between lower and upper bounds.
 # should we do sensitivity on locations? or just wave parameters.
 parameter_problem = {
-    "num_vars": 3, #variables or parameters
-    "names": ['omega','wave_heading','wave_amplitude','interest',], 
-    "bounds": [[0.1, 3], [0, 180],[1,5],[0.5-0.15]]
+    "num_vars": 7, #variables or parameters
+    "names": ['omega','wave_heading','wave_amplitude','interest','FCR','n_avail','n_trans'], 
+    "bounds": [[0.1, 3], [0, 180],[1,5],[0.15,0.5],[10,100],[1,3],[1,4]],
+    "groups": None #maybe group wave and econ separately.
 }
 
 #similarly for design variable 
@@ -37,11 +38,12 @@ dv_problem = {
 
 #array of wecx and wecy neeeded
 # generate the input sample
-N_samples = 1000
+N_samples = 1
 Y = np.empty([N_samples])
 
 #run sampler
 param_values = saltelli.sample(parameter_problem, N_samples)
+print(param_values)
 
 #optimal locations
 N = 4
@@ -52,11 +54,11 @@ wecx = np.concatenate((basex,basex + 500))
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
  #update this with optimal locations
-x = model.pack_x(wecx,wecy,r,L,damp)
+#x = model.pack_x(wecx,wecy,r,L,damp)
 x = np.array([6.299197279076497,0.10007673575582875,5.939685563058021,49.182921347145985,7.320310446259552,5.885220747485372,35.81817865532949,-21.72754886674548,5.972333841463968,19.11948545539301,25.042376603446414,5.880815678820527])
 #run theh 'nominal' values picked by sampler 
 for i, X in enumerate(param_values):
-    p = [*X,otherecon,0]
+    p = [*X,x]
     print(f'{p} | set number {i}')
     Y[i] = model.run(x,p)[0] #one objective at a time
 
