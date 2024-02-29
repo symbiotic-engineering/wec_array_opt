@@ -21,9 +21,9 @@ if __name__ == "__main__":
 
     # Opt paramaters
     nWEC = 4
-    p_size = 2
-    gens = 1
-    n_offspring = 1
+    p_size = 250
+    gens = 100
+    n_offspring = 50
     start_time = time.time()
     X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,n_offspring)
     end_time = time.time()
