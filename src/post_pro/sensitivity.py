@@ -16,6 +16,7 @@ sys.path.insert(0,parent_folder)
 import modules.model_nWECs as model
 import modules.distances as dis
 import numpy as np
+import matplotlib.pyplot as plt
 # SAlib library for sampling and variance calculation
 from SALib.analyze import sobol
 from SALib.sample import saltelli
@@ -63,11 +64,12 @@ for i, X in enumerate(param_values):
     Y[i] = model.run(x,p)[0] #one objective at a time
 
 
-Si = sobol.analyze(parameter_problem, Y)
+Si = sobol.analyze(parameter_problem, Y,calc_second_order=True, num_resamples=100, conf_level=0.95, print_to_console=False)
 
 #first order sobol indices
 total_Si, first_Si, second_Si = Si.to_df()
 
 Si.to_df().to_csv("data/sensitivities.csv")
 
-
+Si.plot()
+plt.savefig("SI.pdf")
