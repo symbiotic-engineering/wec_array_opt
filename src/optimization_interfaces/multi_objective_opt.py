@@ -86,7 +86,7 @@ def MOCHA(p,limits,nWEC,p_size,gens,n_offspring):
     )
 
    termination = RobustTermination(
-                                    MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=gens)
+                                    MultiObjectiveSpaceTermination(tol=0.005, n_skip=5), period=gens)
 
    
    
