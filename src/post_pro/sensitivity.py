@@ -25,8 +25,8 @@ from SALib.sample import saltelli
 # should we do sensitivity on locations? or just wave parameters.
 parameter_problem = {
     "num_vars": 7, #variables or parameters
-    "names": ['omega','wave_heading','wave_amplitude','interest','FCR','n_avail','n_trans'], 
-    "bounds": [[0.1, 3], [0, 180],[1,5],[0.15,0.5],[10,100],[1,3],[1,4]],
+    "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor'], 
+    "bounds": [[0.1, 3], [0, 180],[1,5],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]],
     "groups": None #maybe group wave and econ separately.
 }
 
