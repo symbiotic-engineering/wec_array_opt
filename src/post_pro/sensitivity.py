@@ -16,6 +16,7 @@ sys.path.insert(0,parent_folder)
 import modules.model_nWECs as model
 import modules.distances as dis
 import numpy as np
+import matplotlib.pyplot as plt
 # SAlib library for sampling and variance calculation
 from SALib.analyze import sobol
 from SALib.sample import saltelli
@@ -23,9 +24,10 @@ from SALib.sample import saltelli
 # distribution is a uniform distribution between lower and upper bounds.
 # should we do sensitivity on locations? or just wave parameters.
 parameter_problem = {
-    "num_vars": 3, #variables or parameters
-    "names": ['omega','wave_heading','wave_amplitude','interest',], 
-    "bounds": [[0.1, 3], [0, 180],[1,5],[0.5-0.15]]
+    "num_vars": 7, #variables or parameters
+    "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor'], 
+    "bounds": [[0.1, 3], [0, 180],[1,5],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]],
+    "groups": None #maybe group wave and econ separately.
 }
 
 #similarly for design variable 
@@ -37,11 +39,12 @@ dv_problem = {
 
 #array of wecx and wecy neeeded
 # generate the input sample
-N_samples = 1000
+N_samples = 1
 Y = np.empty([N_samples])
 
 #run sampler
 param_values = saltelli.sample(parameter_problem, N_samples)
+print(param_values)
 
 #optimal locations
 N = 4
@@ -52,20 +55,21 @@ wecx = np.concatenate((basex,basex + 500))
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
  #update this with optimal locations
-x = model.pack_x(wecx,wecy,r,L,damp)
+#x = model.pack_x(wecx,wecy,r,L,damp)
 x = np.array([6.299197279076497,0.10007673575582875,5.939685563058021,49.182921347145985,7.320310446259552,5.885220747485372,35.81817865532949,-21.72754886674548,5.972333841463968,19.11948545539301,25.042376603446414,5.880815678820527])
 #run theh 'nominal' values picked by sampler 
 for i, X in enumerate(param_values):
-    p = [*X,otherecon,0]
+    p = [*X,x]
     print(f'{p} | set number {i}')
     Y[i] = model.run(x,p)[0] #one objective at a time
 
 
-Si = sobol.analyze(parameter_problem, Y)
+Si = sobol.analyze(parameter_problem, Y,calc_second_order=True, num_resamples=100, conf_level=0.95, print_to_console=False)
 
 #first order sobol indices
 total_Si, first_Si, second_Si = Si.to_df()
 
 Si.to_df().to_csv("data/sensitivities.csv")
 
-
+Si.plot()
+plt.savefig("SI.pdf")
