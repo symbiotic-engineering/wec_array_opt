@@ -55,7 +55,6 @@ def run(x,p):   # the big one, runs the whole thing
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    econ_params = p[3:]
     time_data = 0
     if len(p) > 7:
         time_data = p[7] # switch parameter for if you want the time info or not, useful for a nominal run
