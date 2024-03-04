@@ -26,7 +26,7 @@ from SALib.sample import saltelli
 parameter_problem = {
     "num_vars": 7, #variables or parameters
     "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor'], 
-    "bounds": [[0.1, 3], [0, 180],[1,5],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]],
+    "bounds": [[0.1, 3], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]],
     "groups": None #maybe group wave and econ separately.
 }
 
@@ -39,8 +39,8 @@ dv_problem = {
 
 #array of wecx and wecy neeeded
 # generate the input sample
-N_samples = 1
-Y = np.empty([N_samples])
+N_samples = 100
+Y = np.empty([16*N_samples])
 
 #run sampler
 param_values = saltelli.sample(parameter_problem, N_samples)
@@ -59,9 +59,12 @@ damp = 3.6e5*np.ones(wecx.shape)
 x = np.array([6.299197279076497,0.10007673575582875,5.939685563058021,49.182921347145985,7.320310446259552,5.885220747485372,35.81817865532949,-21.72754886674548,5.972333841463968,19.11948545539301,25.042376603446414,5.880815678820527])
 #run theh 'nominal' values picked by sampler 
 for i, X in enumerate(param_values):
-    p = [*X,x]
+    p = [*X]
     print(f'{p} | set number {i}')
-    Y[i] = model.run(x,p)[0] #one objective at a time
+    Q = model.run(x,p)[0] #one objective at a time
+    print('=================================')
+    print(Q)
+    Y[i] = Q 
 
 
 Si = sobol.analyze(parameter_problem, Y,calc_second_order=True, num_resamples=100, conf_level=0.95, print_to_console=False)
@@ -70,7 +73,9 @@ Si = sobol.analyze(parameter_problem, Y,calc_second_order=True, num_resamples=10
 #
 total_Si, first_Si, second_Si = Si.to_df()
 
-Si.to_df().to_csv("data/sensitivities.csv")
+total_Si.to_csv("../data/sensitivities/total.csv")
+first_Si.to_csv("../data/sensitivities/first.csv")
+second_Si.to_csv("../data/sensitivities/second.csv")
 
 Si.plot()
 plt.savefig("SI.pdf")
