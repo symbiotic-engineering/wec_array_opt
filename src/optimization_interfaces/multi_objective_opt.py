@@ -94,7 +94,7 @@ def MOCHA(p,limits,nWEC,p_size,gens,n_offspring):
    res = minimize(problem,
                algorithm,
                termination,
-               seed=1,
+               seed=2,
                save_history=False, # might be a good idea to remove
                verbose=True)
     
