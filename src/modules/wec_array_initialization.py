@@ -8,7 +8,7 @@ def get_cylinder(r,L,x,y,d):    # creates one WEC body
     # x ->  x location
     # y ->  y location
     # d ->  pto damping
-    mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L)
+    mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L, resolution=(12, 4, 15))
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
     body.keep_immersed_part()
