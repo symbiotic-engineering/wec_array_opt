@@ -14,6 +14,7 @@ csv_file_path = os.path.join(script_dir, '..', '..', 'data/paretos', 'domDesign.
 import modules.model_nWECs as model
 import modules.distances as dis
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Set-up to match Balitsky Thesis
 wave_freq = 2*np.pi/6  
@@ -29,9 +30,11 @@ x = pd.read_csv(csv_file_path, delimiter=',',header=None)
 
 # setting an index such that we get a few points along the Pareto front
 end = len(x.iloc[:,0])
-index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-
+#index_range = np.arange(0, end, int(0.1 * end), dtype=int)
+index_range = np.arange(0, end, 1, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
+q = []
+
 for index in index_range:
     row = x.iloc[index,:]           # choosing a row from the optimal design matrix
     wec_radius, wec_length, wecx, wecy, damp, N = model.unpack_x(row)   # unpacking the variables
@@ -51,4 +54,8 @@ for index in index_range:
     # i.e., P_isolated and P_array are functions of radius
     q_factor = rated_P/(P_isolated*N)
     print('q_factor',q_factor)
+    q.append(q_factor)
     print("==================================================================================")
+
+plt.plot(index_range,q)
+plt.show()
