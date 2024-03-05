@@ -17,7 +17,8 @@ with open('../data/paretos/domObjective.csv', newline='') as csvfile:
     for row in spamreader:
         f1.append(float(row[0]))
         f2.append(float(row[1]))
-
+#del(f1[-1])
+#del(f2[-1])
 utop1 = min(f1)
 utop2 = min(f2)
 nadi1 = max(f1)
