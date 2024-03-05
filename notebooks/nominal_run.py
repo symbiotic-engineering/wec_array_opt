@@ -30,6 +30,7 @@ life = 25                  # lifetime of WEC
 array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
 p = [wave_freq, wave_amp, wave_dir, i,n_avail,life,array_scaling_factor]
 x = model.pack_x(wecx,wecy,r,L,damp)
+X = np.array([2.0001, 0.10001, 5.5563025, 14.3213562, 0., 5.5563025, 7.07106781, 7.37106781, 5.5563025,  7.07106781, -7.37106781, 5.5563025])
 print(x)
 wec_radius, wec_length, wecx, wecy, damp, N = model.unpack_x(x)
 print(f"WEC Radius: {wec_radius}")
