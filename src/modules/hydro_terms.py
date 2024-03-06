@@ -1,5 +1,6 @@
 import numpy as np
 import capytaine as capy
+import matplotlib.pyplot as plt
 from capytaine.bem.airy_waves import froude_krylov_force
 from capytaine.io.xarray import assemble_dataset, hydrostatics_dataset
 from capytaine.post_pro.rao import rao
@@ -19,7 +20,7 @@ def run(bodies,beta,omega,time_data):
     end_time = time.time()
     if time_data == 1:  # prints time info if switched on
         print(f'Array set up time: {end_time-start_time}')
-
+   
     # Hydrostatics - gets hydrostatic stiffness and mass
     start_time = time.time()
     hydrostatics = {body:body.compute_hydrostatics() for body in bodies}                # solves hydrostatics problem (no waves)

@@ -13,7 +13,7 @@ N = 4
 p = [wave_freq, wave_amp, wave_dir, N, 0]
 x =np.array([5.325203438444657,0.14353262885406554,1.2530055440922019,-589.4684883771776,351.18125657271526,4.426026020185715,-674.6244906553854,-108.97963359757523,3.899335279090678,-115.35450094492194,-62.74147042703967,3.3221155388429606])
 
-wec_radius, wec_length, wecx, wecy, damp = model.unpack_x(x,N)
+wec_radius, wec_length, wecx, wecy, damp,N = model.unpack_x(x)
 print(f"WEC Radius: {wec_radius}")
 print(f"WEC Length: {wec_length}")
 print(f"X Locations: {wecx}")
