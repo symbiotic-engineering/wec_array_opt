@@ -8,6 +8,8 @@ from pymoo.termination import get_termination
 from pymoo.termination.robust import RobustTermination
 from pymoo.termination.ftol import MultiObjectiveSpaceTermination
 from pymoo.optimize import minimize
+from pymoo.core.evaluator import Evaluator
+from pymoo.core.population import Population
 
 # from dask.distributed import Client
 # from pymoo.core.problem import DaskParallelization
@@ -75,7 +77,14 @@ def MOCHA(p,limits,nWEC,p_size,gens,n_offspring):
    n_proccess = 24
    pool = multiprocessing.Pool(n_proccess)
    runner = StarmapParallelization(pool.starmap)
-   problem = mooProblem(p,limits,nWEC,elementwise_runner=runner)
+   pops = np.zeros((p_size,nWEC*3))
+   limit_problem = mooProblem(p,limits,nWEC)
+   for ii in range(len(limit_problem.xl)):
+    pops[:,ii] = limit_problem.xl[ii] + (limit_problem.xu[ii] - limit_problem.xl[ii])*np.random.random(p_size)
+   pops[0,:] =np.array([ 2.0001, 0.10001, 5.5563025, 14.3213562, 0., 5.5563025, 7.07106781, 7.37106781, 5.5563025,  7.07106781, -7.37106781, 5.5563025 ])
+   print(pops)
+   print('=======================================================================')
+   problem = mooProblem(p,limits,nWEC,elementwise_runner=runner,sampling = pops)
    algorithm = NSGA2(
         pop_size=p_size,
         n_offsprings=n_offspring,
@@ -94,7 +103,7 @@ def MOCHA(p,limits,nWEC,p_size,gens,n_offspring):
    res = minimize(problem,
                algorithm,
                termination,
-               seed=1,
+               seed=2,
                save_history=False, # might be a good idea to remove
                verbose=True)
     
