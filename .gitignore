@@ -3,3 +3,4 @@
 .DS_Store
 src/modules/__pycache__/*
 data/mesh_convergence/convergence.csv
+data/mesh_convergence/convergence.csv
