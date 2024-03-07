@@ -51,10 +51,10 @@ def get_hydro(body):
 
 
 #Latin hypercube sampling to get representative design in the design space.
-radius,length_ratio = [3,10], [5,20] # r':[2,10], 'L':[0.1,0.2] but L is diferrent here
+radius,length_ratio = [3,10], [0.5,2] # r':[2,10], 'L':[0.1,0.2] but L is diferrent here
 designs = np.array([radius, length_ratio])
 sampling = LHS(xlimits=designs)
-num = 9
+num = 6
 inputs_dim = sampling(num)
 
 df = pd.DataFrame(inputs_dim)
