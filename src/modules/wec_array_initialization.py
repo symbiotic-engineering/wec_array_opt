@@ -8,8 +8,12 @@ def get_cylinder(r,L,x,y,d):    # creates one WEC body
     # x ->  x location
     # y ->  y location
     # d ->  pto damping
-    if r>3:
+    if r>5:
         mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L,resolution=(7,35,25))
+    elif r>4:
+        mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L,resolution=(5,25,20))
+    elif r>3:
+        mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L,resolution=(3,15,15))
     else:
         mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L)
     body = capy.FloatingBody(mesh)
