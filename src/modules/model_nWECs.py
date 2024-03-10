@@ -77,9 +77,14 @@ def run(x,p):   # the big one, runs the whole thing
         print(f'Body set up time:  {end_time-start_time}')
         
     # Hydro Module
-    
-    A,B,C,F,M = hydro.run(bodies,beta,omega,time_data)
-    
+    try:
+        A,B,C,F,M = hydro.run(bodies,beta,omega,time_data)
+    except RuntimeError:
+        with open("../data/skipped.txt", "a") as file:            
+            r_str = str(wec_radius)
+            L_str = str(wec_length)
+            file.write(r_str + ", " + L_str + "\n")
+        return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
     start_time = time.time()
     Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp)   # WEC motion
