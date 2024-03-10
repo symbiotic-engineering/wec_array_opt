@@ -1,7 +1,7 @@
 import numpy as np
 # This module is used to calculate the motion and the power of the WEC
 
-def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hydro outputs
+def wec_dyn(bodies,A,B,C,F,m,omega,Amp,check_condition):    # Calculates WEC motion based on hydro outputs
     #   bodies  ->  list of wec bodies
     #   A       ->  added mass dictionary
     #   B       ->  wave damping dictionary
@@ -35,7 +35,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hyd
                 if ii != jj:'''
     
     # https://www.sciencedirect.com/science/article/pii/S0889974620305995 why we picked 500
-    if np.linalg.cond(A_mat) > 500 or np.linalg.cond(B_mat) > 500 :
+    if (np.linalg.cond(A_mat) > 500 or np.linalg.cond(B_mat) > 500) and check_condition:
         print(f'ill conditioned {np.linalg.cond(A_mat)} {np.linalg.cond(B_mat)}')
         Xi = {body:1e-5/np.linalg.cond(A_mat) for body in bodies}
         return Xi
@@ -43,7 +43,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp):    # Calculates WEC motion based on hyd
     # calculate Xi, WEC Motion, and the package result as a dictionary
     H = -(omega**2)*(A_mat+m_mat) - 1j*omega*(B_mat+d_mat) + k_mat + C_mat
     #solve it for Xi
-    Xi_vec = np.linalg.solve(H,F_vec)
+    Xi_vec = np.linalg.solve(H,F_vec)*Amp
     Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
     return Xi
 
