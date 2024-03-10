@@ -68,7 +68,7 @@ nx = list(range(10,30+1,5)) #number of circular slices(nx) ,
 inputs_panels = list(itertools.product(nr, ntheta, nx))
 print(inputs_panels)
 # model.run after pack, unpack stuff...
-omega = 1.02
+omega = 1.047
 
 def by_design(inputs,panels):
     name = f"design_{inputs[0]},{inputs[1]}"
