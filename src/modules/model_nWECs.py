@@ -80,7 +80,7 @@ def run(x,p,check_condition=True):   # the big one, runs the whole thing
     try:
         A,B,C,F,M = hydro.run(bodies,beta,omega,time_data)
     except RuntimeError:
-        with open("../data/skipped.txt", "a") as file:            
+        with open("~/wec_array_opt/data/skipped.txt", "a") as file:            
             r_str = str(wec_radius)
             L_str = str(wec_length)
             file.write(r_str + ", " + L_str + "\n")
