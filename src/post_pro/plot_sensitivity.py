@@ -7,8 +7,9 @@ import pandas as pd
 
 
 ## plotting the sensitivity convergence with samples
-df = pd.read_csv("~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")
+df = pd.read_csv("~/wec_array_opt/data/sensitivities/omega_convergence.csv")
 df = df.rename(columns={'Unnamed: 0': 'parameter'})
+df = df[df.parameter == 'omega']
 print(df.head())
 fig, ax = plt.subplots()
 
@@ -23,7 +24,7 @@ ax.set_xlabel('Samples')
 ax.set_ylabel('ST')
 ax.legend(title='Parameter')
 
-plt.title('ST vs Samples for each Parameter')
+plt.title('Convergence of total sensitivity for omega')
 
 plt.show()
 
