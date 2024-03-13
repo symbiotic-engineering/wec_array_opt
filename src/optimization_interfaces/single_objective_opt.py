@@ -21,9 +21,8 @@ from pymoo.core.problem import StarmapParallelization
 ####################################################################
 
 class LCOE_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
-    def __init__(self,p,limits,**kwargs):            #   P is parameters, limits is the bounds on each var type
-        nwec = int(p[3])
-        n_var=3*(nwec-1) + 3
+    def __init__(self,p,limits,nWEC,**kwargs):            #   P is parameters, limits is the bounds on each var type
+        n_var=3*(nWEC-1) + 3
         xl = np.zeros(n_var)                #   bounds
         xu = np.zeros(n_var)
         xl[0] = limits['r'][0]
@@ -32,7 +31,7 @@ class LCOE_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
         xu[1] = limits['L'][1]
         xl[2] = limits['d'][0]
         xu[2] = limits['d'][1]
-        for i in range(nwec-1):
+        for i in range(nWEC-1):
             xl[3+i*3] = limits['x'][0]
             xu[3+i*3] = limits['x'][1]
             xl[4+i*3] = limits['y'][0]
@@ -54,13 +53,12 @@ class LCOE_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
         out["F"] = [f1]
         out["G"] = [g1]
 
-def LCOE_GA(p,limits,p_size,gens,n_offspring):  
+def LCOE_GA(p,limits,nWEC,p_size,gens,n_offspring):  
      #   GA method search algorithm
-    problem = P_sooProblem(p,limits)
-    n_proccess = 20
+    n_proccess = 4
     pool = multiprocessing.Pool(n_proccess)
     runner = StarmapParallelization(pool.starmap)
-    problem = LCOE_sooProblem(p,limits,elementwise_runner=runner)
+    problem = LCOE_sooProblem(p,limits,nWEC,elementwise_runner=runner)
     algorithm = NSGA2(
         pop_size=p_size,
         n_offsprings=n_offspring,
@@ -80,13 +78,11 @@ def LCOE_GA(p,limits,p_size,gens,n_offspring):
                algorithm,
                termination,
                seed=1,
-               save_history=True,
                verbose=True)
-
+    
     X = res.X
     F = res.F
-    H = res.history
-    return X,F,H
+    return X,F
 
 class AEP_sooProblem(ElementwiseProblem):       #   Sinlge Objective Problem
     def __init__(self,p,limits):            #   P is parameters, limits is the bounds on each var type
