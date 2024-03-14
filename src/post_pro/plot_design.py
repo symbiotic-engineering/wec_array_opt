@@ -9,7 +9,11 @@ import modules.model_nWECs as model
 import numpy as np
 import pyplotutilities.colors as colors
 # Design to plot
-x =np.array([2.0001,0.10397832340819038,5.116361100746302,14.037805604014116,-0.09705234903568005,4.968466082392987,7.021016122797809,7.2600758951825295,4.967302814506727,7.07106781,-7.303507084576809,5.301374065918128])
+x =np.array([  5.,          0.8,         5.5563025,   0.,         30.,          5.5563025,
+   0.,         60.,          5.5563025,   0.,        -30.,          5.5563025,
+   0.,        -60.,          5.5563025, -30.,         15.,          5.5563025,
+ -30.,         45.,          5.5563025, -30.,        -15.,          5.5563025,
+ -30.,        -45.,          5.5563025])
 
 # get x and y
 r, L, x, y, d, N = model.unpack_x(x)
@@ -26,6 +30,6 @@ ax.set_xlabel('X location [m]')
 ax.set_ylabel('Y location [m]')
 #ax.set_xlim([-125,175])
 #ax.set_ylim([-75,225])
-#ax.axis('equal')
+ax.axis('equal')
 #plt.show()
-plt.savefig('design.png')
+plt.savefig('post_pro/plots/balitsky_layout.pdf')

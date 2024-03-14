@@ -1,5 +1,5 @@
 # calculating the q-factor for pareto optimal designs
-# CURRENTLY USING DUMMY NUMBERS
+
 import numpy as np
 import sys
 import os
@@ -10,7 +10,7 @@ sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
 script_dir = os.path.dirname(__file__)
 
 ###### CHANGE 'domDesign' TO THE CORRECT CSV FILE !!!!!!!!!!!!!!!!!!!!!!!!
-csv_file_path = os.path.join(script_dir, '..', '..', 'data/paretos', 'domDesign.csv')
+csv_file_path =  '../data/paretos/FINALdomDesign.csv'
 import modules.model_nWECs as model
 import modules.distances as dis
 import pandas as pd
@@ -27,7 +27,7 @@ array_scaling_factor = 0.65     # account for fact that OPEX does not scale line
 
 p = [wave_freq, wave_amp, wave_dir, i,n_avail,life,array_scaling_factor]
 x = pd.read_csv(csv_file_path, delimiter=',',header=None)
-
+print(x.head())
 # setting an index such that we get a few points along the Pareto front
 end = len(x.iloc[:,0])
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
@@ -57,5 +57,20 @@ for index in index_range:
     q.append(q_factor)
     print("==================================================================================")
 
-plt.plot(index_range,q)
-plt.show()
+#instead off plotting with index range..let's plot with LCOE and Distance
+
+df = pd.read_csv("../data/paretos/FINALdomObjective.csv")   
+lcoe = df.iloc[:,0]
+dist = df.iloc[:,1]
+
+#contour plot for q-factor
+print(q)
+np.savetxt('qfactor.out', np.asarray(q),delimiter=',')
+lcoe_grid, dist_grid = np.meshgrid(lcoe, dist)
+plt.contourf(lcoe_grid, dist_grid, q.reshape(lcoe_grid.shape))
+plt.colorbar(label='q')  
+plt.xlabel('lcoe')
+plt.ylabel('dist')
+plt.title('Variation of q-factor across pareto optimal design objectives')
+plt.savefig('post_pro/plots/q_factor.pdf')
+np.savetxt('qfactor.out', np.asarray(q),delimiter=',')

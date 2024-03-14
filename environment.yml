@@ -1,4 +1,4 @@
-name: cows
+name: tuna
 channels:
   - defaults
 dependencies:
@@ -53,4 +53,4 @@ dependencies:
       - tzdata==2024.1
       - wrapt==1.16.0
       - xarray==2024.2.0
-prefix: /home/nate/miniconda3/envs/cows
+prefix: /home/nate/miniconda3/envs/tuna
