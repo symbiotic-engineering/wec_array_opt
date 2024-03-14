@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 # SAlib library for sampling and variance calculation
 from SALib.analyze import sobol
 from SALib.sample import saltelli
+from joblib import Parallel, delayed
 # Specify the model inputs and their bounds. The default probability
 # distribution is a uniform distribution between lower and upper bounds.
 # should we do sensitivity on locations? or just wave parameters.
@@ -41,7 +42,8 @@ csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'FINALdomDesign.cs
 df = pd.read_csv(csv_file_path, delimiter=',',header=None)
 print(df)
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-index_range = [15,203,232,241,248]
+index_range = [232]
+    #15,203,232,241,248]
 #np.arange(0, df.shape[0], 20, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
 some_pareto_designs = []
@@ -51,23 +53,26 @@ for index in index_range:
 print("sampled pareto design equidistant")
 print(len(some_pareto_designs))
 #run theh 'nominal' values picked by sampler 
-def run_sensitivity_sampler(optimal_dv,N_samples,write_out = False):
+def run_sensitivity_sampler(optimal_dv, N_samples, write_out=False):
     param_values = saltelli.sample(parameter_problem, N_samples)
     print(param_values.shape)
-    Y = np.empty([16*N_samples]) #for each combination.
-    for i, X in enumerate(param_values):
+    
+    def run_model(X):
         p = [*X]
-        Y[i] = model.run(optimal_dv,p,check_condition=False)[0] #one objective at a time
+        return model.run(optimal_dv, p, check_condition=False)[0]
+# use all available processors.
+    Y = Parallel(n_jobs=-1)(delayed(run_model)(X) for X in param_values)
+    Y = np.asarray(Y)
+    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples=10, conf_level=0.95, print_to_console=False)
     
-    Si = sobol.analyze(parameter_problem, Y,calc_second_order=True, num_resamples=10, conf_level=0.95, print_to_console=False)
-    
-    total_Si,first_Si,second_Si = Si.to_df()
+    total_Si, first_Si, second_Si = Si.to_df()
    
     if write_out:
         total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/{optimal_dv}_total.csv")
         first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/{optimal_dv}_first.csv")
         second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/{optimal_dv}_second.csv")
-        print(f"wrote out the sensiitivity for design {i}..use plot_sensitivity.py to plot")
+        print(f"Wrote out the sensitivity for design {optimal_dv}. Use plot_sensitivity.py to plot.")
+    
     return total_Si
 #========================SOBOL SENSITIVITY===================
 #running sensitivity for one design to get idea number of samples to run.
