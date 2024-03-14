@@ -13,6 +13,7 @@ from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 #import pyplotutilities.colors as colors
 from capytaine.bem.airy_waves import airy_waves_potential, airy_waves_velocity, froude_krylov_force
 from capytaine.bem.airy_waves import airy_waves_free_surface_elevation
+import pyplotutilities.colors as colors
 # import meshmagick
 # import meshmagick.mesh as mm
 # from packaging import version
@@ -25,9 +26,8 @@ import modules.wec_array_initialization as array_init
 import modules.model_nWECs as model
 omega,beta = 1.047, 0
 # optimal parameters and design variables
-x_optimal = np.array([9.99992319805342,0.10000141275443655,6.29665416651116,35.2553311085241,-47.23848856922516,
-                      6.3156648226237255,35.13284647724411,43.61632163749309,6.353502594175767,70.94483065027279,
-                      -0.4074111725847307,6.451506386779879])
+x_optimal = np.array([7.089770943037026,0.10018196802517941,6.013598745987185,38.501043212421806,-21.87440132483185,6.174075414506226,20.631291891771983,28.961968334661073,5.8409902746005,51.62369582022605,11.110419714948497,5.84223502229738
+])
 wec_radius,wec_length,wecx,wecy,damp,N = model.unpack_x(x_optimal)
 
 # Defining original body
@@ -55,10 +55,10 @@ diff_result = solver.solve(diff_prob,keep_details=(True))
 
 # post-processing
 # creating mesh of free surface
-x_1 = -200
-x_2 = 200
-y_1 = -200
-y_2 = 200
+x_1 = -100
+x_2 = 100
+y_1 = -100
+y_2 = 100
 nx = 100
 ny = 100
 grid = np.meshgrid(np.linspace(x_1, x_2, nx), np.linspace(y_1, y_2, ny))
@@ -70,17 +70,20 @@ total = radiation + diffraction + incoming_fse
 kd = np.abs(total)/np.abs(incoming_fse)                              # distrubance coeff
 
 # plots
+fig, ax = plt.subplots()
 Z = np.real(kd)
 X = grid[0]
 Y = grid[1]
-plt.pcolormesh(X, Y, Z)
+colors.get_colors()
+cmap = LinearSegmentedColormap.from_list("newcolors", colors = [colors.blue, colors.green, colors.yellow], N = 256)
+
+plt.pcolormesh(X, Y, Z, cmap=cmap,vmin=0,vmax=2.5)
 plt.xlabel("x")
 plt.ylabel("y")
 colorbar = plt.colorbar()
-colorbar.set_label('Total Wave Field')
+colorbar.set_label(r'Disturbace Coefficient, $k_d$')
 plt.scatter(wecx,wecy, marker = 'o', color = 'black', s = 100)  # Add markers
-plt.arrow(-125, 100, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
-plt.text(-100, 85, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
+plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
+plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
 plt.tight_layout()
-plt.savefig('field.pdf')
-plt.show()
+plt.savefig('post_pro/plots/field.pdf')
