@@ -5,4 +5,4 @@ src/modules/__pycache__/*
 data/mesh_convergence/convergence.csv
 data/mesh_convergence/convergence.csv
 data/sensitivities/total_SI_convergece.csv
-*__init__.py
+*/__init__.py
