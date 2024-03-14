@@ -19,7 +19,7 @@ p_shape = [1,2,3] #{1:grid, 2:line,3:random}
 
 # Opt paramaters
 p_size = 250
-gens = 40 #periods
+gens = 20 #periods
 n_offspring = 50
 
 for _ in p_shape:
