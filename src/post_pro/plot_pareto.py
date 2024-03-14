@@ -45,5 +45,5 @@ plt.xlabel('LCOE [$/kWh]')
 plt.ylabel('Maximum Array Dimension [m]')
 plt.title("")
 
-plt.savefig('pareto.png')
+plt.savefig('plots/pareto.pdf')
 
