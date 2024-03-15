@@ -28,6 +28,7 @@ plt.rcParams.update({'font.size': 16})  # Increase font size
 colors.get_colors()
 fig = plt.figure(1, facecolor='none')
 ax = plt.axes()
+plt.subplots_adjust(bottom=0.16)
 ax.set_facecolor('none')
 # Increase marker size and linewidth for better visibility
 plt.scatter(f1, f2, marker='o', c=colors.blue, label='Pareto Front', s=100, edgecolors='k', zorder=2)
