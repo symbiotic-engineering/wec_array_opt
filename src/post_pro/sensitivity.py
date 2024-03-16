@@ -63,7 +63,7 @@ def run_sensitivity_sampler(optimal_dv, N_samples, write_out=False):
 # use all available processors.
     Y = Parallel(n_jobs=-1)(delayed(run_model)(X) for X in param_values)
     Y = np.asarray(Y)
-    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples=10, conf_level=0.95, print_to_console=False)
+    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples=100, conf_level=0.95, print_to_console=False)
     
     total_Si, first_Si, second_Si = Si.to_df()
    
@@ -94,5 +94,5 @@ def run_parallel_convergence_sensitivity(N_values):
 #after sobol convergence, N = 1000 is picked --
 #====================SENSITIVITY STUDY ======================
 for pareto_design in some_pareto_designs:
-    total_df = run_sensitivity_sampler(pareto_design, 1024,write_out = True)
+    total_df = run_sensitivity_sampler(pareto_design, 50000,write_out = True)
     total_df.to_csv(f"~/wec_array_opt/data/sensitivities/{pareto_design}_total_SI_convergece.csv")

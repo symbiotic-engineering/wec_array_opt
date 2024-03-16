@@ -37,14 +37,28 @@ print(df.head())
 df_final = df[['mean_damp','r','L','area','LCOE','distance']]
 #interpret relationship between two objectives.#
 model = ols('LCOE ~ mean_damp + r + L + area',data = df).fit()
+coefficients = model.params
 print(model.summary())
 
+latex_output = model.summary().as_latex()
+
+with open('regression_output.tex', 'w') as f:
+    f.write(latex_output)
+
+regression_equation = f"y = {coefficients['Intercept']:.4f}"
+for i, coef in enumerate(coefficients[1:], start=1):
+    regression_equation += f" + ({coef:.4f}) * X_{i}"
+
+# Convert the equation to LaTeX format
+latex_equation = "$" + regression_equation + "$"
+
+print(latex_equation)
 #sns.regplot(x="LCOE", y="distance", data=df);
-sns.pairplot(df_final,kind="reg", plot_kws={'line_kws':{'color':'red'}})
-plt.xlabel('X Label', fontsize=16, fontweight='bold')
-plt.ylabel('Y Label', fontsize=16, fontweight='bold')
-#OR add correlation plot?
-plt.savefig('Interactions.pdf')
+# sns.pairplot(df_final,kind="reg", plot_kws={'line_kws':{'color':'red'}})
+# plt.xlabel('X Label', fontsize=16, fontweight='bold')
+# plt.ylabel('Y Label', fontsize=16, fontweight='bold')
+# #OR add correlation plot?
+# plt.savefig('Interactions.pdf')
 
 # corr_matrix = df.corr()
 
