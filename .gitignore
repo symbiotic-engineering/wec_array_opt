@@ -5,32 +5,5 @@ src/modules/__pycache__/*
 data/mesh_convergence/convergence.csv
 data/mesh_convergence/convergence.csv
 data/sensitivities/total_SI_convergece.csv
-data/sensitivities/first_3.6.csv
-data/sensitivities/second_3.6.csv
-data/sensitivities/total_3.6.csv
-data/sensitivities/0      3.629951
-1      0.100001
-2      5.223716
-3     17.742484
-4    -16.034721
-5      5.502716
-6     14.803371
-7     12.277340
-8      5.836918
-9     28.595590
-10     0.051935
-11     5.499162
-Name: 232, dtype: float64_total_SI_convergece.csv
-data/sensitivities/0      3.629951
-1      0.100001
-2      5.223716
-3     17.742484
-4    -16.034721
-5      5.502716
-6     14.803371
-7     12.277340
-8      5.836918
-9     28.595590
-10     0.051935
-11     5.499162
-Name: 232, dtype: float64_total_SI_convergece.csv
+src/__init__.py
+src/modules/__init__.py

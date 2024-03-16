@@ -10,6 +10,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+#import pyplotutilities.colors as colors
+from capytaine.bem.airy_waves import airy_waves_potential, airy_waves_velocity, froude_krylov_force
+from capytaine.bem.airy_waves import airy_waves_free_surface_elevation
 import pyplotutilities.colors as colors
 # import meshmagick
 # import meshmagick.mesh as mm
@@ -21,19 +24,11 @@ import pyplotutilities.colors as colors
 
 import modules.wec_array_initialization as array_init
 import modules.model_nWECs as model
-omega,beta = 1.047,4
+omega,beta = 1.047, 0
 # optimal parameters and design variables
-x_optimal = [6.767664116492389,0.4243817925685805,4.962817393662435,
-     4383.557774446713,3262.042695725369,5.849118310687371,
-     2091.3675973652084,1414.4902698961453,5.581359744648973,
-     2630.7904280993725,3179.2915385711467,5.121721884659403,
-     3775.6529704577347,-1196.9202158721198,5.462649133124424,
-     3172.1144504953268,2199.662816700332,5.965260673173294,
-     2314.2339229104405,3250.631815744075,6.381085936367207,
-     1966.9174630851205,4196.5570376803325,6.635042324919791,
-     717.7310259942562,3123.575922711865,5.479512515985848,
-     3129.6216120449008,2870.869403460795,4.671790513634331]
-wec_radius,wec_length,wecx,wecy,damp = model.unpack_x(x_optimal,10)
+x_optimal = np.array([7.089770943037026,0.10018196802517941,6.013598745987185,38.501043212421806,-21.87440132483185,6.174075414506226,20.631291891771983,28.961968334661073,5.8409902746005,51.62369582022605,11.110419714948497,5.84223502229738
+])
+wec_radius,wec_length,wecx,wecy,damp,N = model.unpack_x(x_optimal)
 
 # Defining original body
 # all sphere
@@ -54,55 +49,41 @@ if len(bodies) > 1:
 else:
  dofs = {body:'Heave' for body in bodies} 
 rad_prob = [capy.RadiationProblem(body=wec_array,omega=omega,radiating_dof=dofs[body]) for body in bodies]
-rad_result = solver.solve_all(rad_prob,keep_details=(True),n_jobs=10)
+rad_result = solver.solve_all(rad_prob,keep_details=(True))
 diff_prob = capy.DiffractionProblem(body=wec_array, wave_direction=beta, omega=omega)
 diff_result = solver.solve(diff_prob,keep_details=(True))
 
-ngridx = 250
-ngridy = 250
-
-free_surface = cpt.FreeSurface(x_range=(-5000, 5000), y_range=(-5000, 5000), nx=ngridx, ny=ngridy)
-diffraction_elevation_at_faces = solver.get_free_surface_elevation(diff_result, free_surface)
-radiation_elevation_at_faces = np.array(sum([solver.get_free_surface_elevation(rad_res, free_surface) for rad_res in rad_result])) #-1j*omega *
-
-# radiation_elevations_per_dof = {res.radiating_dof: (-1j*omega)*solver.get_free_surface_elevation(res, fs) for res in radiation_results} 
-# radiation_elevation = sum(rao.sel(omega=omega, radiating_dof=dof).data * radiation_elevations_per_dof[dof] for dof in body.dofs) 
-
-
-# add incoming waves
-h_i = free_surface.incoming_waves(diff_result)
-h_t = (diffraction_elevation_at_faces + h_i + radiation_elevation_at_faces)
-
-
-
-kd = h_t/h_i
-
-
+# post-processing
+# creating mesh of free surface
+x_1 = -100
+x_2 = 100
+y_1 = -100
+y_2 = 100
+nx = 100
+ny = 100
+grid = np.meshgrid(np.linspace(x_1, x_2, nx), np.linspace(y_1, y_2, ny))
+diffraction = solver.compute_free_surface_elevation(grid, diff_result)
+radiation = sum(solver.compute_free_surface_elevation(grid, rad) for rad in rad_result)
+incoming_fse = airy_waves_free_surface_elevation(grid, diff_result)
+rad_dif = radiation + diffraction
+total = radiation + diffraction + incoming_fse
+kd = np.abs(total)/np.abs(incoming_fse)                              # distrubance coeff
 
 # plots
-colors.get_colors()
-x = np.linspace(-5000,5000,ngridx)
-y = np.linspace(-5000,5000,ngridy)
-X, Y = np.meshgrid(x, y)
-Z = kd.reshape(ngridx,ngridy)
 fig, ax = plt.subplots()
-#top = 
-#bottom = cm.get_cmap('Reds', 128)
-#newcolors = np.vstack((top(np.linspace(0, 1, 128)),
-#                       bottom(np.linspace(0, 1, 128))))
-cmap = LinearSegmentedColormap.from_list("newcolors", colors = [colors.blue, 'w', colors.red], N = 256)
-CS = ax.contourf(X,Y,Z,cmap=cmap,vmin=0.5,vmax=1.5)
+Z = np.real(kd)
+X = grid[0]
+Y = grid[1]
+colors.get_colors()
+cmap = LinearSegmentedColormap.from_list("newcolors", colors = [colors.blue, colors.green, colors.yellow], N = 256)
 
-plt.plot(wecx,wecy, linestyle = 'none', marker = 'o', color = colors.black, markersize = 10)
-cbar = fig.colorbar(CS)
-cbar.set_label(label='$K_{D}$',fontsize=17)
-cbar.ax.tick_params(labelsize=12)
-# ax.set_title('Ratio of Perturbed Free Surface to Incident Wave Elevation')
-ax.set_xlabel('x [m]',fontsize=17)
-ax.set_ylabel('y [m]',fontsize=17)
-ax.annotate(r'$\beta$ = $\pi$/2',xy=(-100,-150),xytext=(-185,-150),fontsize=15)
-plt.arrow(-175,-175,50,0,length_includes_head=True,head_width=10,head_length=10)
-
-plt.savefig("field.pdf")
-
-# plt.savefig('SSSSS.pdf')
+plt.pcolormesh(X, Y, Z, cmap=cmap,vmin=0,vmax=2.5)
+plt.xlabel("x")
+plt.ylabel("y")
+colorbar = plt.colorbar()
+colorbar.set_label(r'Disturbace Coefficient, $k_d$')
+plt.scatter(wecx,wecy, marker = 'o', color = 'black', s = 100)  # Add markers
+plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
+plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
+plt.tight_layout()
+plt.savefig('post_pro/plots/field.pdf')
