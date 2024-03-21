@@ -31,9 +31,9 @@ import pandas as pd
 # plt.savefig("plots/sobol_convergence.pdf")
 
 
-path_total_Si = "../data/sensitivities/total_sens_calcs.csv"
-path_first_Si = "../data/sensitivities/first_sens_calcs.csv"
-path_second_Si = "../data/sensitivities/second_sens_cals.csv" 
+path_total_Si = "../data/sensitivities/225_total.csv"
+path_first_Si = "../data/sensitivities/225_first.csv"
+path_second_Si = "../data/sensitivities/225_second.csv" 
 
 #for total
 total_Si = pd.read_csv(path_total_Si)
@@ -46,16 +46,13 @@ plt.ylabel('ST')
 plt.xticks(rotation=45, ha='right') 
 plt.grid(True)
 plt.tight_layout() 
-plt.show()
-plt.savefig("post_pro/plots/SI_total.pdf")
+plt.savefig("post_pro/plots/SI_total_225.pdf")
 plt.close('all')
 
 #similarly for first order 
 first_Si = pd.read_csv(path_first_Si)
 plt.figure(figsize=(8, 6))
-
-#plt.errorbar(first_Si['Unnamed: 0'], first_Si['S1'], yerr=first_Si['S1_conf'], fmt='o', color='blue')
-
+plt.errorbar(first_Si['Unnamed: 0'], first_Si['S1'], yerr=first_Si['S1_conf'], fmt='o', color='blue')
 plt.title('Scatter Plot of first order sensitivity with Confidence Bars')
 #plt.yscale('log')
 plt.xlabel('parameters')
@@ -64,7 +61,7 @@ plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.tight_layout() 
 plt.show()
-plt.savefig("post_pro/plots/SI_first.pdf")
+plt.savefig("post_pro/plots/SI_first_225.pdf")
 plt.close('all')
 
 
@@ -84,6 +81,6 @@ plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.tight_layout() 
 plt.show()
-plt.savefig("post_pro/plots/SI_second.pdf")
+plt.savefig("post_pro/plots/SI_second_225.pdf")
 plt.close('all')
 
