@@ -28,8 +28,8 @@ from joblib import Parallel, delayed
 parameter_problem = {
     "num_vars": 7, #variables or parameters
     "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor'], 
-    "bounds": [[0.1, 3.1], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]],
-    "groups": None #maybe group wave and econ separately.
+    "bounds": [[0.1, 3.1], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]]
+  #  "groups": ['wave','wave','wave','wave','economics','wave','economics','economics'] #maybe group wave and econ separately.
 }
 
 
@@ -40,10 +40,10 @@ print(os.getcwd())
  #update this with optimal locations
 csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'FINALdomDesign.csv')
 df = pd.read_csv(csv_file_path, delimiter=',',header=None)
-print(df)
+
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-index_range = [232]
-    #15,203,232,241,248]
+index_range = [225]
+    #15,203,232,241,248]..#232
 #np.arange(0, df.shape[0], 20, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
 some_pareto_designs = []
@@ -68,10 +68,10 @@ def run_sensitivity_sampler(optimal_dv, N_samples, write_out=False):
     total_Si, first_Si, second_Si = Si.to_df()
    
     if write_out:
-        total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/{optimal_dv}_total.csv")
-        first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/{optimal_dv}_first.csv")
-        second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/{optimal_dv}_second.csv")
-        print(f"Wrote out the sensitivity for design {optimal_dv}. Use plot_sensitivity.py to plot.")
+        total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/225_total.csv")
+        first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/225_first.csv")
+        second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/225_second.csv")
+        print(f"Wrote out the sensitivity for design. Use plot_sensitivity.py to plot.")
     
     return total_Si
 #========================SOBOL SENSITIVITY===================
@@ -94,5 +94,5 @@ def run_parallel_convergence_sensitivity(N_values):
 #after sobol convergence, N = 1000 is picked --
 #====================SENSITIVITY STUDY ======================
 for pareto_design in some_pareto_designs:
-    total_df = run_sensitivity_sampler(pareto_design, 50000,write_out = True)
-    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/{pareto_design}_total_SI_convergece.csv")
+    total_df = run_sensitivity_sampler(pareto_design, 7000,write_out = True)
+    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/225_total_SI_convergece.csv")

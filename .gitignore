@@ -4,7 +4,7 @@
 src/modules/__pycache__/*
 data/mesh_convergence/convergence.csv
 data/mesh_convergence/convergence.csv
-data/sensitivities/total_SI_convergece.csv
+data/sensitivities/*
 src/__init__.py
 src/modules/__init__.py
 data/sensitivities/0      3.629951
@@ -26,3 +26,5 @@ data/sensitivities/second_3.6.csv
 data/sensitivities/second_sensitivity.csv
 data/sensitivities/total_3.6.csv
 data/sensitivities/total_sensitivity.csv
+data/sensitivities/200_first.csv
+src/post_pro/plots/*
