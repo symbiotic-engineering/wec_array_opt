@@ -42,7 +42,7 @@ csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'FINALdomDesign.cs
 df = pd.read_csv(csv_file_path, delimiter=',',header=None)
 
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-index_range = [225]
+index_range = [200]
     #15,203,232,241,248]..#232
 #np.arange(0, df.shape[0], 20, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
@@ -63,14 +63,14 @@ def run_sensitivity_sampler(optimal_dv, N_samples, write_out=False):
 # use all available processors.
     Y = Parallel(n_jobs=-1)(delayed(run_model)(X) for X in param_values)
     Y = np.asarray(Y)
-    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples=100, conf_level=0.95, print_to_console=False)
+    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples=4000, conf_level=0.95, print_to_console=False)
     
     total_Si, first_Si, second_Si = Si.to_df()
    
     if write_out:
-        total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/225_total.csv")
-        first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/225_first.csv")
-        second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/225_second.csv")
+        total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/200_total.csv")
+        first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/200_first.csv")
+        second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/200_second.csv")
         print(f"Wrote out the sensitivity for design. Use plot_sensitivity.py to plot.")
     
     return total_Si
@@ -94,5 +94,5 @@ def run_parallel_convergence_sensitivity(N_values):
 #after sobol convergence, N = 1000 is picked --
 #====================SENSITIVITY STUDY ======================
 for pareto_design in some_pareto_designs:
-    total_df = run_sensitivity_sampler(pareto_design, 7000,write_out = True)
-    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/225_total_SI_convergece.csv")
+    total_df = run_sensitivity_sampler(pareto_design, 10000,write_out = True)
+    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/200_total_SI_convergece.csv")
