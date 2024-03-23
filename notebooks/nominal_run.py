@@ -15,7 +15,6 @@ r = 5
 L = 2*2
 basex = np.array([0,0,0,0,0,-30,-30,-30,-30]) # used to make wecx easier
 wecx = np.concatenate((basex,basex + 500))
-wecx = basex
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
 
