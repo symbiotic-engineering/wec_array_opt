@@ -1,4 +1,15 @@
-### WEC Array Optimization using no PWA, just BEM
+### Multi-Objective Multidisciplinary Optimization of Wave Energy Converter Array Layout and Controls
+
+\begin{highlights}
+- Multidisciplinary formulation to optimize the configuration of the array of Wave energy converter is presented.
+- Optimal controls for each Wave energy converter within the layout.
+- Regression model for interpretation of the trade-off between objectives for optimal designs prompts additional analysis.
+- Post optimality global sensitivity analysis of a set of optimal designs reveals that the expected variance in optimal LCOE (minimized) is very sensitive to the variance in wave frequency $(\omega)$ and interest rate.
+\end{highlights}
+
+
+
+#### PROJECT STRUCTURE
 ├── __init__.py
 ├─data <- All relevant data.
 ├──── experiments <- Single objective experiments.
@@ -37,4 +48,5 @@
 ├─ environment.yml <- All the pacakges.
 
 
-Note: Run code from src folder.
+
+<mark> Note: Run code from src folder.</mark>
