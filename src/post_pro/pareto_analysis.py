@@ -30,13 +30,20 @@ df['radius'] = np.maximum.reduce([df['radius1'], df['radius2'], df['radius3']])
 # Calculate the area of the circle inscribing the points
 df['area'] = np.pi * df['radius']**2
 
-print(df.head())
 
 #Minimal LCOE and average damping plot
 
 df_final = df[['mean_damp','r','L','area','LCOE','distance']]
+correlation_matrix = df_final.corr().abs()
+print(correlation_matrix)
+# Create a mask for removing highly correlated features
+mask = correlation_matrix.mask(correlation_matrix <= 0.95, 1)
+print(mask.columns.tolist())
+# Drop the columns with high correlation
+df_final = df_final.drop(columns=mask.columns.tolist(), axis=1)
+print(df_final.columns)
 #interpret relationship between two objectives.#
-model = ols('LCOE ~ mean_damp + r + L + area',data = df).fit()
+model = ols('LCOE ~ distance',data = df).fit(intercept = False)
 coefficients = model.params
 print(model.summary())
 

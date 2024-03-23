@@ -31,15 +31,20 @@ ax = plt.axes()
 plt.subplots_adjust(bottom=0.16)
 ax.set_facecolor('none')
 # Increase marker size and linewidth for better visibility
-plt.scatter(f1, f2, marker='o', c=colors.blue, label='Pareto Front', s=100, edgecolors='k', zorder=2)
-plt.scatter(utop1, utop2, marker='*', color=colors.green, label='Utopia Point', s=200, edgecolors='k', zorder=3)
+plt.scatter(f1, f2, marker='o', c=colors.blue, label='Pareto Front', s=90, edgecolors='k', zorder=2)
+plt.scatter(utop1, utop2, marker='*', color=colors.green, label='Utopia Point', s=150, edgecolors='k', zorder=3)
+
+#suggested point ---200 index 0.2198151431189803,57.5921023195911
+plt.scatter(0.2198151431189803, 57.5921023195911, marker='D', c='red', label='Recommended Design', s=90, edgecolors='k', zorder=4)
+
+
 #plt.text(utop1, utop2, 'Utopia', color='tab:green', fontsize=16)
-plt.scatter(nadi1, nadi2, marker='x', color=colors.red, label='Nadir Point', s=200, linewidth=2, zorder=3)
+#plt.scatter(nadi1, nadi2, marker='x', color=colors.red, label='Nadir Point', s=200, linewidth=2, zorder=3)
 #plt.text(nadi1 - 0.015, nadi2 - 4, 'Nadir', color='tab:red', fontsize=16)
 
 # Interpolate a curve between the points
 
-plt.plot(f1, f2, color=colors.blue, label='Interpolated Curve', linewidth=2, zorder=1)
+plt.plot(f1, f2, color=colors.blue, label='Interpolated Front', linewidth=2, zorder=1)
 
 plt.legend()
 plt.xlabel('LCOE [$/kWh]')
