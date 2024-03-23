@@ -1,3 +1,4 @@
+\```markdown
 ### Multi-Objective Multidisciplinary Optimization of Wave Energy Converter Array Layout and Controls
 
 \begin{highlights}
@@ -8,8 +9,8 @@
 \end{highlights}
 
 
-
 #### PROJECT STRUCTURE
+\```
 ├── __init__.py
 ├─data <- All relevant data.
 ├──── experiments <- Single objective experiments.
