@@ -1,1 +1,40 @@
-#WEC Array Optimization using no PWA, just BEM
+### WEC Array Optimization using no PWA, just BEM
+├── __init__.py
+├─data <- All relevant data.
+├──── experiments <- Single objective experiments.
+│   ├─ grid.pdf,line.pdf,random.pdf
+│──── mesh_convergence <- data from mesh convergence
+│   ├─ convergence.csv
+│──── paretos <- dominant designs objective and dvs
+│   ├─ FinaldomDesign.csv , FinaldomObjective
+│──── sensitivities
+│   ├─ total.csv,first.csv,second.csv
+├── notebooks <- nominal run --not required
+├── src <- Main source code for MDO
+│   ├── modules <- Each python file is a disciplinary modules.
+│     ├── distances.py <- To find maximum and minimum spacing in array.
+│     ├── dynamics_contrrols.py <- Calculate motion and power of the WEC.
+│     ├── econ.py <- Calculates Capex / Opex and LCOE model.
+│     ├── hydro_terms.py <- Get all the hydro terms. (A,B,F,C,M)
+│     ├── model_nWECs.py <- Utility functions to call the multidisciplinary analysis (MDA)
+│     ├── wec_array_initialization.py <- Utility function to get array of bodies and their neighbors if required.
+│   ├── optimization_interfaces
+│     ├── multi_objective_opt.py <- Calls the optimizer for multi Objectives [J1,J2]
+│     ├── single_objective_opt.py <- Calls the optimizer for single Objective at a time.
+│   ├── post_pro
+│     ├── plots
+│       ├── *.pdf <- contains all the figures.
+│     ├── mesh_convergence.py <- Performs mesh convergence for the design 
+│     ├── pareto_analysis.py <- Ad-hoc regression model for pareto design analysis
+│     ├── plot_design.py <- plots any designs
+│     ├── plot_pareto.py <- plots the pareto designs. 
+│     ├── plot_qfactor.py <- plots the qfactor for pareto designs
+│     ├── plot_sensitivity.py <- plots the sensitivity of the design to the parameters
+│     ├── q.py <- Calculates thee q-factor
+│     ├── sensitivity.py <- Calculates the sensitivity upto second order.
+│     ├── wave_field.py <- plots the wave_field for optimal designs 
+├─ requirement.txt <- All the pacakges.
+├─ environment.yml <- All the pacakges.
+
+
+Note: Run code from src folder.
