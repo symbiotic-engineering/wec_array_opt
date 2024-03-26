@@ -1,7 +1,7 @@
 from numpy import pi as pi
 import numpy as np
 import modules.wec_array_initialization as array_init
-import modules.hydrodynamics as hydro
+import modules.hydro_terms as hydro
 import modules.econ as econ
 from modules.dynamics_controls import wec_dyn 
 from modules.dynamics_controls import time_avg_power 

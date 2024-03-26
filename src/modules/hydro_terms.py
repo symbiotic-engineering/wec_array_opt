@@ -2,8 +2,6 @@ import numpy as np
 import capytaine as capy
 import matplotlib.pyplot as plt
 from capytaine.bem.airy_waves import froude_krylov_force
-from capytaine.io.xarray import assemble_dataset, hydrostatics_dataset
-from capytaine.post_pro.rao import rao
 import time
 # This module is used to get all the hydro terms. Forces, added mass, damping, hydrostatic stiffness, and mass
 
