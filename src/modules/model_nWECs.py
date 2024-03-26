@@ -43,7 +43,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
     return x
 
 
-def run(x,p,check_condition=True):   # the big one, runs the whole thing
+def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs the whole thing
     #   x   ->  design vector
     #   p   ->  parameter vector
     start_time = time.time()
@@ -84,6 +84,8 @@ def run(x,p,check_condition=True):   # the big one, runs the whole thing
             r_str = str(wec_radius)
             L_str = str(wec_length)
             file.write(r_str + ", " + L_str + "\n")
+        if sensitivity_run
+            return None,0,{body:0 for body in bodies}
         return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
     start_time = time.time()
