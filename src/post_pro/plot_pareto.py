@@ -12,7 +12,7 @@ from scipy.interpolate import make_interp_spline
 import pyplotutilities.colors as colors
 
 f1, f2 = [], []
-with open('../data/paretos/FINALdomObjective.csv', newline='') as csvfile:
+with open('../data/paretos/objectives.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
@@ -35,7 +35,7 @@ plt.scatter(f1, f2, marker='o', c=colors.blue, label='Pareto Front', s=90, edgec
 plt.scatter(utop1, utop2, marker='*', color=colors.green, label='Utopia Point', s=150, edgecolors='k', zorder=3)
 
 #suggested point ---200 index 0.2198151431189803,57.5921023195911
-plt.scatter(0.2198151431189803, 57.5921023195911, marker='D', c='red', label='Recommended Design', s=90, edgecolors='k', zorder=4)
+plt.scatter(0.2198151431189803, 57.5921023195911, marker='D', c=colors.red, label='Recommended Design', s=90, edgecolors='k', zorder=4)
 
 
 #plt.text(utop1, utop2, 'Utopia', color='tab:green', fontsize=16)
