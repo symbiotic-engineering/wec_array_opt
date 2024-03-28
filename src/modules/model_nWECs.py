@@ -43,7 +43,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
     return x
 
 
-def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs the whole thing
+def run(x,p,reactive = False.check_condition=True,sensitivity_run=False):   # the big one, runs the whole thing
     #   x   ->  design vector
     #   p   ->  parameter vector
     start_time = time.time()
@@ -89,7 +89,7 @@ def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs t
         return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
     start_time = time.time()
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,check_condition)   # WEC motion
+    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,reactive,check_condition)   # WEC motion
     P,P_indv = time_avg_power(bodies,Xi,omega)      # Power calculation
     
     # Power Transmission and Economics Module

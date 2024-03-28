@@ -1,7 +1,7 @@
 import numpy as np
 # This module is used to calculate the motion and the power of the WEC
 
-def wec_dyn(bodies,A,B,C,F,m,omega,Amp,check_condition):    # Calculates WEC motion based on hydro outputs
+def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculates WEC motion based on hydro outputs
     #   bodies  ->  list of wec bodies
     #   A       ->  added mass dictionary
     #   B       ->  wave damping dictionary
@@ -10,8 +10,10 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,check_condition):    # Calculates WEC mot
     #   m       ->  mass/inertia dictionary
     #   omega   ->  wave frequency
     #   Amp     ->  wave amplitude
-    k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies}    #   Calculate Optimal PTO stiffness
-    
+    if reactive
+        k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies}    #   Calculate Optimal PTO stiffness
+    else
+        k = {body:0 for body in bodies}    #   PTO stiffness is 0 bc no reactive control
     # this section puts everything into vectors and matricies
     F_vec = np.array([F[body][0] for body in bodies])
     m_vec = np.array([m[body][0][0] for body in bodies])
@@ -24,11 +26,6 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,check_condition):    # Calculates WEC mot
     C_mat = np.diag(C_vec.transpose())
     A_mat = np.array([[A[effected][effecting][0] for effecting in bodies] for effected in bodies])
     B_mat = np.array([[B[effected][effecting][0] for effecting in bodies] for effected in bodies])
-    
-    '''if len(bodies) > 1:
-        for ii in range(len(bodies)):
-            for jj in range(len(bodies)):
-                if ii != jj:'''
     
     # https://www.sciencedirect.com/science/article/pii/S0889974620305995 why we picked 500
     if (np.linalg.cond(A_mat) > 500 or np.linalg.cond(B_mat) > 500) and check_condition:
