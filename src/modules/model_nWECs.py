@@ -84,7 +84,7 @@ def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs t
             r_str = str(wec_radius)
             L_str = str(wec_length)
             file.write(r_str + ", " + L_str + "\n")
-        if sensitivity_run
+        if sensitivity_run:
             return None,0,{body:0 for body in bodies}
         return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
