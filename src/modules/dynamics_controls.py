@@ -11,9 +11,6 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,check_condition):    # Calculates WEC mot
     #   omega   ->  wave frequency
     #   Amp     ->  wave amplitude
     k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies}    #   Calculate Optimal PTO stiffness
-    for body in bodies:
-        if k[body] > 1e7:                       # if k is too big
-            k[body] = k[body]/abs(k[body])*1e7  #   Cap it, but let it keep it's sign
     
     # this section puts everything into vectors and matricies
     F_vec = np.array([F[body][0] for body in bodies])
