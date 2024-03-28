@@ -43,7 +43,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
     return x
 
 
-def run(x,p,reactive = False.check_condition=True,sensitivity_run=False):   # the big one, runs the whole thing
+def run(x,p,reactive=False,check_condition=True,sensitivity_run=False):   # the big one, runs the whole thing
     #   x   ->  design vector
     #   p   ->  parameter vector
     start_time = time.time()
