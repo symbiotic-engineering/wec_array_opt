@@ -7,7 +7,7 @@ from modules.dynamics_controls import wec_dyn
 from modules.dynamics_controls import time_avg_power 
 import time
 # x = [radius all wecs, lenght all wecs, x location, y location, pto damping, ... other wecs x y and d]
-# p = [Wave Frequency, Wave Amplitude, wave direction, interest rate, wave availability, life span, array scaling factor, time info switch, layout preset(optional)]
+# p = [Wave Frequency, Wave Amplitude, wave direction, interest rate, wave availability, life span, array scaling factor]
 
 def unpack_x(x):       # this function unpacks the design vector into the design variables
     #   x       ->  design vector
