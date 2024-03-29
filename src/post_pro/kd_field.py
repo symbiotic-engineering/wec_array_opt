@@ -4,7 +4,6 @@ parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(parent_folder)
 grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
-import capytaine as cpt
 import capytaine as capy
 import numpy as np
 import matplotlib.pyplot as plt

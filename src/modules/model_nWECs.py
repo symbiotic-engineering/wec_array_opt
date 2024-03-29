@@ -14,7 +14,7 @@ def unpack_x(x):       # this function unpacks the design vector into the design
     #   nWEC    ->  number of WECs
     nWEC = int(len(x)/3)
     wec_radius = x[0]
-    wec_length = x[1]*x[0]  # this variable is important to note, is is the length ratio, not the actual length
+    wec_length = x[1]*x[0]  # this variable is important to note, it is the length ratio, not the actual length
     wecx = np.zeros(nWEC)
     wecy = np.zeros(nWEC)
     damp = np.zeros(nWEC)
@@ -61,7 +61,7 @@ def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs t
 
     # Create Bodies
     if len(p)>8:        
-        shape = p[8]    # these are our predefined geometries, parameter 6 is an optional way to use them
+        shape = p[8]    # these are our predefined geometries, parameter 8 is an optional way to use them
         if shape == 1:
             bodies = array_init.grid(wec_radius,wec_length,damp)
         elif shape == 2:
