@@ -2,18 +2,13 @@ import optimization_interfaces.multi_objective_opt as opt
 import numpy as np
 import csv
 import time
+from parameters.read_params import read_params
 # Define Parameters
 
 if __name__ == "__main__":
     N = 4
-    omega = 1.047
-    beta = 0
-    A = 1
-    i = 0.07                # interest rate
-    n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
-    life_time = 25          # lifetime of WEC
-    array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
-    p = np.array([omega,A,beta,i,n_avail,life_time,array_scaling_factor])
+    p = read_params()
+    print(p)
     # p = [Wave Frequency, Wave Amplitude, wave direction, interest, availability, lifetime, array scaling factor]
 
     # Limits on Design variables

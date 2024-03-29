@@ -9,13 +9,13 @@ def distances(x):
         weci = np.array([wecx[i], wecy[i]])
         for j in range(i+1,nwec):
             wecj = np.array([wecx[j], wecy[j]])
-            d.append(np.linalg.norm(weci,wecj))      # Compute the distance between wec i and wec j
+            d.append(np.linalg.norm(weci-wecj))      # Compute the distance between wec i and wec j
     return d,nwec
 
 def min_d(x,p):                 # Minimum spacing
     #   x   ->  design vector
     #   p   ->  parameters
-    d,nwec = distances(x,p)     # compute ditances
+    d,nwec = distances(x)       # compute ditances
     if nwec == 1:
         return np.inf           # If there are no other wecs, it is not very close to anyone
     mind = min(d)               # What is the shortest distance?
@@ -24,7 +24,7 @@ def min_d(x,p):                 # Minimum spacing
 def max_d(x,p):                 # Maximum spaceing
     #   x   ->  design vector
     #   p   ->  parameters
-    d,nwec = distances(x,p)     # compute distances
+    d,nwec = distances(x)       # compute distances
     if nwec == 1:
         return 0                # if there are no other wecs, the array is small
     maxd = max(d)               # What is the longest distance?
