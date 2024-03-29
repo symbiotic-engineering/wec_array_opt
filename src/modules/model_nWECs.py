@@ -14,7 +14,7 @@ def unpack_x(x):       # this function unpacks the design vector into the design
     #   nWEC    ->  number of WECs
     nWEC = int(len(x)/3)
     wec_radius = x[0]
-    wec_length = x[1]*x[0]  # this variable is important to note, is is the length ratio, not the actual length
+    wec_length = x[1]*x[0]  # this variable is important to note, it is the length ratio, not the actual length
     wecx = np.zeros(nWEC)
     wecy = np.zeros(nWEC)
     damp = np.zeros(nWEC)
