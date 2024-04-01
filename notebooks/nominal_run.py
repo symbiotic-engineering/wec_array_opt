@@ -8,7 +8,8 @@ import numpy as np
 from parameters.read_params import read_params
 
 # Set-up to match Balitsky Thesis
-    
+p = read_params(pfile = 'src/parameters/parameters.csv')
+p[0] = (2*np.pi)/6  # slightly different freqeuncy
 N = 18
 r = 5
 L = 2*2
@@ -17,8 +18,7 @@ wecx = np.concatenate((basex,basex + 500))
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
 
-p = read_params(pfile = 'src/parameters/parameters.csv')
-p[0] = (2*np.pi)/6
+
 x = model.pack_x(wecx,wecy,r,L,damp)
 
 print(x)
