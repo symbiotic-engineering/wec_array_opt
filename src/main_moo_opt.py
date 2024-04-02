@@ -20,7 +20,7 @@ if __name__ == "__main__":
     gens = 1
     n_offspring = 1
     start_time = time.time()
-    X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,n_offspring)
+    X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,n_offspring,space=5)
     end_time = time.time()
     print(f'Optimization took {end_time-start_time} s')
 
@@ -29,8 +29,8 @@ if __name__ == "__main__":
     Xtable = {F[i,0]:X[i,:] for i in range(len(F[:,0]))}
     F1 = np.sort(F[:,0])
     F2 = [F2table[i] for i in F1]
-    print(F2)
-    print(Xtable)
+    #print(F2)
+    #print(Xtable)
 
     X = [Xtable[i] for i in F1]
     #with open(f'../data/paretos/FINALdomObjective.csv', 'w', newline='') as csvfile:

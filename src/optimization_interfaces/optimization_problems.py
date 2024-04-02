@@ -28,7 +28,7 @@ def calc_LCOE(x,p):
     return f[0]
 
 class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
-    def __init__(self,p,limits,nWEC,**kwargs):      #   P is parameters, limits is the bounds on each var type
+    def __init__(self,p,limits,nWEC,min_space=5,**kwargs):    #   P is parameters, limits is the bounds on each var type
         xl,xu = limit_def(limits,nWEC)
         super().__init__(n_var=len(xl),
                          n_obj=1,
@@ -36,15 +36,16 @@ class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
                          xl=xl,
                          xu=xu)
         self.parameters = p
+        self.space = min_space
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
         f1 = calc_LCOE(x,p)                         #   Calculate LCOE
-        g1 = constraint(x,p)                        #   Check constraint on minimum distance
+        g1 = constraint(x,p,min_space=self.space)   #   Check constraint on minimum distance
         out["F"] = [f1]
         out["G"] = [g1]
 
 class mooProblem(ElementwiseProblem):               #   same problem as before, except 2 objectives
-    def __init__(self,p,limits,nWEC,**kwargs):      #   P is parameters, limits is the bounds on each var type
+    def __init__(self,p,limits,nWEC,min_space=5,**kwargs):      #   P is parameters, limits is the bounds on each var type
         xl,xu = limit_def(limits,nWEC)
         super().__init__(n_var=len(xl),
                          n_obj=2,
@@ -52,10 +53,11 @@ class mooProblem(ElementwiseProblem):               #   same problem as before, 
                          xl=xl,
                          xu=xu)
         self.parameters = p
+        self.space = min_space
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
         f1 = calc_LCOE(x,p)                         #   Calculate LCOE
         f2 = dis.max_d(x,p)                         #   2nd objective is minimizing the maximum spacing between wecs
-        g1 = constraint(x,p)                        #   Check constraint on minimum distance
+        g1 = constraint(x,p,min_space=self.space)   #   Check constraint on minimum distance
         out["F"] = [f1,f2]
         out["G"] = [g1]

@@ -20,7 +20,7 @@ for _ in p_shape:
 	p = np.append(read_params(),[0,_])
 
 	start_time = time.time()
-	X,F= opt.GA(p,limits,nWEC,p_size,gens,n_offspring)
+	X,F= opt.GA(p,limits,nWEC,p_size,gens,n_offspring,space=5)
 	end_time = time.time()
 	print(f'Optimization took {end_time-start_time} s')
 
