@@ -1,7 +1,7 @@
 import numpy as np
 # This module is used to calculate the motion and the power of the WEC
 
-def get_abc_symbolic(f, m, b, k, w, r_b, r_k):
+def get_abc_symbolic(f, m, b, k, w, r_b, r_k):  # from MDOCean
     t2 = b**2
     t3 = k**2
     t4 = m**2
@@ -59,7 +59,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculate
     #solve it for Xi
     Xi_vec = Amp*np.linalg.solve(H,F_vec).ravel()
 
-    # Force Saturation
+    # Force Saturation - from MDOcean
     F_max = 1e12    # max PTO force
     F_ptos = np.sqrt((d_vec*omega)**2 + k_vec**2)*Xi_vec   # PTO force
     r = np.array([min([F_max/F_pto, 1]) for F_pto in F_ptos])   # r  

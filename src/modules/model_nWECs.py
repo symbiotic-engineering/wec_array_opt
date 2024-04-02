@@ -42,7 +42,6 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
         x[5+3*ii] = np.log10(d[ii+1])
     return x
 
-
 def run(x,p,reactive=False,check_condition=True,sensitivity_run=False,time_data=False,shape=None):   # the big one, runs the whole thing
     #   x               ->  design vector
     #   p               ->  parameter vector
