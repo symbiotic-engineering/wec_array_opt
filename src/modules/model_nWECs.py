@@ -67,7 +67,7 @@ def run(x,p,reactive=False,check_condition=True,sensitivity_run=False,time_data=
     elif shape == 2: bodies = array_init.line(wec_radius,wec_length,damp)           # use line layout
     elif shape == 3: bodies = array_init.random(wec_radius,wec_length,damp)         # use "random" layout
     else: print('Not a real shape')
-    
+
     end_time = time.time()
     if time_data:  # prints time info if switched on
         print(f'Body set up time:  {end_time-start_time}')

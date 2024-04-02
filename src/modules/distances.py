@@ -2,29 +2,30 @@ import modules.model_nWECs as model
 import numpy as np
 # This module is used to find the maximum and minimum spacing in the WEC array
 
-def min_d(x,p):                     # Minimum spacing
-    #   x   ->  design vector
-    #   p   ->  parameters
+def distances(x):
     wec_radius, wec_length, wecx, wecy, damp, nwec = model.unpack_x(x)
-    if nwec == 1:
-        return np.inf               # If there are no other wecs, it is not very close to anyone
-    
     d = []
     for i in range(nwec):
+        weci = np.array([wecx[i], wecy[i]])
         for j in range(i+1,nwec):
-            d.append(((wecx[i]-wecx[j])**2 + (wecy[i]-wecy[j])**2)**(1/2))      # Compute the distance between wec i and wec j
+            wecj = np.array([wecx[j], wecy[j]])
+            d.append(np.linalg.norm(weci-wecj))      # Compute the distance between wec i and wec j
+    return d,nwec
+
+def min_d(x,p):                 # Minimum spacing
+    #   x   ->  design vector
+    #   p   ->  parameters
+    d,nwec = distances(x)       # compute ditances
+    if nwec == 1:
+        return np.inf           # If there are no other wecs, it is not very close to anyone
     mind = min(d)               # What is the shortest distance?
     return (mind)
 
-def max_d(x,p):                     # Maximum spaceing
+def max_d(x,p):                 # Maximum spaceing
     #   x   ->  design vector
     #   p   ->  parameters
-    wec_radius, wec_length, wecx, wecy, damp, nwec = model.unpack_x(x)
+    d,nwec = distances(x)       # compute distances
     if nwec == 1:
-        return 0                    # if there are no other wecs, the array is small
-    d = []
-    for i in range(nwec):
-        for j in range(i+1,nwec):
-            d.append(((wecx[i]-wecx[j])**2 + (wecy[i]-wecy[j])**2)**(1/2))      # Compute the distance between wec i and wec j
+        return 0                # if there are no other wecs, the array is small
     maxd = max(d)               # What is the longest distance?
     return (maxd)
