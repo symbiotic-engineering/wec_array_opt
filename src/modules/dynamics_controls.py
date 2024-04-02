@@ -31,10 +31,8 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculate
     #   m       ->  mass/inertia dictionary
     #   omega   ->  wave frequency
     #   Amp     ->  wave amplitude
-    if reactive:
-        k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies}    #   Calculate Optimal PTO stiffness
-    else:
-        k = {body:[[0]] for body in bodies}    #   PTO stiffness is 0 bc no reactive control
+    if reactive: k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies} #   Calculate Optimal PTO stiffness
+    else: k = {body:[[0]] for body in bodies}   #   PTO stiffness is 0 bc no reactive control
     # this section puts everything into vectors and matricies
     F_vec = np.array([F[body][0] for body in bodies])
     m_vec = np.array([m[body][0][0] for body in bodies])
