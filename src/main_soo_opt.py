@@ -1,4 +1,4 @@
-import optimization_interfaces.single_objective_opt as opt
+import optimization_interfaces.optimization_solvers as opt
 import numpy as np
 import csv 
 import time
@@ -12,19 +12,19 @@ N = 4
 p_shape = [1,2,3] #{1:grid, 2:line,3:random}
 
 # Opt paramaters
-p_size = 250
-gens = 20 #periods
-n_offspring = 50
+p_size = 5
+gens = 2 #periods
+n_offspring = 1
 
 for _ in p_shape:
-	p = np.array([read_params(),_])
+	p = np.append(read_params(),[0,_])
 
 	start_time = time.time()
-	X,F= opt.LCOE_GA(p,limits,nWEC,p_size,gens,n_offspring)
+	X,F= opt.GA(p,limits,nWEC,p_size,gens,n_offspring)
 	end_time = time.time()
 	print(f'Optimization took {end_time-start_time} s')
 
 	# save design
-	with open(f'../data/experiments/interaction_{_}', 'w', newline='') as csvfile:
-		writer = csv.writer(csvfile, delimiter=',')
-		writer.writerow([X,F])
+	#with open(f'../data/experiments/interaction_{_}', 'w', newline='') as csvfile:
+	#	writer = csv.writer(csvfile, delimiter=',')
+	#	writer.writerow([X,F])

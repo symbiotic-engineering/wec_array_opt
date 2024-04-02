@@ -1,4 +1,4 @@
-import optimization_interfaces.multi_objective_opt as opt
+import optimization_interfaces.optimization_solvers as opt
 import numpy as np
 import csv
 import time
@@ -16,9 +16,9 @@ if __name__ == "__main__":
 
     # Opt paramaters
     nWEC = 4
-    p_size = 250
-    gens = 100
-    n_offspring = 50
+    p_size = 10
+    gens = 1
+    n_offspring = 1
     start_time = time.time()
     X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,n_offspring)
     end_time = time.time()
@@ -33,12 +33,12 @@ if __name__ == "__main__":
     print(Xtable)
 
     X = [Xtable[i] for i in F1]
-    with open(f'../data/paretos/FINALdomObjective.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',')
-        for i in range(len(F)):
-            writer.writerow([F1[i],F2[i]]) # LCOE, max spacing
+    #with open(f'../data/paretos/FINALdomObjective.csv', 'w', newline='') as csvfile:
+    #    writer = csv.writer(csvfile, delimiter=',')
+    #    for i in range(len(F)):
+    #        writer.writerow([F1[i],F2[i]]) # LCOE, max spacing
 
-    with open(f'../data/paretos/FINALdomDesign.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',')
-        for i in range(len(X)):
-            writer.writerow(X[i])
+    #with open(f'../data/paretos/FINALdomDesign.csv', 'w', newline='') as csvfile:
+    #    writer = csv.writer(csvfile, delimiter=',')
+    #    for i in range(len(X)):
+    #        writer.writerow(X[i])
