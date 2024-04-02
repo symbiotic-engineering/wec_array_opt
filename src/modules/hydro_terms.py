@@ -16,7 +16,7 @@ def run(bodies,beta = 0,omega = 1.02,time_data = 0):
     for ii in range(len(bodies)-1):
         wec_array+=bodies[ii+1]
     end_time = time.time()
-    if time_data == 1:  # prints time info if switched on
+    if time_data:  # prints time info if switched on
         print(f'Array set up time: {end_time-start_time}')
    
     # Hydrostatics - gets hydrostatic stiffness and mass
@@ -25,7 +25,7 @@ def run(bodies,beta = 0,omega = 1.02,time_data = 0):
     C = {body:np.array(hydrostatics[body]["hydrostatic_stiffness"]) for body in bodies} # hydrostatic stiffness
     M = {body:np.array(hydrostatics[body]["inertia_matrix"]) for body in bodies}        # mass
     end_time = time.time()
-    if time_data == 1:  # prints time info if switched on
+    if time_data:  # prints time info if switched on
         print(f'Hydrostatics time: {end_time-start_time}')
 
     # Solve radiation problems, and diffraction problem
@@ -60,6 +60,6 @@ def run(bodies,beta = 0,omega = 1.02,time_data = 0):
     FK_F =  {body:np.array(dataset['Froude_Krylov_force'].sel(influenced_dof = dofs[body])) for body in bodies} # froude-krylov force
     F = {body:diff_F[body] + FK_F[body] for body in bodies} # total force
     end_time = time.time()
-    if time_data == 1:  # prints time info if switched on - where the bulk of time is spent
+    if time_data:  # prints time info if switched on - where the bulk of time is spent
         print(f'Hydro terms time:  {end_time-start_time}')
     return A,B,C,F,M

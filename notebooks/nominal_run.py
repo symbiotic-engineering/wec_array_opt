@@ -15,9 +15,9 @@ r = 5
 L = 2*2
 basex = np.array([0,0,0,0,0,-30,-30,-30,-30]) # used to make wecx easier
 wecx = np.concatenate((basex,basex + 500))
+wecx=basex
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
-
 
 x = model.pack_x(wecx,wecy,r,L,damp)
 
@@ -30,7 +30,7 @@ print(f"Y Locations: {wecy}")
 
 print("==================================================================================")
 
-LCOE,AEP,rated_P = model.run(x,p)
+LCOE,AEP,rated_P = model.run(x,p,time_data=True)
 print("==================================================================================")
 print(f'The LCOE is {LCOE} $/kWh')
 print(f'The AEP is {AEP} kWh')
