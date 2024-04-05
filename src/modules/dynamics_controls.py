@@ -47,7 +47,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,F_max=np.inf,check_condition=Tru
     if reactive:
         resistance_sat,reactance_sat,d_sat = force_sat.saturate(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec)
         Xi_vec = system_response(F_vec,omega,inertia,resistance_sat,reactance_sat)
-
+        print('saturateing')
         # update the pto damping in the body
         for ii in range(len(bodies)): bodies[ii].PTOdamp = d_sat[ii]
         Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
