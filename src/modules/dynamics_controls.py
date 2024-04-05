@@ -6,7 +6,7 @@ def system_response(F,omega,A,B,C):
     H = -(omega**2)*A + -1j*omega*B + C
     return np.linalg.solve(H,F).ravel()
 
-def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculates WEC motion based on hydro outputs
+def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,F_max=np.inf,check_condition=True):    # Calculates WEC motion based on hydro outputs
     #   bodies  ->  list of wec bodies
     #   A       ->  added mass dictionary
     #   B       ->  wave damping dictionary
@@ -44,13 +44,13 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculate
     # calculate Xi, WEC Motion
     Xi_vec = system_response(F_vec,omega,inertia,resistance,reactance)
     # check force saturation
-    F_max = 1e5
-    resistance_sat,reactance_sat,d_sat = force_sat.saturate(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec)
-    Xi_vec = system_response(F_vec,omega,inertia,resistance_sat,reactance_sat)
+    if reactive:
+        resistance_sat,reactance_sat,d_sat = force_sat.saturate(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec)
+        Xi_vec = system_response(F_vec,omega,inertia,resistance_sat,reactance_sat)
 
-    # update the pto damping in the body
-    for ii in range(len(bodies)): bodies[ii].PTOdamp = d_sat[ii]
-    Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
+        # update the pto damping in the body
+        for ii in range(len(bodies)): bodies[ii].PTOdamp = d_sat[ii]
+        Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
     return Xi
 
 def time_avg_power(bodies,Xi,omega):    # Calculates power

@@ -42,7 +42,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
         x[5+3*ii] = np.log10(d[ii+1])
     return x
 
-def run(x,p,reactive=False,check_condition=True,sensitivity_run=False,time_data=False,shape=None):   # the big one, runs the whole thing
+def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=False,shape=None):   # the big one, runs the whole thing
     #   x               ->  design vector
     #   p               ->  parameter vector
     #   reactive        ->  boolean to set if reactive (true) or resistive (false) control is used
@@ -59,6 +59,7 @@ def run(x,p,reactive=False,check_condition=True,sensitivity_run=False,time_data=
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
+    F_max = p[7]
 
     # Create Bodies     
     if shape == None: bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp) # use design vector
@@ -84,7 +85,7 @@ def run(x,p,reactive=False,check_condition=True,sensitivity_run=False,time_data=
         return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
     start_time = time.time()
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,reactive,check_condition)   # WEC motion
+    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,reactive,F_max,check_condition)   # WEC motion
     P,P_indv = time_avg_power(bodies,Xi,omega)      # Power calculation
     
     # Power Transmission and Economics Module
