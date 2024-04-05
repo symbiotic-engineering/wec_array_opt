@@ -1,26 +1,10 @@
 import numpy as np
+import modules.force_saturation_interface as force_sat
 # This module is used to calculate the motion and the power of the WEC
 
-def get_abc_symbolic(f, m, b, k, w, r_b, r_k):  # from MDOCean
-    t2 = b**2
-    t3 = k**2
-    t4 = m**2
-    t5 = r_b**2
-    t6 = r_k**2
-    t7 = w**2
-    t8 = t7**2
-    t9 = t3 * t5
-    t12 = t2 * t6 * t7
-    t13 = k * m * r_k * t5 * t7 * 2.0
-    t10 = r_k * t9 * 2.0
-    t11 = -t9
-    t14 = r_b * t12 * 2.0
-    t15 = -t12
-    a_q = t11 + t15 + 1.0 / f**2 * t5 * t6 * (t3 + t2 * t7 + t4 * t8 - k * m * t7 * 2.0)
-    b_q = t9 * 2.0 - t10 + t12 * 2.0 + t13 - t14
-    c_q = t10 + t11 - t13 + t14 + t15 + t6 * t11 + t5 * t15 - t4 * t5 * t6 * t8 + k * m * t5 * t6 * t7 * 2.0
-    return a_q, b_q, c_q
-
+def system_response(F,omega,A,B,C):
+    H = -(omega**2)*A + -1j*omega*B + C
+    return np.linalg.solve(H,F).ravel()
 
 def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculates WEC motion based on hydro outputs
     #   bodies  ->  list of wec bodies
@@ -34,7 +18,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculate
     if reactive: k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies} #   Calculate Optimal PTO stiffness
     else: k = {body:[[0]] for body in bodies}   #   PTO stiffness is 0 bc no reactive control
     # this section puts everything into vectors and matricies
-    F_vec = np.array([F[body][0] for body in bodies])
+    F_vec = np.array([F[body][0] for body in bodies])*Amp
     m_vec = np.array([m[body][0][0] for body in bodies])
     k_vec = np.array([k[body][0][0] for body in bodies])
     d_vec = np.array([body.PTOdamp for body in bodies])
@@ -52,18 +36,20 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,check_condition):    # Calculate
         Xi = {body:1e-5/np.linalg.cond(A_mat) for body in bodies}
         return Xi
 
-    # calculate Xi, WEC Motion, and the package result as a dictionary
-    H = -(omega**2)*(A_mat+m_mat) - 1j*omega*(B_mat+d_mat) + k_mat + C_mat
-    #solve it for Xi
-    Xi_vec = Amp*np.linalg.solve(H,F_vec).ravel()
+    # calculate system inertia, resistance, and reactance
+    inertia = m_mat+A_mat       # inertia is sum of mass and added mass
+    resistance = B_mat+d_mat    # resistance is sum of wave induced damping and PTO damping
+    reactance = C_mat+k_mat     # reactance is sum of hydrostatic stiffness and PTO stiffness (if reactive control is used)
 
-    # Force Saturation - from MDOcean
-    F_max = 1e12    # max PTO force
-    F_ptos = np.sqrt((d_vec*omega)**2 + k_vec**2)*Xi_vec   # PTO force
-    r = np.array([min([F_max/F_pto, 1]) for F_pto in F_ptos])   # r  
-    alpha = 2/np.pi * (1/r * np.arcsin(r) + np.sqrt(1 - r**2))  # alpha multiplier
-    F_sat = alpha*r # not sure what this is
-    print(F_sat)
+    # calculate Xi, WEC Motion
+    Xi_vec = system_response(F_vec,omega,inertia,resistance,reactance)
+    # check force saturation
+    F_max = 1e5
+    resistance_sat,reactance_sat,d_sat = force_sat.saturate(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec)
+    Xi_vec = system_response(F_vec,omega,inertia,resistance_sat,reactance_sat)
+
+    # update the pto damping in the body
+    for ii in range(len(bodies)): bodies[ii].PTOdamp = d_sat[ii]
     Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
     return Xi
 

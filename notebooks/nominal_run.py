@@ -30,7 +30,7 @@ print(f"Y Locations: {wecy}")
 
 print("==================================================================================")
 
-LCOE,AEP,rated_P = model.run(x,p,time_data=True)
+LCOE,AEP,rated_P = model.run(x,p,time_data=True,reactive=True)
 print("==================================================================================")
 print(f'The LCOE is {LCOE} $/kWh')
 print(f'The AEP is {AEP} kWh')
