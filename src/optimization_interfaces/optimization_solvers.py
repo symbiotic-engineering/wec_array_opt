@@ -33,11 +33,11 @@ def create_intial_pop(p_size,problem,nWEC,pop_file):
         initial_pop[ii] = selected_pop[ii]
     return initial_pop
 
-def create_pat(opt_problem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=5,pop_file=None):
+def create_pat(opt_problem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=5,shape=None,pop_file=None):
     # builds the problem, algoritm, and termination criteria  
     pool = multiprocessing.Pool(n_proccess) 
     runner = StarmapParallelization(pool.starmap) 
-    problem = opt_problem(p,limits,nWEC,min_space=space,elementwise_runner=runner)
+    problem = opt_problem(p,limits,nWEC,shape=shape,min_space=space,elementwise_runner=runner)
     
     if pop_file==None: sampling = FloatRandomSampling()
     else: sampling = create_intial_pop(p_size,problem,nWEC,pop_file)
@@ -53,10 +53,10 @@ def create_pat(opt_problem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_p
     termination = RobustTermination(MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=gens)
     return problem,algorithm,termination
     
-def GA(p,limits,nWEC,p_size,gens,n_offspring,space=5,n_proccess=4,xo_prob=0.9,xo_eta=15,mutant_eta=20):  
+def GA(p,limits,nWEC,p_size,gens,n_offspring,space=5,shape=None,n_proccess=4,xo_prob=0.9,xo_eta=15,mutant_eta=20):  
     #   Single Objective GA method search algorithm
     
-    problem,algorithm,termination = create_pat(opt_probs.LCOE_sooProblem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=space)
+    problem,algorithm,termination = create_pat(opt_probs.LCOE_sooProblem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=space,shape=shape)
 
     res = minimize(problem,algorithm,termination,seed=2,verbose=True)
     X = res.X

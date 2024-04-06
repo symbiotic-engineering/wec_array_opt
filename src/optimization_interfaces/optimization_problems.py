@@ -23,12 +23,12 @@ def limit_def(limits,nWEC):
     return xl,xu
 def constraint(x,p,min_space=5):
     return min_space*x[0] - dis.min_d(x,p)
-def calc_LCOE(x,p):
-    f = model.run(x,p)                              #   Run the model
+def calc_LCOE(x,p,shape=None):
+    f = model.run(x,p,shape=shape)                              #   Run the model
     return f[0]
 
 class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
-    def __init__(self,p,limits,nWEC,min_space=5,**kwargs):    #   P is parameters, limits is the bounds on each var type
+    def __init__(self,p,limits,nWEC,min_space=5,shape=None,**kwargs):    #   P is parameters, limits is the bounds on each var type
         xl,xu = limit_def(limits,nWEC)
         super().__init__(n_var=len(xl),
                          n_obj=1,
@@ -37,15 +37,16 @@ class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
                          xu=xu)
         self.parameters = p
         self.space = min_space
+        self.shape = shape
     def _evaluate(self, x, out, *args, **kwargs):
         p = self.parameters
-        f1 = calc_LCOE(x,p)                         #   Calculate LCOE
+        f1 = calc_LCOE(x,p,self.shape)              #   Calculate LCOE
         g1 = constraint(x,p,min_space=self.space)   #   Check constraint on minimum distance
         out["F"] = [f1]
         out["G"] = [g1]
 
 class mooProblem(ElementwiseProblem):               #   same problem as before, except 2 objectives
-    def __init__(self,p,limits,nWEC,min_space=5,**kwargs):      #   P is parameters, limits is the bounds on each var type
+    def __init__(self,p,limits,nWEC,min_space=5,shape=None,**kwargs):      #   P is parameters, limits is the bounds on each var type
         xl,xu = limit_def(limits,nWEC)
         super().__init__(n_var=len(xl),
                          n_obj=2,

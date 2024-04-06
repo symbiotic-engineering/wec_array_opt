@@ -7,7 +7,7 @@ from modules.dynamics_controls import wec_dyn
 from modules.dynamics_controls import time_avg_power 
 import time
 # x = [radius all wecs, lenght all wecs, x location, y location, pto damping, ... other wecs x y and d]
-# p = [Wave Frequency, Wave Amplitude, wave direction, interest rate, wave availability, life span, array scaling factor, time info switch, layout preset(optional)]
+# p = [Wave Frequency, Wave Amplitude, wave direction, interest rate, wave availability, life span, array scaling factor]
 
 def unpack_x(x):       # this function unpacks the design vector into the design variables
     #   x       ->  design vector
@@ -42,10 +42,14 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
         x[5+3*ii] = np.log10(d[ii+1])
     return x
 
-
-def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs the whole thing
-    #   x   ->  design vector
-    #   p   ->  parameter vector
+def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=False,shape=None):   # the big one, runs the whole thing
+    #   x               ->  design vector
+    #   p               ->  parameter vector
+    #   reactive        ->  boolean to set if reactive (true) or resistive (false) control is used
+    #   check_condition ->  boolean to set if the condition number is checked on the A and B matricies
+    #   sensitivity_run ->  boolean to set if the sensitivity run is happening (chages what happend on hydro error)
+    #   time_data       ->  boolean to set if time data should be printed or not
+    #   shape           ->  used to optimize on predefined shapes 1=grid, 2=line, 3="random"
     start_time = time.time()
     
     # Unpack Design Variables
@@ -55,25 +59,17 @@ def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs t
     omega = p[0]
     wave_amp = p[1]
     beta = p[2]
-    time_data = 0
-    if len(p) > 7:
-        time_data = p[7] # switch parameter for if you want the time info or not, useful for a nominal run
+    F_max = p[7]
 
-    # Create Bodies
-    if len(p)>8:        
-        shape = p[8]    # these are our predefined geometries, parameter 8 is an optional way to use them
-        if shape == 1:
-            bodies = array_init.grid(wec_radius,wec_length,damp)
-        elif shape == 2:
-            bodies = array_init.line(wec_radius,wec_length,damp)
-        elif shape == 3:
-            bodies = array_init.random(wec_radius,wec_length,damp)
-        else:
-            print('Not a real shape')
-    else:
-        bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)   # run this to use design vector instead of predefined layout
+    # Create Bodies     
+    if shape == None: bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp) # use design vector
+    elif shape == 1: bodies = array_init.grid(wec_radius,wec_length,damp)           # use grid layout
+    elif shape == 2: bodies = array_init.line(wec_radius,wec_length,damp)           # use line layout
+    elif shape == 3: bodies = array_init.random(wec_radius,wec_length,damp)         # use "random" layout
+    else: print('Not a real shape')
+
     end_time = time.time()
-    if time_data == 1:  # prints time info if switched on
+    if time_data:  # prints time info if switched on
         print(f'Body set up time:  {end_time-start_time}')
         
     # Hydro Module
@@ -89,13 +85,13 @@ def run(x,p,check_condition=True,sensitivity_run=False):   # the big one, runs t
         return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
     start_time = time.time()
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,check_condition)   # WEC motion
+    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,reactive,F_max,check_condition)   # WEC motion
     P,P_indv = time_avg_power(bodies,Xi,omega)      # Power calculation
     
     # Power Transmission and Economics Module
     econ_pvec = np.array([p[3],p[4],p[5],p[6]])
     LCOE,AEP,rated_P = econ.run(M,P_indv,bodies,econ_pvec)
     end_time = time.time()
-    if time_data == 1:  # prints time info if switched on
+    if time_data:  # prints time info if switched on
         print(f'Power/LCOE time:   {end_time-start_time}')
     return LCOE.item(),AEP.item(),P.item()
