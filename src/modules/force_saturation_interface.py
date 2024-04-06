@@ -85,7 +85,6 @@ def saturate(F_max,omega,X,A,B,C,F_app,d,k):
     r = np.array([min([F_max/abs(F_pto), 1]) for F_pto in F_ptos])   # r
     alpha = 2/np.pi * (1/r * np.arcsin(r) + np.sqrt(1 - r**2))  # alpha multiplier
     f_sat = alpha*r # not sure what this is
-    d_sat = d
     mult =  np.ones(d.shape)
     for ii in range(len(f_sat)):
         mult[ii] = get_multiplier(f_sat[ii],m=A[ii,ii],b=B[ii,ii],k=C[ii,ii],w=omega,r_b=B[ii,ii]/d[ii],r_k=C[ii,ii]/k[ii])
@@ -93,3 +92,23 @@ def saturate(F_max,omega,X,A,B,C,F_app,d,k):
     B_sat = B - np.diag(d*(1-mult))     # reduce PTO damping by multiplier*original PTO damping
     C_sat = C - np.diag(k*(1-mult))     # reduce PTO stiffnes by multiplier*original PTO stiffness
     return B_sat,C_sat,d_sat
+
+# this one saturates one at a time - not really needed, see saturation folder of experiments
+def saturate2(F_max,omega,X,A,B,C,F_app,d,k,saturated):
+    F_ptos = np.sqrt((d*omega)**2 + k**2)*X     # PTO force
+    r = np.array([min([F_max/abs(F_pto), 1]) for F_pto in F_ptos])   # r
+    alpha = 2/np.pi * (1/r * np.arcsin(r) + np.sqrt(1 - r**2))  # alpha multiplier
+    f_sat = alpha*r # not sure what this is
+    mult =  np.ones(d.shape)
+    go = True
+    while go:
+        idx = np.argmax(abs(F_ptos))
+        if saturated[idx]: F_ptos[idx] = 0
+        else: 
+            mult[idx] = get_multiplier(f_sat[idx],m=A[idx,idx],b=B[idx,idx],k=C[idx,idx],w=omega,r_b=B[idx,idx]/d[idx],r_k=C[idx,idx]/k[idx])
+            saturated[idx] = True
+            go =  False
+    d_sat = d*mult
+    B_sat = B - np.diag(d*(1-mult))     # reduce PTO damping by multiplier*original PTO damping
+    C_sat = C - np.diag(k*(1-mult))     # reduce PTO stiffnes by multiplier*original PTO stiffness
+    return B_sat,C_sat,d_sat,saturated

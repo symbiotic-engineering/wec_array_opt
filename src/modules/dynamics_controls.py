@@ -43,14 +43,30 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,F_max=np.inf,check_condition=Tru
 
     # calculate Xi, WEC Motion
     Xi_vec = system_response(F_vec,omega,inertia,resistance,reactance)
+    
     # check force saturation
     if reactive:
         resistance_sat,reactance_sat,d_sat = force_sat.saturate(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec)
         Xi_vec = system_response(F_vec,omega,inertia,resistance_sat,reactance_sat)
-        print('saturateing')
         # update the pto damping in the body
         for ii in range(len(bodies)): bodies[ii].PTOdamp = d_sat[ii]
-        Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
+        
+        ''' Test stuff
+        test = True
+        F_max = 1e5
+        if test:
+            saturated = np.full_like(Xi_vec, False, dtype=bool)
+            for ii in range(len(saturated)):
+                resistance,reactance,d_vec,saturated = force_sat.saturate2(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec,saturated)
+                Xi_vec = system_response(F_vec,omega,inertia,resistance,reactance)
+            for ii in range(len(bodies)): bodies[ii].PTOdamp = d_vec[ii]
+        else:
+            resistance_sat,reactance_sat,d_sat = force_sat.saturate(F_max,omega,Xi_vec,inertia,resistance,reactance,F_vec,d_vec,k_vec)
+            Xi_vec = system_response(F_vec,omega,inertia,resistance_sat,reactance_sat)
+            # update the pto damping in the body
+            for ii in range(len(bodies)): bodies[ii].PTOdamp = d_sat[ii]'''
+        
+    Xi = {bodies[ii]:Xi_vec[ii] for ii in range(len(Xi_vec))}
     return Xi
 
 def time_avg_power(bodies,Xi,omega):    # Calculates power

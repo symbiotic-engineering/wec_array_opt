@@ -15,13 +15,19 @@ r = 5
 L = 2*2
 basex = np.array([0,0,0,0,0,-30,-30,-30,-30]) # used to make wecx easier
 wecx = np.concatenate((basex,basex + 500))
-wecx=basex
 wecy = np.array([0,30,60,-30,-60,15,45,-15,-45,0,30,60,-30,-60,15,45,-15,-45])
 damp = 3.6e5*np.ones(wecx.shape)
 
+# Set-up Diamond array
+'''r = 7
+L = 0.7
+space = r*3.6
+wecx = np.array([0,1,2,1])*space
+wecy = np.array([0,1,0,-1])*space
+damp = 10**5.7*np.ones(wecx.shape)'''
+
 x = model.pack_x(wecx,wecy,r,L,damp)
 
-print(x)
 wec_radius, wec_length, wecx, wecy, damp, N = model.unpack_x(x)
 print(f"WEC Radius: {wec_radius}")
 print(f"WEC Length: {wec_length}")
