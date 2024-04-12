@@ -63,10 +63,10 @@ def GA(p,limits,nWEC,p_size,gens,n_offspring,space=5,shape=None,n_proccess=4,xo_
     F = res.F
     return X,F
 
-def MOCHA(p,limits,nWEC,p_size,gens,n_offspring,space=5,n_proccess=1,xo_prob=0.9,xo_eta=15,mutant_eta=20):
+def MOCHA(p,limits,nWEC,p_size,gens,n_offspring,space=5,n_proccess=1,xo_prob=0.9,xo_eta=15,mutant_eta=20,pfile=None):
     # Multi Objective Constrained Heuristic Algorithim
 
-    problem,algorithm,termination = create_pat(opt_probs.mooProblem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=space,pop_file='optimization_interfaces/initial_pop_resistive.csv')
+    problem,algorithm,termination = create_pat(opt_probs.mooProblem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=space,pop_file=pfile)
 
     res = minimize(problem,algorithm,termination,seed=2,save_history=False,verbose=True)
     X = res.X
