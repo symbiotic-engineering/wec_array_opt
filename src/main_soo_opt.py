@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
 	for _ in p_shape:
 		start_time = time.time()
-		X,F= opt.GA(p,limits,nWEC,p_size,gens,n_offspring,space=5,shape=_,n_processes=24)
+		X,F= opt.GA(p,limits,nWEC,p_size,gens,n_offspring,space=5,shape=_,n_proccess=24)
 		end_time = time.time()
 		print(f'Optimization took {end_time-start_time} s')
 
