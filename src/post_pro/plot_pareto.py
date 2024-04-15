@@ -12,7 +12,7 @@ from scipy.interpolate import make_interp_spline
 import pyplotutilities.colors as colors
 
 f1, f2 = [], []
-with open('../data/paretos/ReactObjective.csv', newline='') as csvfile:
+with open('../data/paretos/ReactObjective_5.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
@@ -51,5 +51,5 @@ plt.xlabel('LCOE [$/kWh]')
 plt.ylabel('Maximum Array Dimension [m]')
 plt.title("")
 
-plt.savefig('post_pro/plots/pareto.pdf')
+plt.savefig('post_pro/plots/pareto_5.pdf')
 
