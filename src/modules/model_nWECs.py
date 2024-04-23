@@ -13,8 +13,8 @@ def unpack_x(x):       # this function unpacks the design vector into the design
     #   x       ->  design vector
     #   nWEC    ->  number of WECs
     nWEC = int(len(x)/3)
-    wec_radius = x[0]
-    wec_length = x[1]*x[0]  # this variable is important to note, it is the length ratio, not the actual length
+    wec_radius = x[0]/2
+    wec_length = x[1]*wec_radius  # this variable is important to note, it is the length ratio, not the actual length
     wecx = np.zeros(nWEC)
     wecy = np.zeros(nWEC)
     damp = np.zeros(nWEC)
@@ -33,7 +33,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
     #   d       ->  pto damping coefficient
     N = int(len(wecx))
     x = np.zeros(3*(N-1) + 3)
-    x[0] = r
+    x[0] = r*2
     x[1] = L/r
     x[2] = np.log10(d[0])
     for ii in range(N-1):
