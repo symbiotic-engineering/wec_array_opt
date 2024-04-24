@@ -53,8 +53,8 @@ def run(bodies,beta = 0,omega = 1.02,time_data = 0):
     
     # Get the important stuff
     dataset = capy.assemble_dataset(rad_result + [diff_result])
-    RAO = capy.post_pro.rao(dataset, wave_direction=beta, dissipation=None, stiffness=None)
-
+    #RAO = capy.post_pro.rao(dataset, wave_direction=beta, dissipation=None, stiffness=None)
+    RAO = None
     A = {effected:{effecting:np.array(dataset['added_mass'].sel(radiating_dof = dofs[effecting], influenced_dof = dofs[effected])) for effecting in bodies} for effected in bodies} # added mass
     B = {effected:{effecting:np.array(dataset['radiation_damping'].sel(radiating_dof = dofs[effecting], influenced_dof = dofs[effected])) for effecting in bodies} for effected in bodies} # damping
     diff_F = {body:np.array(dataset['diffraction_force'].sel(influenced_dof = dofs[body])) for body in bodies}  # diffraction force
@@ -63,4 +63,4 @@ def run(bodies,beta = 0,omega = 1.02,time_data = 0):
     end_time = time.time()
     if time_data == 1:  # prints time info if switched on - where the bulk of time is spent
         print(f'Hydro terms time:  {end_time-start_time}')
-    return A,B,C,F,M,RAO
+    return A,B,C,F,M
