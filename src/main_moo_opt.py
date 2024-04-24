@@ -16,8 +16,8 @@ if __name__ == "__main__":
 
     # Opt paramaters
     nWEC = 4
-    p_size = 5
-    gens = 1
+    p_size = 120
+    gens = 100
     n_offspring = 50
     start_time = time.time()
 
