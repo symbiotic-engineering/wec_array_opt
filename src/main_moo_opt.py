@@ -18,10 +18,9 @@ if __name__ == "__main__":
     nWEC = 4
     p_size = 120
     gens = 100
-    n_offspring = 50
     start_time = time.time()
 
-    X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,n_offspring,space=5,n_proccess=20,xo_prob=0.9,xo_eta=10,mutant_eta=15)
+    X,F = opt.MOCHA(p,limits,nWEC,p_size,gens,space=5,n_proccess=20)
     end_time = time.time()
     print(f'Optimization took {end_time-start_time} s')
 

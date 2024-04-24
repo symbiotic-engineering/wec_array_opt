@@ -4,24 +4,6 @@ from pymoo.core.variable import Real, Integer
 import modules.model_nWECs as model
 import modules.distances as dis
 
-def limit_def(limits,nWEC):
-    n_var=3*(nWEC-1) + 3
-    xl = np.zeros(n_var)                #   lower bounds
-    xu = np.zeros(n_var)                #   upper bounds
-    xl[0] = limits['dr'][0]
-    xu[0] = limits['dr'][1]
-    xl[1] = limits['L'][0]
-    xu[1] = limits['L'][1]
-    xl[2] = limits['d'][0]
-    xu[2] = limits['d'][1]
-    for i in range(nWEC-1):
-        xl[3+i*3] = limits['x'][0]
-        xu[3+i*3] = limits['x'][1]
-        xl[4+i*3] = limits['y'][0]
-        xu[4+i*3] = limits['y'][1]
-        xl[5+i*3] = limits['d'][0]
-        xu[5+i*3] = limits['d'][1]
-    return xl,xu
 def create_vars(limits,nWEC):
     vars = {
         "dr": Integer(bounds=(limits['dr'][0],limits['dr'][1])),
@@ -51,19 +33,15 @@ def calc_LCOE(x,p,shape=None):
 
 class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
     def __init__(self,p,limits,nWEC,min_space=5,shape=None,**kwargs):    #   P is parameters, limits is the bounds on each var type
-        xl,xu = limit_def(limits,nWEC)
-        super().__init__(n_var=len(xl),
-                         n_obj=1,
-                         n_ieq_constr=1,
-                         xl=xl,
-                         xu=xu)
+        vars =create_vars(limits,nWEC)
+        super().__init__(n_obj=1,n_ieq_constr=1,vars=vars,**kwargs)
         self.parameters = p
-        
+        self.nWEC = nWEC
         self.space = min_space
         self.shape = shape
-    def _evaluate(self, x, out, *args, **kwargs):
+    def _evaluate(self, X, out, *args, **kwargs):
         p = self.parameters
-        
+        x = build_x(X,self.nWEC)
         f1 = calc_LCOE(x,p,self.shape)              #   Calculate LCOE
         g1 = constraint(x,p,min_space=self.space)   #   Check constraint on minimum distance
         out["F"] = [f1]
@@ -72,10 +50,7 @@ class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
 class mooProblem(ElementwiseProblem):               #   same problem as before, except 2 objectives
     def __init__(self,p,limits,nWEC,min_space=5,shape=None,**kwargs):      #   P is parameters, limits is the bounds on each var type
         vars =create_vars(limits,nWEC)
-        super().__init__(#n_var=nWEC*3,
-                         n_obj=2,
-                         n_ieq_constr=1,
-                         vars=vars,**kwargs)
+        super().__init__(n_obj=2,n_ieq_constr=1,vars=vars,**kwargs)
         self.parameters = p
         self.nWEC = nWEC
         self.space = min_space
