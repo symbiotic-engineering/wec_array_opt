@@ -10,11 +10,11 @@ from pymoo.termination.ftol import MultiObjectiveSpaceTermination
 from pymoo.optimize import minimize
 from pymoo.core.evaluator import Evaluator
 from pymoo.core.population import Population
-
+from pymoo.algorithms.moo.nsga2 import RankAndCrowdingSurvival
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 from pymoo.core.problem import StarmapParallelization
-
+from pymoo.core.mixed import MixedVariableGA
 import optimization_interfaces.optimization_problems as opt_probs
 
 def read_intial_pop(pop_file):
@@ -33,7 +33,7 @@ def create_intial_pop(p_size,problem,nWEC,pop_file):
         initial_pop[ii] = selected_pop[ii]
     return initial_pop
 
-def create_pat(opt_problem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=5,shape=None,pop_file=None):
+def create_pat(opt_problem,p,limits,nWEC,p_size,gens,n_proccess,space=5,shape=None,pop_file=None):
     # builds the problem, algoritm, and termination criteria  
     pool = multiprocessing.Pool(n_proccess) 
     runner = StarmapParallelization(pool.starmap) 
@@ -42,33 +42,30 @@ def create_pat(opt_problem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_p
     if pop_file==None: sampling = FloatRandomSampling()
     else: sampling = create_intial_pop(p_size,problem,nWEC,pop_file)
 
-    algorithm = NSGA2(
+    algorithm = MixedVariableGA(
         pop_size=p_size,
-        n_offsprings=n_offspring,
-        sampling=sampling,
-        crossover=SBX(prob=xo_prob, eta=xo_eta),
-        mutation=PM(eta=mutant_eta),
-        eliminate_duplicates=True
+        survival=RankAndCrowdingSurvival(),
+        #n_offsprings=n_offspring,
+        #sampling=sampling,
+        #crossover=SBX(prob=xo_prob, eta=xo_eta),
+        #mutation=PM(eta=mutant_eta),
+        #eliminate_duplicates=True
     )
-    termination = RobustTermination(MultiObjectiveSpaceTermination(tol=0.05, n_skip=5), period=gens)
+    termination = RobustTermination(MultiObjectiveSpaceTermination(tol=0.005, n_skip=5), period=gens)
     return problem,algorithm,termination
     
-def GA(p,limits,nWEC,p_size,gens,n_offspring,space=5,shape=None,n_proccess=4,xo_prob=0.9,xo_eta=15,mutant_eta=20):  
+def GA(p,limits,nWEC,p_size,gens,space=5,shape=None,n_proccess=1):  
     #   Single Objective GA method search algorithm
-    
-    problem,algorithm,termination = create_pat(opt_probs.LCOE_sooProblem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=space,shape=shape)
-
-    res = minimize(problem,algorithm,termination,seed=2,verbose=True)
+    problem,algorithm,termination = create_pat(opt_probs.LCOE_sooProblem,p,limits,nWEC,p_size,gens,n_proccess,space=space,shape=shape)
+    res = minimize(problem,algorithm,termination,seed=1,verbose=True)
     X = res.X
     F = res.F
     return X,F
 
-def MOCHA(p,limits,nWEC,p_size,gens,n_offspring,space=5,n_proccess=1,xo_prob=0.9,xo_eta=15,mutant_eta=20):
+def MOCHA(p,limits,nWEC,p_size,gens,space=5,n_proccess=1,pfile=None):
     # Multi Objective Constrained Heuristic Algorithim
-
-    problem,algorithm,termination = create_pat(opt_probs.mooProblem,p,limits,nWEC,p_size,gens,n_offspring,n_proccess,xo_prob,xo_eta,mutant_eta,space=space,pop_file='optimization_interfaces/initial_pop_resistive.csv')
-
-    res = minimize(problem,algorithm,termination,seed=2,save_history=False,verbose=True)
+    problem,algorithm,termination = create_pat(opt_probs.mooProblem,p,limits,nWEC,p_size,gens,n_proccess,space=space,pop_file=pfile)
+    res = minimize(problem,algorithm,termination,seed=1,save_history=False,verbose=True)
     X = res.X
     F = res.F
     return X,F

@@ -26,9 +26,9 @@ from joblib import Parallel, delayed
 # distribution is a uniform distribution between lower and upper bounds.
 # should we do sensitivity on locations? or just wave parameters.
 parameter_problem = {
-    "num_vars": 7, #variables or parameters
-    "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor'], 
-    "bounds": [[0.1, 3.1], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99]]
+    "num_vars": 8, #variables or parameters
+    "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor','Fmax'], 
+    "bounds": [[0.1, 3.1], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99],[2e5,3e5]]
   #  "groups": ['wave','wave','wave','wave','economics','wave','economics','economics'] #maybe group wave and econ separately.
 }
 
@@ -38,12 +38,11 @@ parameter_problem = {
 print(os.getcwd())
 
  #update this with optimal locations
-csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'FINALdomDesign.csv')
+csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'reactive_designs.csv')
 df = pd.read_csv(csv_file_path, delimiter=',',header=None)
 
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-index_range = [200]
-    #15,203,232,241,248]..#232
+index_range = [2]
 #np.arange(0, df.shape[0], 20, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
 some_pareto_designs = []
@@ -53,13 +52,13 @@ for index in index_range:
 print("sampled pareto design equidistant")
 print(len(some_pareto_designs))
 #run theh 'nominal' values picked by sampler 
-def run_sensitivity_sampler(optimal_dv, N_samples, write_out=False):
+def run_sensitivity_sampler(optimal_dv, N_samples, write_out=True):
     param_values = saltelli.sample(parameter_problem, N_samples)
     print(param_values.shape)
     
     def run_model(X):
         p = [*X]
-        return model.run(optimal_dv, p, check_condition=False)[0]
+        return model.run(optimal_dv, p, check_condition=False,sensitivity_run=True)[0]
 # use all available processors.
     Y = Parallel(n_jobs=-1)(delayed(run_model)(X) for X in param_values)
     Y = np.asarray(Y)
@@ -68,9 +67,9 @@ def run_sensitivity_sampler(optimal_dv, N_samples, write_out=False):
     total_Si, first_Si, second_Si = Si.to_df()
    
     if write_out:
-        total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/200_total.csv")
-        first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/200_first.csv")
-        second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/200_second.csv")
+        total_Si.to_csv(f"~/wec_array_opt/data/sensitivities/total.csv")
+        first_Si.to_csv(f"~/wec_array_opt/data/sensitivities/first.csv")
+        second_Si.to_csv(f"~/wec_array_opt/data/sensitivities/second.csv")
         print(f"Wrote out the sensitivity for design. Use plot_sensitivity.py to plot.")
     
     return total_Si
@@ -94,5 +93,5 @@ def run_parallel_convergence_sensitivity(N_values):
 #after sobol convergence, N = 1000 is picked --
 #====================SENSITIVITY STUDY ======================
 for pareto_design in some_pareto_designs:
-    total_df = run_sensitivity_sampler(pareto_design, 10000,write_out = True)
-    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/200_total_SI_convergece.csv")
+    total_df = run_sensitivity_sampler(pareto_design, 1000,write_out = True)
+    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")

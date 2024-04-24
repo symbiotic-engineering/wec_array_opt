@@ -10,6 +10,7 @@ dill==0.3.8
 fonttools==4.49.0
 future==1.0.0
 grapheme==0.6.0
+joblib==1.4.0
 kiwisolver==1.4.5
 matplotlib==3.8.3
 numpy==1.26.4
