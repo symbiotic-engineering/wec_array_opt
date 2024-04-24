@@ -16,7 +16,7 @@ import pyplotutilities.colors as colors
 #index 225 is cluster3
 #index 241 is cluster4
 #index 245 is cluster5
-x = [2.000028346374051,0.10013448362444206,5.109433334932386,14.322144189749588,0.0,5.021456029824595,7.128059299166645,7.586125186422013,5.120965893666736,7.072909120014476,-11.160580885499542,5.070070298180154]
+x = [4.0,0.10000176099372524,4.673507374127935,24.447710928456562,-15.313485461239296,4.556836993216725,27.06533718896739,21.629165486489246,4.495203303908347,37.065142390441736,0.6919119534948628,4.2589461475860855]
 
 
 
@@ -35,8 +35,8 @@ ax.set_xlabel('X location [m]')
 ax.set_ylabel('Y location [m]')
 
 #ax.axis('equal')
-ax.set_xlim([-40,120])
-ax.set_ylim([-80,80])
+#ax.set_xlim([-40,120])
+#ax.set_ylim([-80,80])
 ax.set_aspect('equal', adjustable='box')
 #plt.show()
-plt.savefig('post_pro/plots/cluster5_design.pdf')
+plt.savefig('post_pro/plots/design.pdf')
