@@ -5,7 +5,7 @@ from capytaine.bem.airy_waves import froude_krylov_force
 import time
 # This module is used to get all the hydro terms. Forces, added mass, damping, hydrostatic stiffness, and mass
 
-def run(bodies,beta = 0,omega = 1.02,time_data = False):
+def run(bodies,beta = 0,omega = 1.02,time_data = False,wave_field=False):
     # bodies    ->  list of the wec floating bodies
     # beta      ->  wave direction
     # omega     ->  wave frequency
@@ -62,4 +62,6 @@ def run(bodies,beta = 0,omega = 1.02,time_data = False):
     end_time = time.time()
     if time_data:  # prints time info if switched on - where the bulk of time is spent
         print(f'Hydro terms time:  {end_time-start_time}')
+
+    if wave_field: return A,B,C,F,M,rad_result,diff_result
     return A,B,C,F,M
