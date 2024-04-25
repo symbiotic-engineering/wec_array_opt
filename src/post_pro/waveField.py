@@ -59,7 +59,7 @@ def waveField(x_optimal):
     plt.xlabel("x")
     plt.ylabel("y")
     colorbar = plt.colorbar()
-    colorbar.set_label(r'Total Wave Elevation, ''$\Xi$''')
+    colorbar.set_label(r"Total Wave Elevation, $\xi$")
     plt.scatter(wecx,wecy, marker = 'o', color = 'black', s = 100)  # Add markers
     plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
     plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
