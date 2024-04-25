@@ -44,6 +44,14 @@ for index in index_range:
 
     LCOE,AEP,rated_P = model.run(row,p)     # running power calculations
     print(f'The Rated Power is {rated_P} kW')
+
+
+    x_single = model.pack_x(np.array([0]),np.array([0]),wec_radius,wec_length,np.array([3.6e5]))
+    LCOE,AEP,P_isolated = model.run(x_single,p,q_single=True)
+
+
+
+    # this deleted?????
     bodies = cyl.get_cylinder(wec_radius, wec_length, wecx, wecy, damp)
     A,B,C,F,M, RAO = hydro.run(bodies,beta = 0,omega = omega ,time_data = 0)
     print('config RAO',RAO)
@@ -69,6 +77,10 @@ for index in index_range:
     print('single wec',single_wec)
 
     LCOE_new,AEP_new,P_isolated = model.run(single_wec,p)
+    # end of this deleted?????
+
+
+
     print(f'The Single WEC Rated Power is {P_isolated} kW')
 
     # power produced by isolated WECs with radii corresponding to the
