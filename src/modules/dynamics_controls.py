@@ -6,7 +6,7 @@ def system_response(F,omega,A,B,C):
     H = -(omega**2)*A + -1j*omega*B + C
     return np.linalg.solve(H,F).ravel()
 
-def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,F_max=np.inf,check_condition=True):    # Calculates WEC motion based on hydro outputs
+def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,F_max=np.inf,check_condition=True,qfactor_single=False):    # Calculates WEC motion based on hydro outputs
     #   bodies  ->  list of wec bodies
     #   A       ->  added mass dictionary
     #   B       ->  wave damping dictionary
@@ -17,6 +17,7 @@ def wec_dyn(bodies,A,B,C,F,m,omega,Amp,reactive,F_max=np.inf,check_condition=Tru
     #   Amp     ->  wave amplitude
     if reactive: k = {body:(omega**2)*(m[body]+A[body][body]) - C[body] for body in bodies} #   Calculate Optimal PTO stiffness
     else: k = {body:[[0]] for body in bodies}   #   PTO stiffness is 0 bc no reactive control
+    if qfactor_single: [body.PTOdamp = (B[body][body]**2+(omega*(m[body][0][0]+A[body][body])-C[body][0][0]/omega)**2)**0.5 for body in bodies]
     # this section puts everything into vectors and matricies
     F_vec = np.array([F[body][0] for body in bodies])*Amp
     m_vec = np.array([m[body][0][0] for body in bodies])
