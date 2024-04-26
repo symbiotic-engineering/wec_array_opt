@@ -40,7 +40,7 @@ def waveField(x_optimal):
     diffraction = solver.compute_free_surface_elevation(grid, diff_result)
 
     multiplications = []
-    for i in range(4):
+    for i in range(len(bodies)):
         mult_result = solver.compute_free_surface_elevation(grid, rad_result[i]) * Xi[bodies[i]]
         multiplications.append(mult_result)
     radiation = sum(multiplications)
