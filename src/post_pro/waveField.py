@@ -32,8 +32,8 @@ def waveField(x_optimal):
     # creating mesh of free surface
     x_1 = -100
     x_2 = 100
-    y_1 = -100
-    y_2 = 100
+    y_1 = -70
+    y_2 = 130
     nx = 100
     ny = 100
     grid = np.meshgrid(np.linspace(x_1, x_2, nx), np.linspace(y_1, y_2, ny))
@@ -55,7 +55,8 @@ def waveField(x_optimal):
     X = grid[0]
     Y = grid[1]
     colors.get_colors()
-    plt.pcolormesh(X, Y, Z) #, cmap=cmap,vmin=0,vmax=2.5)
+    cmap = LinearSegmentedColormap.from_list('CustomMap', [colors.blue, colors.green, colors.yellow])
+    plt.pcolormesh(X, Y, Z,cmap=cmap) #, cmap=cmap,vmin=0,vmax=2.5)
     plt.xlabel("x")
     plt.ylabel("y")
     colorbar = plt.colorbar()
@@ -68,7 +69,7 @@ def waveField(x_optimal):
 
     Zk = np.real(kd)
     colors.get_colors()
-    plt.pcolormesh(X, Y, Zk) #, cmap=cmap,vmin=0,vmax=2.5)
+    plt.pcolormesh(X, Y, Zk,cmap=cmap) #, cmap=cmap,vmin=0,vmax=2.5)
     plt.xlabel("x")
     plt.ylabel("y")
     colorbar = plt.colorbar()
@@ -77,13 +78,11 @@ def waveField(x_optimal):
     plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
     plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
     plt.tight_layout()
+    plt.savefig('post_pro/plots/kd_minLCOE.pdf')
     plt.show()
-    #plt.savefig('post_pro/plots/field.pdf')
     return
 
 import numpy as np
 # optimal parameters and design variables
-x_optimal = np.array([9.99992319805342,0.10000141275443655,6.29665416651116,35.2553311085241,
-                    -47.23848856922516,6.3156648226237255,35.13284647724411,43.61632163749309,6.353502594175767,
-                    70.94483065027279,-0.4074111725847307,6.451506386779879])
+x_optimal = np.array([8.0,0.10000342644859998,5.547542754651831,24.266210287828336,64.50412981468327,5.5488186147585585,47.37176881575031,-0.5568212532930796,5.560543492258006,-22.87242901300752,65.98209563108522,5.5581438747010585])
 waveField(x_optimal)
