@@ -10,9 +10,11 @@ import numpy as np
 import matplotlib.colors as mcolors
 from scipy.interpolate import make_interp_spline
 import pyplotutilities.colors as colors
+import scienceplots
+plt.style.use(['science','no-latex','notebook'])
 
 f1, f2 = [], []
-with open('../data/paretos/obj.csv', newline='') as csvfile:
+with open('../data/paretos/reactive_objectives.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
@@ -24,19 +26,18 @@ utop2 = min(f2)
 nadi1 = max(f1)
 nadi2 = max(f2)
 
-plt.rcParams.update({'font.size': 16})  # Increase font size
+plt.rcParams.update({'font.size': 15})  # Increase font size
 colors.get_colors()
 fig = plt.figure(1, facecolor='none')
 ax = plt.axes()
 plt.subplots_adjust(bottom=0.16)
 ax.set_facecolor('none')
 # Increase marker size and linewidth for better visibility
-plt.scatter(f1, f2, marker='o', c=colors.blue, label='Pareto Front', s=90, edgecolors='k', zorder=2)
+plt.scatter(f1, f2, marker='o', c=colors.blue, label='Pareto Front', s=75, edgecolors='k', zorder=2)
 plt.scatter(utop1, utop2, marker='*', color=colors.green, label='Utopia Point', s=150, edgecolors='k', zorder=3)
 
 #suggested point ---200 index 0.2198151431189803,57.5921023195911
-#plt.scatter(0.2198151431189803, 57.5921023195911, marker='D', c=colors.red, label='Recommended Design', s=90, edgecolors='k', zorder=4)
-
+plt.scatter(0.23047643411851776,62.723301184344876, marker='D', c=colors.red, label='Recommended Design', s=80, edgecolors='k', zorder=4)
 
 #plt.text(utop1, utop2, 'Utopia', color='tab:green', fontsize=16)
 #plt.scatter(nadi1, nadi2, marker='x', color=colors.red, label='Nadir Point', s=200, linewidth=2, zorder=3)
@@ -51,5 +52,10 @@ plt.xlabel('LCOE [$/kWh]')
 plt.ylabel('Maximum Array Dimension [m]')
 plt.title("")
 
-plt.savefig('post_pro/plots/pareto_5.pdf')
+plt.savefig('post_pro/plots/pareto_final.pdf')
+
+
+##def design_variations()
+
+
 

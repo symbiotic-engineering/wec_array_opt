@@ -6,34 +6,33 @@ import pandas as pd
 
 
 
-# ## plotting the sensitivity convergence with samples
-# df = pd.read_csv("~/wec_array_opt/data/sensitivities/omega_convergence.csv")
-# df = df.rename(columns={'Unnamed: 0': 'parameter'})
-# df = df[df.parameter == 'omega']
-# print(df.head())
-# fig, ax = plt.subplots()
+## plotting the sensitivity convergence with samples
+df = pd.read_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data.csv")
+df = df.rename(columns={'Unnamed: 0': 'parameter'})
 
-# # Color map for coloring the lines by parameter
-# color_map = plt.cm.get_cmap('tab10', len(df['parameter'].unique()))
+fig, ax = plt.subplots()
 
-# for i, (param, group) in enumerate(df.groupby('parameter')):
-#     ax.plot(group['samples'], group['ST'], label=param, color=color_map(i))
+# Color map for coloring the lines by parameter
+color_map = plt.cm.get_cmap('tab10', len(df['parameter'].unique()))
 
-# # Add labels and legend
-# ax.set_xlabel('Samples')
-# ax.set_ylabel('ST')
-# ax.legend(title='Parameter')
+for i, (param, group) in enumerate(df.groupby('parameter')):
+    ax.plot(group['samples'], group['ST'], label=param, color=color_map(i))
 
-# plt.title('Convergence of total sensitivity for omega')
+ax.set_yscale('log')
+# Add labels and legend
+ax.set_xlabel('Samples')
+ax.set_ylabel('ST')
+ax.legend(title='Parameter')
 
-# plt.show()
+plt.title('Convergence of total sensitivity for omega')
 
-# plt.savefig("plots/sobol_convergence.pdf")
+plt.show()
 
+plt.savefig("post_pro/plots/sobol_convergence.pdf")
 
-path_total_Si = "../data/sensitivities/225_total.csv"
-path_first_Si = "../data/sensitivities/225_first.csv"
-path_second_Si = "../data/sensitivities/225_second.csv" 
+path_total_Si = "../data/sensitivities/total.csv"
+path_first_Si = "../data/sensitivities/first.csv"
+path_second_Si = "../data/sensitivities/second.csv" 
 
 #for total
 total_Si = pd.read_csv(path_total_Si)
@@ -48,7 +47,7 @@ plt.xlabel('Total Sensitivity Index', fontsize=14)
 plt.xticks(rotation=45, ha='right') 
 plt.grid(True)
 plt.tight_layout() 
-plt.savefig("post_pro/plots/SI_total_225.pdf")
+plt.savefig("post_pro/plots/SI_total.pdf")
 plt.close('all')
 
 #similarly for first order 
@@ -63,7 +62,7 @@ plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.tight_layout() 
 plt.show()
-plt.savefig("post_pro/plots/SI_first_225.pdf")
+plt.savefig("post_pro/plots/SI_first.pdf")
 plt.close('all')
 
 
@@ -83,6 +82,6 @@ plt.xticks(rotation=45, ha='right')
 plt.grid(True)
 plt.tight_layout() 
 plt.show()
-plt.savefig("post_pro/plots/SI_second_225.pdf")
+plt.savefig("post_pro/plots/SI_second.pdf")
 plt.close('all')
 

@@ -49,18 +49,21 @@ some_pareto_designs = []
 
 for index in index_range:
     some_pareto_designs.append(df.iloc[index,:] )
-print("sampled pareto design equidistant")
-print(len(some_pareto_designs))
+# print("sampled pareto design equidistant")
+# print(len(some_pareto_designs))
 #run theh 'nominal' values picked by sampler 
-def run_sensitivity_sampler(optimal_dv, N_samples, write_out=True):
+def run_model(optimal_dv,X):
+    p = [*X]
+    return model.run(optimal_dv, p, check_condition=False,sensitivity_run=True)[0]
+
+
+
+def run_sensitivity_sampler(optimal_dv, N_samples, parameter_problem,write_out=True):
+    print(N_samples)
     param_values = saltelli.sample(parameter_problem, N_samples)
-    print(param_values.shape)
-    
-    def run_model(X):
-        p = [*X]
-        return model.run(optimal_dv, p, check_condition=False,sensitivity_run=True)[0]
+   # print(param_values.shape)
 # use all available processors.
-    Y = Parallel(n_jobs=-1)(delayed(run_model)(X) for X in param_values)
+    Y = Parallel(n_jobs=-1)(delayed(run_model)(optimal_dv,X) for X in param_values)
     Y = np.asarray(Y)
     Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples= 1000, conf_level=0.95, print_to_console=False)
     
@@ -73,25 +76,32 @@ def run_sensitivity_sampler(optimal_dv, N_samples, write_out=True):
         print(f"Wrote out the sensitivity for design. Use plot_sensitivity.py to plot.")
     
     return total_Si
-#========================SOBOL SENSITIVITY===================
+#========================SOBOL SENSITIVITY convergence===================
 #running sensitivity for one design to get idea number of samples to run.
-#N = [2**i for i in np.arange(2,8)] #,4000,5000,10000]
+N_values = [2**i for i in [10,11,12]] #,4000,5000,10000]
 #mean_Y = [run_sensitivity_sampler(some_pareto_designs[1],samples) for samples in N]
-#print(N)
+print(N_values)
 # maybe run in parallel..also for sensitivity convergence.
-def run_parallel_convergence_sensitivity(N_values):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as executor:
+#samples_run = lambda samples,some_pareto_design,parameter_problem: run_sensitivity_sampler(some_pareto_design, samples,parameter_problem,write_out=False)
+def samples_run(N):
+    design = some_pareto_designs[0]
+    result = run_sensitivity_sampler(design, N,parameter_problem,write_out=False)
+    return result
+
+def run_parallel_convergence_sensitivity(N_values,design,parameter_problem):
+    with concurrent.futures.ProcessPoolExecutor(max_workers= 18) as executor:
         # Use list comprehension to run run_sensitivity_sampler for each N value in parallel
-        total_SI = list(executor.map(lambda samples: run_sensitivity_sampler(some_pareto_designs[1], samples), N_values))
-        
+        total_SI = list(executor.map(samples_run,N_values))
   #  total_SI = [run_sensitivity_sampler(some_pareto_designs[1], samples,write_out=False) for samples in N_values]
         for i, df in enumerate(total_SI):
             df['samples'] = [N_values[i]] * len(df)
         total_df = pd.concat(total_SI)
     return total_df
-#run_sensitivity_sampler(some_pareto_designs[0],2,write_out = True)
+#run: sobol sequence convergence
+total_convergence_df = run_parallel_convergence_sensitivity(N_values,some_pareto_designs[0],parameter_problem)
+total_convergence_df.to_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data_more.csv")
 #after sobol convergence, N = 1000 is picked --
 #====================SENSITIVITY STUDY ======================
-for pareto_design in some_pareto_designs:
-    total_df = run_sensitivity_sampler(pareto_design, 1000,write_out = True)
-    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")
+# for pareto_design in some_pareto_designs:
+#     total_df = run_sensitivity_sampler(pareto_design, 10000,write_out = True)
+#     total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")

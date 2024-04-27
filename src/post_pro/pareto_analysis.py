@@ -6,12 +6,36 @@ import statsmodels.api as sm
 from statsmodels.formula.api import ols
 
 #combining optimal design with their optimal objectives for analysis and interpretation.
-df1 = pd.read_csv("../data/paretos/FINALdomObjective.csv",names = ['LCOE','distance'],header= None)   
-df2 = pd.read_csv("../data/paretos/FINALdomDesign.csv",names = ['r', 'L/r', 'log_d1', 'x2', 'y2', 'log_d2','x3', 'y3', 'log_d3','x4', 'y4', 'log_d4'],header = None)
+def pareto_dataset():
+    df1 = pd.read_csv("../data/paretos/reactive_objectives.csv",names = ['LCOE','distance'],header= None)   
+    df2 = pd.read_csv("../data/paretos/reactive_designs.csv",names = ['r', 'L/r', 'log_d1', 'x2', 'y2', 'log_d2','x3', 'y3', 'log_d3','x4', 'y4', 'log_d4'],header = None)
 
-df1.reset_index(drop=True, inplace=True)
-df2.reset_index(drop=True, inplace=True)
-df = pd.concat([df2,df1],axis = 1)
+    df1.reset_index(drop=True, inplace=True)
+    df2.reset_index(drop=True, inplace=True)
+    df = pd.concat([df2,df1],axis = 1)
+    return df
+
+
+df = pareto_dataset()
+df.to_csv("../data/paretos/combined_design_and_vars.csv")
+
+# better than cheese melt
+melted_df = df.melt(var_name='variable', value_name='value')
+print(melted_df.head())
+# Plot using seaborn
+plt.figure(figsize=(10, 6))
+grouped = melted_df.groupby('variable')
+for variable, data in grouped:
+    plt.plot(data.reset_index().index, (data['value']- data['value'].iloc[0]), label=variable)
+   
+
+plt.xlabel('Index')
+plt.ylabel('value - min lcoe value')
+plt.title('Variation across the pareto front')
+plt.legend(title='Variables', loc='center left', bbox_to_anchor=(1, 0.5), fontsize='small')  
+plt.savefig("post_pro/plots/dv_variations.pdf")
+
+stop
 df['mean_damp'] = df[['log_d1', 'log_d2', 'log_d3', 'log_d4']].mean(axis=1)
 df['L'] = df['L/r'] * df['r']
 
@@ -49,7 +73,7 @@ df_final = df[['mean_damp','r','L','area','LCOE','distance']]
 # df_final = df_final.drop(columns=mask.columns.tolist(), axis=1)
 # print(df_final.columns)
 #interpret relationship between two objectives.#
-model = ols('LCOE ~ distance',data = df).fit(intercept = False) #+ np.power(distance, 2)
+model = ols('LCOE ~ distance + L + mean_damp + area + r ',data = df).fit(intercept = False) #+ np.power(distance, 2)
 coefficients = model.params
 print(model.summary())
 
@@ -65,7 +89,7 @@ for i, coef in enumerate(coefficients[1:], start=1):
 # Convert the equation to LaTeX format
 latex_equation = "$" + regression_equation + "$"
 
-sns.regplot(x="LCOE", y="distance", data=df_final)
+#sns.regplot(x="LCOE", y="distance + L  ", data=df_final)
 # plt.savefig('post_pro/plots/regplot.pdf')
 sns.pairplot(df_final,kind="reg", plot_kws={'line_kws':{'color':'red'}})
 plt.xlabel('X Label', fontsize=20, fontweight='bold',rotation=45)
