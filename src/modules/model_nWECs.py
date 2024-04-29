@@ -42,7 +42,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
         x[5+3*ii] = np.log10(d[ii+1])
     return x
 
-def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=False,shape=None):   # the big one, runs the whole thing
+def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=False,shape=None,q_single=False):   # the big one, runs the whole thing
     #   x               ->  design vector
     #   p               ->  parameter vector
     #   reactive        ->  boolean to set if reactive (true) or resistive (false) control is used
@@ -50,6 +50,7 @@ def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=F
     #   sensitivity_run ->  boolean to set if the sensitivity run is happening (chages what happend on hydro error)
     #   time_data       ->  boolean to set if time data should be printed or not
     #   shape           ->  used to optimize on predefined shapes 1=grid, 2=line, 3="random"
+    #   q_single        ->  boolean to set if you want to calculate the damping instead of use the design variable (True)
     start_time = time.time()
     
     # Unpack Design Variables
@@ -85,7 +86,7 @@ def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=F
         return 1e3,0,{body:0 for body in bodies}
     # Dynamics and Controls Module
     start_time = time.time()
-    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,reactive,F_max,check_condition)   # WEC motion
+    Xi = wec_dyn(bodies,A,B,C,F,M,omega,wave_amp,reactive,F_max,check_condition,q_single=False)   # WEC motion
     P,P_indv = time_avg_power(bodies,Xi,omega)      # Power calculation
     
     # Power Transmission and Economics Module
