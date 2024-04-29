@@ -49,38 +49,6 @@ for index in index_range:
     x_single = model.pack_x(np.array([0]),np.array([0]),wec_radius,wec_length,np.array([3.6e5]))
     LCOE,AEP,P_isolated = model.run(x_single,p,q_single=True)
 
-
-
-    # this deleted?????
-    bodies = cyl.get_cylinder(wec_radius, wec_length, wecx, wecy, damp)
-    A,B,C,F,M, RAO = hydro.run(bodies,beta = 0,omega = omega ,time_data = 0)
-    print('config RAO',RAO)
-
-
-    body = cyl.get_cylinder(wec_radius,wec_length,wecx[0],wecy[0],-1000*damp[0])
-    omega = 1.047
-    body.inertia_matrix = body.compute_rigid_body_inertia()
-    body.hydrostatic_stiffness = body.compute_hydrostatic_stiffness()
-    A,B,C,F,M, RAO = hydro.run([body],beta = 0,omega = omega ,time_data = 0)
-    print(C)
-    A = [list(v.values()) for k,v in A.items()][0][0][0] #because its nested
-    B = [list(v.values()) for k,v in B.items()][0][0][0] #
-    print(A)
-    print(B)
-    C = [v[0] for k,v in C.items()][0][0]#
-    print(C)
-    M = [v[0] for k,v in M.items()][0][0] #
-    
-    # find power produced by single WEC at that radius
-    damp_single = (B**2+(omega*(M+A)-C/omega)**2)**0.5
-    single_wec = np.array([wec_radius,wec_length/wec_radius,np.log10(damp_single)])
-    print('single wec',single_wec)
-
-    LCOE_new,AEP_new,P_isolated = model.run(single_wec,p)
-    # end of this deleted?????
-
-
-
     print(f'The Single WEC Rated Power is {P_isolated} kW')
 
     # power produced by isolated WECs with radii corresponding to the
@@ -93,7 +61,7 @@ for index in index_range:
 
 #instead off plotting with index range..let's plot with LCOE and Distance
 
-df = pd.read_csv("../data/paretos/FINALdomObjective.csv")   
+df = pd.read_csv("../data/paretos/reactive_objectives.csv")   
 lcoe = df.iloc[:,0]
 dist = df.iloc[:,1]
 
@@ -107,4 +75,4 @@ plt.xlabel('lcoe')
 plt.ylabel('dist')
 plt.title('Variation of q-factor across pareto optimal design objectives')
 plt.savefig('post_pro/plots/q_factor.pdf')
-np.savetxt('qfactor.out', np.asarray(q),delimiter=',')
+np.savetxt('../data/reactive_qfactor.out', np.asarray(q),delimiter=',')
