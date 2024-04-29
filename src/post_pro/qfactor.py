@@ -10,24 +10,16 @@ sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
 script_dir = os.path.dirname(__file__)
 
 ###### CHANGE 'domDesign' TO THE CORRECT CSV FILE !!!!!!!!!!!!!!!!!!!!!!!!
-csv_file_path =  '../data/paretos/FINALdomDesign.csv'
+csv_file_path =  '../data/paretos/reactive_designs.csv'
 import modules.model_nWECs as model
 import modules.distances as dis
 import pandas as pd
 import matplotlib.pyplot as plt
 import modules.hydro_terms as hydro
 import modules.wec_array_initialization as cyl
+from parameters.read_params import read_params
 
-# Set-up to match Balitsky Thesis
-wave_freq = 2*np.pi/6  
-wave_amp = 2/2
-wave_dir = 0     
-i = 0.07                # interest rate
-n_avail = 0.95          # availability coefficient (from global avg estimates) **conservative**
-life = 25                  # lifetime of WEC
-array_scaling_factor = 0.65     # account for fact that OPEX does not scale linearly (very simplified)
-
-p = [wave_freq, wave_amp, wave_dir, i,n_avail,life,array_scaling_factor]
+p = read_params()
 x = pd.read_csv(csv_file_path, delimiter=',',header=None)
 print(x.head())
 # setting an index such that we get a few points along the Pareto front
@@ -67,12 +59,11 @@ dist = df.iloc[:,1]
 
 #contour plot for q-factor
 print(q)
-np.savetxt('qfactor.out', np.asarray(q),delimiter=',')
-lcoe_grid, dist_grid = np.meshgrid(lcoe, dist)
+""" lcoe_grid, dist_grid = np.meshgrid(lcoe, dist)
 plt.contourf(lcoe_grid, dist_grid, q.reshape(lcoe_grid.shape))
 plt.colorbar(label='q')  
 plt.xlabel('lcoe')
 plt.ylabel('dist')
 plt.title('Variation of q-factor across pareto optimal design objectives')
-plt.savefig('post_pro/plots/q_factor.pdf')
+plt.savefig('post_pro/plots/q_factor.pdf') """
 np.savetxt('../data/reactive_qfactor.out', np.asarray(q),delimiter=',')
