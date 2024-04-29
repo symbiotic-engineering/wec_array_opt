@@ -18,7 +18,6 @@ def get_cylinder(r,L,x,y,d):    # creates one WEC body
         mesh = capy.meshes.predefined.mesh_vertical_cylinder(radius=r,center=(x,y,0), length=L)
     body = capy.FloatingBody(mesh)
     body.add_translation_dof(name='Heave')
-    body.keep_immersed_part()
     body = body.immersed_part()
     body.name = f'{x}_{y}'
     body.home = np.array([x,y,0])

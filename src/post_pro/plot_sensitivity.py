@@ -3,13 +3,19 @@ parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
 sys.path.insert(0,parent_folder)
 import matplotlib.pyplot as plt
 import pandas as pd
+import scienceplots
+plt.style.use(['science','no-latex','notebook'])
 
 
 
 ## plotting the sensitivity convergence with samples
-df = pd.read_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data.csv")
-df = df.rename(columns={'Unnamed: 0': 'parameter'})
+df1 = pd.read_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data.csv")
+df1 = df1.rename(columns={'Unnamed: 0': 'parameter'})
 
+df2 = pd.read_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data_more.csv")
+df2 = df2.rename(columns={'Unnamed: 0': 'parameter'})
+
+df = pd.concat([df1,df2],axis = 0)
 fig, ax = plt.subplots()
 
 # Color map for coloring the lines by parameter
@@ -22,9 +28,9 @@ ax.set_yscale('log')
 # Add labels and legend
 ax.set_xlabel('Samples')
 ax.set_ylabel('ST')
-ax.legend(title='Parameter')
+ax.legend(title='Parameters',loc='lower left',fontsize='small')
 
-plt.title('Convergence of total sensitivity for omega')
+plt.title('Convergence of total sensitivity index of parameters')
 
 plt.show()
 

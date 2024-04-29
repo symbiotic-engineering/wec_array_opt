@@ -19,23 +19,23 @@ def pareto_dataset():
 df = pareto_dataset()
 df.to_csv("../data/paretos/combined_design_and_vars.csv")
 
-# better than cheese melt
-melted_df = df.melt(var_name='variable', value_name='value')
-print(melted_df.head())
-# Plot using seaborn
-plt.figure(figsize=(10, 6))
-grouped = melted_df.groupby('variable')
-for variable, data in grouped:
-    plt.plot(data.reset_index().index, (data['value']- data['value'].iloc[0]), label=variable)
+# # better than cheese melt
+# melted_df = df.melt(var_name='variable', value_name='value')
+# print(melted_df.head())
+# # Plot using seaborn
+# plt.figure(figsize=(10, 6))
+# grouped = melted_df.groupby('variable')
+# for variable, data in grouped:
+#     plt.plot(data.reset_index().index, (data['value']- data['value'].iloc[0]), label=variable)
    
 
-plt.xlabel('Index')
-plt.ylabel('value - min lcoe value')
-plt.title('Variation across the pareto front')
-plt.legend(title='Variables', loc='center left', bbox_to_anchor=(1, 0.5), fontsize='small')  
-plt.savefig("post_pro/plots/dv_variations.pdf")
+# plt.xlabel('Index')
+# plt.ylabel('value - min lcoe value')
+# plt.title('Variation across the pareto front')
+# plt.legend(title='Variables', loc='center left', bbox_to_anchor=(1, 0.5), fontsize='small')  
+# plt.savefig("post_pro/plots/dv_variations.pdf")
 
-stop
+
 df['mean_damp'] = df[['log_d1', 'log_d2', 'log_d3', 'log_d4']].mean(axis=1)
 df['L'] = df['L/r'] * df['r']
 
@@ -55,10 +55,6 @@ df['radius'] = np.maximum.reduce([df['radius1'], df['radius2'], df['radius3']])
 df['area'] = np.pi * df['radius']**2
 
 
-#plot design variable for designs in pareto set
-
-
-
 
 
 #Minimal LCOE and average damping plot
@@ -73,7 +69,7 @@ df_final = df[['mean_damp','r','L','area','LCOE','distance']]
 # df_final = df_final.drop(columns=mask.columns.tolist(), axis=1)
 # print(df_final.columns)
 #interpret relationship between two objectives.#
-model = ols('LCOE ~ distance + L + mean_damp + area + r ',data = df).fit(intercept = False) #+ np.power(distance, 2)
+model = ols('LCOE ~ distance',data = df).fit(intercept = False) #+ np.power(distance, 2)
 coefficients = model.params
 print(model.summary())
 
@@ -91,6 +87,7 @@ latex_equation = "$" + regression_equation + "$"
 
 #sns.regplot(x="LCOE", y="distance + L  ", data=df_final)
 # plt.savefig('post_pro/plots/regplot.pdf')
+df = df[['area','mean_damp','r','LCOE','distance']]
 sns.pairplot(df_final,kind="reg", plot_kws={'line_kws':{'color':'red'}})
 plt.xlabel('X Label', fontsize=20, fontweight='bold',rotation=45)
 plt.ylabel('Y Label', fontsize=20, fontweight='bold',rotation=45)

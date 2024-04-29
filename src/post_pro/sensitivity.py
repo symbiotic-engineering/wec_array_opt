@@ -42,7 +42,7 @@ csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'reactive_designs.
 df = pd.read_csv(csv_file_path, delimiter=',',header=None)
 
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-index_range = [2]
+index_range = [113] # 113 is the recommended design
 #np.arange(0, df.shape[0], 20, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
 some_pareto_designs = []
@@ -98,10 +98,11 @@ def run_parallel_convergence_sensitivity(N_values,design,parameter_problem):
         total_df = pd.concat(total_SI)
     return total_df
 #run: sobol sequence convergence
-total_convergence_df = run_parallel_convergence_sensitivity(N_values,some_pareto_designs[0],parameter_problem)
-total_convergence_df.to_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data_more.csv")
-#after sobol convergence, N = 1000 is picked --
+# total_convergence_df = run_parallel_convergence_sensitivity(N_values,some_pareto_designs[0],parameter_problem)
+# total_convergence_df.to_csv("~/wec_array_opt/data/sensitivities/sobol_convergence_data_more.csv")
+
+#===============after sobol convergence, N = 4096 is picked ==========================================--
 #====================SENSITIVITY STUDY ======================
-# for pareto_design in some_pareto_designs:
-#     total_df = run_sensitivity_sampler(pareto_design, 10000,write_out = True)
-#     total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")
+for pareto_design in some_pareto_designs:
+    total_df = run_sensitivity_sampler(pareto_design, 4096,parameter_problem,write_out = True)
+    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")
