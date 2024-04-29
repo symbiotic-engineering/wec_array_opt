@@ -9,7 +9,6 @@ grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "..
 sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
 script_dir = os.path.dirname(__file__)
 
-###### CHANGE 'domDesign' TO THE CORRECT CSV FILE !!!!!!!!!!!!!!!!!!!!!!!!
 csv_file_path =  '../data/paretos/reactive_designs.csv'
 import modules.model_nWECs as model
 import modules.distances as dis
@@ -51,19 +50,4 @@ for index in index_range:
     q.append(q_factor)
     print("==================================================================================")
 
-#instead off plotting with index range..let's plot with LCOE and Distance
-
-df = pd.read_csv("../data/paretos/reactive_objectives.csv")   
-lcoe = df.iloc[:,0]
-dist = df.iloc[:,1]
-
-#contour plot for q-factor
-print(q)
-""" lcoe_grid, dist_grid = np.meshgrid(lcoe, dist)
-plt.contourf(lcoe_grid, dist_grid, q.reshape(lcoe_grid.shape))
-plt.colorbar(label='q')  
-plt.xlabel('lcoe')
-plt.ylabel('dist')
-plt.title('Variation of q-factor across pareto optimal design objectives')
-plt.savefig('post_pro/plots/q_factor.pdf') """
-np.savetxt('../data/reactive_qfactor.out', np.asarray(q),delimiter=',')
+np.savetxt('../data/qfactor.out', np.asarray(q),delimiter=',')
