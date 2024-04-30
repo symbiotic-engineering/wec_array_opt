@@ -28,7 +28,7 @@ from joblib import Parallel, delayed
 parameter_problem = {
     "num_vars": 8, #variables or parameters
     "names": ['omega','wave_heading','wave_amplitude','interest','n_avail','L','array_scaling_factor','Fmax'], 
-    "bounds": [[0.1, 3.1], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99],[2e5,3e5]]
+    "bounds": [[0.1, 3.1], [-np.pi, np.pi],[0.2,3],[0.05,0.2],[0.79,0.99],[5,35],[0.5,0.99],[1e4,1e6]]
   #  "groups": ['wave','wave','wave','wave','economics','wave','economics','economics'] #maybe group wave and econ separately.
 }
 
@@ -54,6 +54,7 @@ for index in index_range:
 #run theh 'nominal' values picked by sampler 
 def run_model(optimal_dv,X):
     p = [*X]
+    print(p)
     return model.run(optimal_dv, p, check_condition=False,sensitivity_run=True)[0]
 
 
