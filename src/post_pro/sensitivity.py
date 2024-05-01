@@ -42,7 +42,7 @@ csv_file_path = os.path.join( '~/wec_array_opt/data/paretos', 'reactive_designs.
 df = pd.read_csv(csv_file_path, delimiter=',',header=None)
 
 #index_range = np.arange(0, end, int(0.1 * end), dtype=int)
-index_range = [113] # 113 is the recommended design
+index_range = [84] # 84 is the recommended design
 #np.arange(0, df.shape[0], 20, dtype=int)
 # for loop to calculate q-factor for Pareto optimal points
 some_pareto_designs = []
@@ -65,7 +65,7 @@ def run_sensitivity_sampler(optimal_dv, N_samples, parameter_problem,write_out=T
 # use all available processors.
     Y = Parallel(n_jobs=-1)(delayed(run_model)(optimal_dv,X) for X in param_values)
     Y = np.asarray(Y)
-    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples= 1000, conf_level=0.95, print_to_console=False)
+    Si = sobol.analyze(parameter_problem, Y, calc_second_order=True, num_resamples= 5000, conf_level=0.95, print_to_console=False)
     
     total_Si, first_Si, second_Si = Si.to_df()
    
