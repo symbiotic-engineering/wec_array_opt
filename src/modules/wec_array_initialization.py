@@ -94,13 +94,13 @@ def run(wecx,wecy,r,L,ds): # Initializes the WEC Array, creates the bodies
 
 
 # Predefined Layouts
-def grid(r,L,ds): #generate a grid layout and passes bodies for optimization
+def grid(r,L,ds,space=50): #generate a grid layout and passes bodies for optimization
     # r     ->  radius of wec
     # L     ->  wec length
     # ds    ->  list of pto dampings
-    wecX, wecY = np.meshgrid(np.linspace(-30,30,2),np.linspace(0,60,2))
-    wecx = wecX.flatten()
-    wecy = wecY.flatten()
+    wecX, wecY = np.meshgrid(np.linspace(-1/2,1/2,2),np.linspace(0,1,2))
+    wecx = wecX.flatten()*space
+    wecy = wecY.flatten()*space
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 

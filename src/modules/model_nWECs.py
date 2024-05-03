@@ -42,7 +42,7 @@ def pack_x(wecx,wecy,r,L,d):  # packs variables into design vector
         x[5+3*ii] = np.log10(d[ii+1])
     return x
 
-def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=False,shape=None,q_single=False):   # the big one, runs the whole thing
+def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=False,shape=None,q_single=False,spacing=50):   # the big one, runs the whole thing
     #   x               ->  design vector
     #   p               ->  parameter vector
     #   reactive        ->  boolean to set if reactive (true) or resistive (false) control is used
@@ -63,10 +63,10 @@ def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=F
     F_max = p[7]
 
     # Create Bodies     
-    if shape == None: bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp) # use design vector
-    elif shape == 1: bodies = array_init.grid(wec_radius,wec_length,damp)           # use grid layout
-    elif shape == 2: bodies = array_init.line(wec_radius,wec_length,damp)           # use line layout
-    elif shape == 3: bodies = array_init.random(wec_radius,wec_length,damp)         # use "random" layout
+    if shape == None: bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)     # use design vector
+    elif shape == 1: bodies = array_init.grid(wec_radius,wec_length,damp,space=spacing) # use grid layout
+    elif shape == 2: bodies = array_init.line(wec_radius,wec_length,damp)               # use line layout
+    elif shape == 3: bodies = array_init.random(wec_radius,wec_length,damp)             # use "random" layout
     else: print('Not a real shape')
 
     end_time = time.time()
