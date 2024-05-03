@@ -3,11 +3,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-q = np.loadtxt('../data/qfactor.out')
+q = np.loadtxt('../data/qfactor_filtered.out')
 print(len(q))
 df = pd.read_csv("../data/paretos/reactive_objectives.csv",header = None)   
-lcoe = df.iloc[:,0]
-dist = df.iloc[:,1]
+lcoe = df.iloc[:114,0]
+dist = df.iloc[:114,1]
 
 print(len(lcoe))
 plt.scatter(lcoe, q)
