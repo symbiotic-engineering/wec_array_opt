@@ -29,3 +29,4 @@ data/sensitivities/total_sensitivity.csv
 data/sensitivities/200_first.csv
 src/post_pro/plots/*
 degoede_ignore
+src/optimization_interfaces/__pycache__/*
