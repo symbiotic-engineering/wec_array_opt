@@ -95,4 +95,4 @@ def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=F
     end_time = time.time()
     if time_data:  # prints time info if switched on
         print(f'Power/LCOE time:   {end_time-start_time}')
-    return LCOE.item(),AEP.item(),P.item()
+    return LCOE.item(),AEP.item(),P.item(),np.array([Xi[body] for body in bodies])

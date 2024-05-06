@@ -16,7 +16,7 @@ x = model.pack_x(np.array([0]),np.array([0]),r,L,d)
 model.run(x,p,time_data=True)
 print("==================================================================================")
 
-LCOE,AEP,rated_P = model.run(x,p,time_data=True,reactive=True)
+LCOE,AEP,rated_P,Xi = model.run(x,p,time_data=True,reactive=True)
 print("==================================================================================")
 print(f'The LCOE is {LCOE} $/kWh')
 print(f'The AEP is {AEP} kWh')

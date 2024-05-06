@@ -27,14 +27,18 @@ def build_x(X,nWEC):
     return x
 def constraint(x,p,min_space=5):
     return min_space*x[0] - dis.min_d(x,p)
+def check_motion(x,p,Xi):
+    wave_amp = p[1]
+    wec_radius, wec_length, wecx, wecy, damp, nWEC = model.unpack_x(x)
+    return np.max(abs(Xi)) - wave_amp+wec_length/2
 def calc_LCOE(x,p,shape=None,spacing=50):
     f = model.run(x,p,shape=shape,spacing=spacing)                              #   Run the model
-    return f[0]
+    return f[0],f[3]
 
 class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
     def __init__(self,p,limits,nWEC,min_space=5,shape=None,spacing=50,**kwargs):    #   P is parameters, limits is the bounds on each var type
         vars =create_vars(limits,nWEC)
-        super().__init__(n_obj=1,n_ieq_constr=1,vars=vars,**kwargs)
+        super().__init__(n_obj=1,n_ieq_constr=2,vars=vars,**kwargs)
         self.parameters = p
         self.nWEC = nWEC
         self.space = min_space
@@ -43,23 +47,25 @@ class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
     def _evaluate(self, X, out, *args, **kwargs):
         p = self.parameters
         x = build_x(X,self.nWEC)
-        f1 = calc_LCOE(x,p,self.shape,spacing=self.spacing) #   Calculate LCOE
-        g1 = constraint(x,p,min_space=self.space)           #   Check constraint on minimum distance
+        f1,Xi = calc_LCOE(x,p,self.shape,spacing=self.spacing)  #   Calculate LCOE
+        g1 = constraint(x,p,min_space=self.space)               #   Check constraint on minimum distance
+        g2 = check_motion(x,p,Xi)                               #   Motion constraint
         out["F"] = [f1]
-        out["G"] = [g1]
+        out["G"] = [g1,g2]
 
 class mooProblem(ElementwiseProblem):               #   same problem as before, except 2 objectives
     def __init__(self,p,limits,nWEC,min_space=5,shape=None,**kwargs):      #   P is parameters, limits is the bounds on each var type
         vars =create_vars(limits,nWEC)
-        super().__init__(n_obj=2,n_ieq_constr=1,vars=vars,**kwargs)
+        super().__init__(n_obj=2,n_ieq_constr=2,vars=vars,**kwargs)
         self.parameters = p
         self.nWEC = nWEC
         self.space = min_space
     def _evaluate(self, X, out, *args, **kwargs):
         p = self.parameters
         x = build_x(X,self.nWEC)
-        f1 = calc_LCOE(x,p)                         #   Calculate LCOE
+        f1,Xi = calc_LCOE(x,p)                      #   Calculate LCOE
         f2 = dis.max_d(x,p)                         #   2nd objective is minimizing the maximum spacing between wecs
         g1 = constraint(x,p,min_space=self.space)   #   Check constraint on minimum distance
+        g2 = check_motion(x,p,Xi)                   #   Motion constraint
         out["F"] = [f1,f2]
-        out["G"] = [g1]
+        out["G"] = [g1,g2]
