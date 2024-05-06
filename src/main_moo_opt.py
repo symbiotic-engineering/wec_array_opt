@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # p = [Wave Frequency, Wave Amplitude, wave direction, interest, availability, lifetime, array scaling factor,F_max]
 
     # Limits on Design variables
-    limits = {'dr':[4,20], 'L':[0.1,0.2], 'x':[-500,500], 'y':[-500,500], 'd':[0,7]}
+    limits = {'dr':[4,20], 'L':[0.1,2], 'x':[-500,500], 'y':[-500,500], 'd':[0,7]}
 
     # Opt paramaters
     nWEC = 4

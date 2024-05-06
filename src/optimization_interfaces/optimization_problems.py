@@ -30,7 +30,7 @@ def constraint(x,p,min_space=5):
 def check_motion(x,p,Xi):
     wave_amp = p[1]
     wec_radius, wec_length, wecx, wecy, damp, nWEC = model.unpack_x(x)
-    return np.max(abs(Xi)) - wave_amp+wec_length/2
+    return np.max(abs(Xi)) - (wave_amp+wec_length/2)
 def calc_LCOE(x,p,shape=None,spacing=50):
     f = model.run(x,p,shape=shape,spacing=spacing)                              #   Run the model
     return f[0],f[3]
