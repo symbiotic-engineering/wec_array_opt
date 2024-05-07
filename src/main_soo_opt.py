@@ -28,6 +28,6 @@ if __name__ == "__main__":
 		print(f'Optimization took {end_time-start_time} s')
 
 		# save design
-		with open(f'../data/experiments/interaction_{_}_reactive', 'w', newline='') as csvfile:
+		with open(f'../data/experiments/interaction_{_}_reactive_{spacing}', 'w', newline='') as csvfile:
 			writer = csv.writer(csvfile, delimiter=',')
 			writer.writerow([build_x(X,N),F])
