@@ -1,24 +1,24 @@
-def waveField(x_optimal):
-    import sys
-    import os
-    parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    sys.path.append(parent_folder)
-    grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-    sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
-    import capytaine as capy
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib import cm
-    from matplotlib.colors import ListedColormap, LinearSegmentedColormap
-    from capytaine.bem.airy_waves import airy_waves_potential, airy_waves_velocity, froude_krylov_force
-    from capytaine.bem.airy_waves import airy_waves_free_surface_elevation
-    import pyplotutilities.colors as colors
-    import modules.wec_array_initialization as array_init
-    import modules.model_nWECs as model
-    from parameters.read_params import read_params
-    import modules.hydro_terms as hydro
-    from modules.dynamics_controls import wec_dyn 
+import sys
+import os
+parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(parent_folder)
+grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
+import capytaine as capy
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+from capytaine.bem.airy_waves import airy_waves_potential, airy_waves_velocity, froude_krylov_force
+from capytaine.bem.airy_waves import airy_waves_free_surface_elevation
+import pyplotutilities.colors as colors
+import modules.wec_array_initialization as array_init
+import modules.model_nWECs as model
+from parameters.read_params import read_params
+import modules.hydro_terms as hydro
+from modules.dynamics_controls import wec_dyn 
 
+def waveField(x_optimal):
     p = read_params()
     wec_radius,wec_length,wecx,wecy,damp,N = model.unpack_x(x_optimal)
     bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp) # use design vector
@@ -78,11 +78,16 @@ def waveField(x_optimal):
     plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
     plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
     plt.tight_layout()
-    plt.savefig('post_pro/plots/kd_minLCOE.pdf')
+    plt.savefig('post_pro/plots/kd_minSPACE.pdf')
     plt.show()
     return
 
-import numpy as np
 # optimal parameters and design variables
-x_optimal = np.array([8.0,0.10000342644859998,5.547542754651831,24.266210287828336,64.50412981468327,5.5488186147585585,47.37176881575031,-0.5568212532930796,5.560543492258006,-22.87242901300752,65.98209563108522,5.5581438747010585])
+def get_design(file_path, x):
+    # Read the file
+    data = np.genfromtxt(file_path, delimiter=',')
+    # Get the line x
+    line_x = data[x]
+    return line_x
+x_optimal = get_design('../data/paretos/designs_filtered.csv', 114-1)
 waveField(x_optimal)
