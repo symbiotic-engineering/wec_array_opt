@@ -14,7 +14,7 @@ import scienceplots
 plt.style.use(['science','no-latex','notebook'])
 
 f1, f2 = [], []
-with open('../data/paretos/reactive_objectives.csv', newline='') as csvfile:
+with open('../data/paretos/objectives_filtered.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         f1.append(float(row[0]))
@@ -52,5 +52,5 @@ plt.xlabel('LCOE [$/kWh]')
 plt.ylabel('Maximum Array Dimension [m]')
 plt.title("")
 
-plt.savefig('post_pro/plots/pareto.pdf')
+plt.savefig('post_pro/plots/pareto_filtered.pdf')
 
