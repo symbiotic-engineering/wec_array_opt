@@ -9,7 +9,7 @@ grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "..
 sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
 script_dir = os.path.dirname(__file__)
 
-csv_file_path =  '../data/paretos/reactive_designs.csv'
+csv_file_path =  '../data/paretos/des.csv'
 import modules.model_nWECs as model
 import modules.distances as dis
 import pandas as pd
@@ -33,12 +33,12 @@ for index in index_range:
     wec_radius, wec_length, wecx, wecy, damp, N = model.unpack_x(row)   # unpacking the variables
     print(f"WEC Radius: {wec_radius} and wec_length is {wec_length}")
 
-    LCOE,AEP,rated_P = model.run(row,p)     # running power calculations
+    LCOE,AEP,rated_P,Xi = model.run(row,p)     # running power calculations
     print(f'The Rated Power is {rated_P} kW')
 
 
     x_single = model.pack_x(np.array([0]),np.array([0]),wec_radius,wec_length,np.array([3.6e5]))
-    LCOE,AEP,P_isolated = model.run(x_single,p,q_single=True)
+    LCOE,AEP,P_isolated,Xi = model.run(x_single,p,q_single=True)
 
     print(f'The Single WEC Rated Power is {P_isolated} kW')
 
@@ -49,4 +49,4 @@ for index in index_range:
     q.append(q_factor)
     print("==================================================================================")
 
-np.savetxt('../data/qfactor.out', np.asarray(q),delimiter=',')
+np.savetxt('../data/qfactor2.out', np.asarray(q),delimiter=',')
