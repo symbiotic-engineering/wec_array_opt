@@ -105,4 +105,4 @@ def run_parallel_convergence_sensitivity(N_values,design,parameter_problem):
 #====================SENSITIVITY STUDY ======================
 for pareto_design in some_pareto_designs:
     total_df = run_sensitivity_sampler(pareto_design, 4096,parameter_problem,write_out = True)
-    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergece.csv")
+    total_df.to_csv(f"~/wec_array_opt/data/sensitivities/total_SI_convergence.csv")
