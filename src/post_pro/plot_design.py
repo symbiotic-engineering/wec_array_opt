@@ -9,8 +9,13 @@ import modules.model_nWECs as model
 import numpy as np
 import pyplotutilities.colors as colors
 # Design to plot
-x = [8.0,0.10000176846656803,5.581093837920735,25.099245914231062,57.349730490385554,5.591793670279263,35.566394383063724,18.715676400728057,5.544893817794155,-11.407404511152668,39.45913157871826,5.54611649142049]
-
+def get_design(file_path, x):
+    # Read the file
+    data = np.genfromtxt(file_path, delimiter=',')
+    # Get the line x
+    line_x = data[x]
+    return line_x
+x = get_design('../data/paretos/designs_filtered.csv',0)
 # get x and y
 r, L, x, y, d, N = model.unpack_x(x)
 print(d)
@@ -30,4 +35,4 @@ ax.set_xlim([-40,80])
 ax.set_ylim([-40,80])
 ax.set_aspect('equal', adjustable='box')
 #plt.show()
-plt.savefig('post_pro/plots/design_minSPACE.pdf')
+plt.savefig('post_pro/plots/design.pdf')

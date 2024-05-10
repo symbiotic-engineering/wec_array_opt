@@ -55,39 +55,3 @@ plt.grid(True)
 plt.tight_layout() 
 plt.savefig("post_pro/plots/SI_total.pdf")
 plt.close('all')
-
-#similarly for first order 
-first_Si = pd.read_csv(path_first_Si)
-plt.figure(figsize=(8, 6))
-plt.errorbar(first_Si['Unnamed: 0'], first_Si['S1'], yerr=first_Si['S1_conf'], fmt='o', color='blue')
-plt.title('Scatter Plot of first order sensitivity with Confidence Bars')
-#plt.yscale('log')
-plt.xlabel('parameters')
-plt.ylabel('ST')
-plt.xticks(rotation=45, ha='right') 
-plt.grid(True)
-plt.tight_layout() 
-plt.show()
-plt.savefig("post_pro/plots/SI_first.pdf")
-plt.close('all')
-
-
-#similarly for second order interactin 
-# wave heading seems to have more noisy evaluation but no statistical significant impact.
-no_waveheading_sensitivity = "../data/sensitivities/second_no_waveheading.csv" 
-second_Si = pd.read_csv(path_second_Si)
-plt.figure(figsize=(8, 6))
-second_Si = second_Si.sort_values(by='S2', ascending=False)
-#plt.bar(second_Si_sorted['Unnamed: 0'], second_Si_sorted['S2'], color='blue')
-plt.errorbar(second_Si['Unnamed: 0'], second_Si['S2'], yerr=second_Si['S2_conf'], fmt='o', color='blue', capsize=5)
-plt.title('Scatter Plot of second order sensitivity')
-plt.xlabel('parameters')
-#plt.yscale('log')
-plt.ylabel('S2')
-plt.xticks(rotation=45, ha='right') 
-plt.grid(True)
-plt.tight_layout() 
-plt.show()
-plt.savefig("post_pro/plots/SI_second.pdf")
-plt.close('all')
-
