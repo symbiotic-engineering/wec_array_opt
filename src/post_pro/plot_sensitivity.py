@@ -31,10 +31,8 @@ ax.set_ylabel('ST')
 ax.legend(title='Parameters',loc='lower left',fontsize='small')
 
 plt.title('Convergence of total sensitivity index of parameters')
-
-plt.show()
-
 plt.savefig("post_pro/plots/sobol_convergence.pdf")
+plt.show()
 
 path_total_Si = "../data/sensitivities/total.csv"
 path_first_Si = "../data/sensitivities/first.csv"
