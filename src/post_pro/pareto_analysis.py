@@ -75,8 +75,8 @@ print(model.summary())
 
 latex_output = model.summary().as_latex()
 
-with open('post_pro/plots/regression_output.tex', 'w') as f:
-    f.write(latex_output)
+# with open('post_pro/plots/regression_output.tex', 'w') as f:
+#     f.write(latex_output)
 
 regression_equation = f"y = {coefficients['Intercept']:.4f}"
 for i, coef in enumerate(coefficients[1:], start=1):
