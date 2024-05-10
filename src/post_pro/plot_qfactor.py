@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-q = np.loadtxt('../data/qfactor.out')
+q = np.loadtxt('../data/qfactor/qfactor_filtered.out')
 print(len(q))
-df = pd.read_csv("../data/paretos/reactive_objectives.csv",header = None)   
+df = pd.read_csv("../data/paretos/objectives_filtered.csv",header = None)   
 lcoe = df.iloc[:,0]
 dist = df.iloc[:,1]
 
