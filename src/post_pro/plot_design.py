@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import modules.model_nWECs as model
 import numpy as np
 import pyplotutilities.colors as colors
+import scienceplots
+plt.style.use(['science','no-latex','notebook'])
+
 # Design to plot
 def get_design(file_path, x):
     # Read the file
@@ -15,7 +18,7 @@ def get_design(file_path, x):
     # Get the line x
     line_x = data[x]
     return line_x
-x = get_design('../data/paretos/designs_filtered.csv',0)
+x = get_design('../data/paretos/designs_filtered.csv',113)
 # get x and y
 r, L, x, y, d, N = model.unpack_x(x)
 print(d)
@@ -35,4 +38,4 @@ ax.set_xlim([-40,80])
 ax.set_ylim([-40,80])
 ax.set_aspect('equal', adjustable='box')
 #plt.show()
-plt.savefig('post_pro/plots/design.pdf')
+plt.savefig('post_pro/plots/design_space.pdf')

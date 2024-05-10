@@ -2,6 +2,8 @@ import numpy as np
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import scienceplots
+plt.style.use(['science','no-latex','notebook'])
 
 q = np.loadtxt('../data/qfactor/qfactor_filtered.out')
 print(len(q))
