@@ -8,5 +8,5 @@ src/__init__.py
 src/modules/__init__.py
 
 src/post_pro/plots/*
-degoede_ignore
+degoede_ignore/*
 src/optimization_interfaces/__pycache__/*
