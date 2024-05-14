@@ -4,11 +4,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
-
+import scienceplots
+plt.style.use(['science','no-latex','notebook'])
 #combining optimal design with their optimal objectives for analysis and interpretation.
 def pareto_dataset():
-    df1 = pd.read_csv("../data/paretos/reactive_objectives.csv",names = ['LCOE','distance'],header= None)   
-    df2 = pd.read_csv("../data/paretos/reactive_designs.csv",names = ['r', 'L/r', 'log_d1', 'x2', 'y2', 'log_d2','x3', 'y3', 'log_d3','x4', 'y4', 'log_d4'],header = None)
+    df1 = pd.read_csv("../data/paretos/objectives_filtered.csv",names = ['LCOE','distance'],header= None)   
+    df2 = pd.read_csv("../data/paretos/designs_filtered.csv",names = ['r', 'L/r', 'log_d1', 'x2', 'y2', 'log_d2','x3', 'y3', 'log_d3','x4', 'y4', 'log_d4'],header = None)
 
     df1.reset_index(drop=True, inplace=True)
     df2.reset_index(drop=True, inplace=True)
@@ -19,21 +20,6 @@ def pareto_dataset():
 df = pareto_dataset()
 df.to_csv("../data/paretos/combined_design_and_vars.csv")
 
-# # better than cheese melt
-# melted_df = df.melt(var_name='variable', value_name='value')
-# print(melted_df.head())
-# # Plot using seaborn
-# plt.figure(figsize=(10, 6))
-# grouped = melted_df.groupby('variable')
-# for variable, data in grouped:
-#     plt.plot(data.reset_index().index, (data['value']- data['value'].iloc[0]), label=variable)
-   
-
-# plt.xlabel('Index')
-# plt.ylabel('value - min lcoe value')
-# plt.title('Variation across the pareto front')
-# plt.legend(title='Variables', loc='center left', bbox_to_anchor=(1, 0.5), fontsize='small')  
-# plt.savefig("post_pro/plots/dv_variations.pdf")
 
 
 df['mean_damp'] = df[['log_d1', 'log_d2', 'log_d3', 'log_d4']].mean(axis=1)
@@ -53,55 +39,54 @@ df['radius'] = np.maximum.reduce([df['radius1'], df['radius2'], df['radius3']])
 
 # Calculate the area of the circle inscribing the points
 df['area'] = np.pi * df['radius']**2
-
-
-
-
 #Minimal LCOE and average damping plot
-
 df_final = df[['mean_damp','r','L','area','LCOE','distance']]
-# correlation_matrix = df_final.corr().abs()
-# print(correlation_matrix)
-# # Create a mask for removing highly correlated features
-# mask = correlation_matrix.mask(correlation_matrix <= 0.95, 1)
-# print(mask.columns.tolist())
-# # Drop the columns with high correlation
-# df_final = df_final.drop(columns=mask.columns.tolist(), axis=1)
-# print(df_final.columns)
+
+#do it twice for two discrete decision space in the pareto front.
+cluster_after = 83 #also the recommended design.84th
 #interpret relationship between two objectives.#
-model = ols('LCOE ~ distance',data = df).fit(intercept = False) #+ np.power(distance, 2)
-coefficients = model.params
-print(model.summary())
-
-latex_output = model.summary().as_latex()
-
+model1 = ols('LCOE ~ distance',data = df.iloc[:83]).fit(intercept = False) #+ np.power(distance, 2)
+model2 = ols('LCOE ~ distance',data = df.iloc[84:]).fit(intercept = False)
+print(model1.rsquared)
+print(model2.rsquared)
+print()
+coefficients1 = model1.params
+coefficients2 = model2.params
+# latex_output = model.summary().as_latex()
 # with open('post_pro/plots/regression_output.tex', 'w') as f:
 #     f.write(latex_output)
 
-regression_equation = f"y = {coefficients['Intercept']:.4f}"
-for i, coef in enumerate(coefficients[1:], start=1):
-    regression_equation += f" + ({coef:.4f}) * X_{i}"
+regression_equation1 = f"y = {coefficients1['Intercept']:.4f}"
+for i, coef in enumerate(coefficients1[1:], start=1):
+    regression_equation1 += f" + ({coef:.4f}) * X_{i}"
+
+regression_equation2 = f"y = {coefficients1['Intercept']:.4f}"
+for i, coef in enumerate(coefficients2[1:], start=1):
+    regression_equation2 += f" + ({coef:.4f}) * X_{i}"
+
 
 # Convert the equation to LaTeX format
-latex_equation = "$" + regression_equation + "$"
+latex_equation1 = "$" + regression_equation1 + "$"
+latex_equation2 = "$" + regression_equation2 + "$"
+print(latex_equation1)
+print(latex_equation2)
 
-#sns.regplot(x="LCOE", y="distance + L  ", data=df_final)
-# plt.savefig('post_pro/plots/regplot.pdf')
-df = df[['area','mean_damp','r','LCOE','distance']]
-sns.pairplot(df_final,kind="reg", plot_kws={'line_kws':{'color':'red'}})
-plt.xlabel('X Label', fontsize=20, fontweight='bold',rotation=45)
-plt.ylabel('Y Label', fontsize=20, fontweight='bold',rotation=45)
-#OR add correlation plot?
-plt.savefig('post_pro/plots/Interactions.pdf')
+# Plot regression for the first subset
+sns.regplot(y="LCOE", x="distance", data=df.iloc[:83], label='Cluster 1',line_kws={"color": "orange"}, scatter_kws={"color": "blue"})
 
-# corr_matrix = df.corr()
+# Plot regression for the second subset
+sns.regplot(y="LCOE", x="distance", data=df.iloc[84:], label='Cluster 2',line_kws={"color": "green"}, scatter_kws={"color": "magenta"})
 
-# mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+# Add equations for each line
+plt.text(0.15, 0.8, r'$LCOE_{1} = 0.2475 - 0.0003 \times distance_{1}$', fontsize=14,  fontweight='bold',transform=plt.gca().transAxes)
+plt.text(0.2, 0.1, r'$LCOE_{2} = 0.2475 - 0.0012 \times distance_{2}$', fontsize=14,  fontweight='bold',transform=plt.gca().transAxes)
+plt.xticks(fontsize=12, fontweight='bold') 
+plt.yticks(fontsize=12, fontweight='bold')
+plt.ylabel('LCOE [$/kWh]', fontweight='bold',fontsize=14)
+plt.xlabel('Distance [m]', fontweight='bold',fontsize=14)
+#plt.title('Models for tradeoff analysis for different decision space',fontweight='bold')
+plt.legend()
+plt.grid(True)
+plt.savefig('post_pro/plots/regplot.pdf')
 
-# f, ax = plt.subplots(figsize=(11, 9))
 
-# cmap = sns.diverging_palette(230, 20, as_cmap=True)
-
-# sns.heatmap(corr_matrix, mask=mask, cmap=cmap, vmax=.3, center=0,
-#             square=True, linewidths=.5, cbar_kws={"shrink": .5})
-#plt.savefig('post_pro/plots/regplot.pdf')
