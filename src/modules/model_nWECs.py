@@ -65,7 +65,7 @@ def run(x,p,reactive=True,check_condition=True,sensitivity_run=False,time_data=F
     # Create Bodies     
     if shape == None: bodies = array_init.run(wecx,wecy,wec_radius,wec_length,damp)     # use design vector
     elif shape == 1: bodies = array_init.grid(wec_radius,wec_length,damp,space=spacing) # use grid layout
-    elif shape == 2: bodies = array_init.line(wec_radius,wec_length,damp)               # use line layout
+    elif shape == 2: bodies = array_init.line(wec_radius,wec_length,damp,space=spacing) # use line layout
     elif shape == 3: bodies = array_init.random(wec_radius,wec_length,damp)             # use "random" layout
     else: print('Not a real shape')
 

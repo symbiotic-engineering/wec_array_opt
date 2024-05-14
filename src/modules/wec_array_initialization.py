@@ -104,12 +104,12 @@ def grid(r,L,ds,space=50): #generate a grid layout and passes bodies for optimiz
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
-def line(r,L,ds): #generate line and pass bodies for optimization 
+def line(r,L,ds,space=50): #generate line and pass bodies for optimization 
     # r     ->  radius of wec
     # L     ->  wec length
     # ds    ->  list of pto dampings
     wecx = np.zeros(4)
-    wecy = np.linspace(-75,75,4)
+    wecy = np.linspace(-1.5,1.5,4)*space
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
