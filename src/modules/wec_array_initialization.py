@@ -94,13 +94,13 @@ def run(wecx,wecy,r,L,ds): # Initializes the WEC Array, creates the bodies
 
 
 # Predefined Layouts
-def grid(r,L,ds): #generate a grid layout and passes bodies for optimization
+def grid(r,L,ds,space=50): #generate a grid layout and passes bodies for optimization
     # r     ->  radius of wec
     # L     ->  wec length
     # ds    ->  list of pto dampings
-    wecX, wecY = np.meshgrid(np.linspace(0,50,2),np.linspace(0,50,2))
-    wecx = wecX.flatten()
-    wecy = wecY.flatten()
+    wecX, wecY = np.meshgrid(np.linspace(-1/2,1/2,2),np.linspace(0,1,2))
+    wecx = wecX.flatten()*space
+    wecy = wecY.flatten()*space
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
@@ -109,15 +109,25 @@ def line(r,L,ds): #generate line and pass bodies for optimization
     # L     ->  wec length
     # ds    ->  list of pto dampings
     wecx = np.zeros(4)
-    wecy = np.linspace(0,200,4)
+    wecy = np.linspace(-75,75,4)
     bodies = run(wecx,wecy,r,L,ds)
     return bodies
 
-def random(r,L,ds): #pass optimal random WEC
+def random(r,L,ds): #"random" WEC
     # r     ->  radius of wec
     # L     ->  wec length
     # ds    ->  list of pto dampings
     wecx = np.array([0,30,10,-30])
     wecy = np.array([0,30,-40,20])
+    bodies = run(wecx,wecy,r,L,ds)
+    return bodies
+
+def diamond(r,L,ds):# diamond layout
+    # r     ->  radius of wec
+    # L     ->  wec length
+    # ds    ->  list of pto dampings
+    space = 10*3.6
+    wecx = np.array([0,1,2,1])*space
+    wecy = np.array([0,1,0,-1])*space
     bodies = run(wecx,wecy,r,L,ds)
     return bodies

@@ -19,10 +19,11 @@ if __name__ == "__main__":
 	gens = 40 #periods
 	n_offspring = 50
 	p = read_params()
-
-	for _ in p_shape:
+	_ = 1
+	spacings = [30,50,70]
+	for spacing in spacings:
 		start_time = time.time()
-		X,F= opt.GA(p,limits,nWEC,p_size,gens,space=5,shape=_,n_proccess=24)
+		X,F= opt.GA(p,limits,nWEC,p_size,gens,space=5,shape=_,spacing=spacing,n_proccess=20)
 		end_time = time.time()
 		print(f'Optimization took {end_time-start_time} s')
 

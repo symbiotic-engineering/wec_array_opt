@@ -17,6 +17,8 @@ import modules.model_nWECs as model
 from parameters.read_params import read_params
 import modules.hydro_terms as hydro
 from modules.dynamics_controls import wec_dyn 
+import scienceplots
+plt.style.use(['science','no-latex','notebook'])
 
 def waveField(x_optimal):
     p = read_params()
@@ -78,7 +80,7 @@ def waveField(x_optimal):
     plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
     plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
     plt.tight_layout()
-    plt.savefig('post_pro/plots/kd_minSPACE.pdf')
+    plt.savefig('post_pro/plots/kd_minLCOE.pdf')
     plt.show()
     return
 
@@ -89,5 +91,5 @@ def get_design(file_path, x):
     # Get the line x
     line_x = data[x]
     return line_x
-x_optimal = get_design('../data/paretos/designs_filtered.csv', 114-1)
+x_optimal = get_design('../data/paretos/designs_filtered.csv', 0)
 waveField(x_optimal)

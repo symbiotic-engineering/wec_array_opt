@@ -30,11 +30,9 @@ ax.set_xlabel('Samples')
 ax.set_ylabel('ST')
 ax.legend(title='Parameters',loc='lower left',fontsize='small')
 
-#plt.title('Convergence of total sensitivity index of parameters')
-
-plt.show()
-
+plt.title('Convergence of total sensitivity index of parameters')
 plt.savefig("post_pro/plots/sobol_convergence.pdf")
+plt.show()
 
 path_total_Si = "../data/sensitivities/total.csv"
 path_first_Si = "../data/sensitivities/first.csv"
@@ -55,31 +53,3 @@ plt.grid(True)
 plt.tight_layout() 
 plt.savefig("post_pro/plots/SI_total.pdf")
 plt.close('all')
-
-#for graphical abstract
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Load data
-total_Si = pd.read_csv(path_total_Si)
-total_Si = total_Si.sort_values(by='ST', ascending=True)
-
-# Plot
-plt.figure(figsize=(8, 6))
-plt.barh(total_Si['Unnamed: 0'], total_Si['ST'], height=0.05, alpha=0.5)
-plt.scatter(total_Si['ST'], total_Si['Unnamed: 0'], color='blue', zorder=5, s=150)
-plt.xscale('log')
-plt.title('Total sensitivity of parameters to minimized LCOE', fontsize=16, fontweight='bold')
-plt.ylabel('Parameters', fontsize=14, fontweight='bold')
-plt.xlabel('Total Sensitivity Index', fontsize=14, fontweight='bold')
-plt.xticks(rotation=45, ha='right', fontsize=12, fontweight='bold') 
-plt.yticks(fontsize=12, fontweight='bold',rotation=45)
-plt.grid(True)
-plt.tight_layout() 
-plt.savefig("post_pro/plots/SI_total_abstract.pdf")
-plt.close('all')
-
-
-
-
-

@@ -27,23 +27,24 @@ def build_x(X,nWEC):
     return x
 def constraint(x,p,min_space=5):
     return min_space*x[0] - dis.min_d(x,p)
-def calc_LCOE(x,p,shape=None):
-    f = model.run(x,p,shape=shape)                              #   Run the model
+def calc_LCOE(x,p,shape=None,spacing=50):
+    f = model.run(x,p,shape=shape,spacing=spacing)                              #   Run the model
     return f[0]
 
 class LCOE_sooProblem(ElementwiseProblem):          #   Sinlge Objective Problem
-    def __init__(self,p,limits,nWEC,min_space=5,shape=None,**kwargs):    #   P is parameters, limits is the bounds on each var type
+    def __init__(self,p,limits,nWEC,min_space=5,shape=None,spacing=50,**kwargs):    #   P is parameters, limits is the bounds on each var type
         vars =create_vars(limits,nWEC)
         super().__init__(n_obj=1,n_ieq_constr=1,vars=vars,**kwargs)
         self.parameters = p
         self.nWEC = nWEC
         self.space = min_space
         self.shape = shape
+        self.spacing = spacing
     def _evaluate(self, X, out, *args, **kwargs):
         p = self.parameters
         x = build_x(X,self.nWEC)
-        f1 = calc_LCOE(x,p,self.shape)              #   Calculate LCOE
-        g1 = constraint(x,p,min_space=self.space)   #   Check constraint on minimum distance
+        f1 = calc_LCOE(x,p,self.shape,spacing=self.spacing) #   Calculate LCOE
+        g1 = constraint(x,p,min_space=self.space)           #   Check constraint on minimum distance
         out["F"] = [f1]
         out["G"] = [g1]
 
