@@ -30,7 +30,7 @@ ax.set_xlabel('Samples')
 ax.set_ylabel('ST')
 ax.legend(title='Parameters',loc='lower left',fontsize='small')
 
-plt.title('Convergence of total sensitivity index of parameters')
+#plt.title('Convergence of total sensitivity index of parameters')
 
 plt.show()
 
@@ -47,7 +47,7 @@ plt.figure(figsize=(8, 6))
 plt.barh(total_Si['Unnamed: 0'], total_Si['ST'],height = 0.05,alpha = 0.5)
 plt.scatter(total_Si['ST'], total_Si['Unnamed: 0'], color='blue', zorder=5,s = 150)
 plt.xscale('log')
-plt.title('Total sensitivity of parameters to minimized LCOE')
+#plt.title('Total sensitivity of parameters to minimized LCOE')
 plt.ylabel('parameters')
 plt.xlabel('Total Sensitivity Index', fontsize=14)
 plt.xticks(rotation=45, ha='right') 
@@ -56,38 +56,30 @@ plt.tight_layout()
 plt.savefig("post_pro/plots/SI_total.pdf")
 plt.close('all')
 
-#similarly for first order 
-first_Si = pd.read_csv(path_first_Si)
+#for graphical abstract
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load data
+total_Si = pd.read_csv(path_total_Si)
+total_Si = total_Si.sort_values(by='ST', ascending=True)
+
+# Plot
 plt.figure(figsize=(8, 6))
-plt.errorbar(first_Si['Unnamed: 0'], first_Si['S1'], yerr=first_Si['S1_conf'], fmt='o', color='blue')
-plt.title('Scatter Plot of first order sensitivity with Confidence Bars')
-#plt.yscale('log')
-plt.xlabel('parameters')
-plt.ylabel('ST')
-plt.xticks(rotation=45, ha='right') 
+plt.barh(total_Si['Unnamed: 0'], total_Si['ST'], height=0.05, alpha=0.5)
+plt.scatter(total_Si['ST'], total_Si['Unnamed: 0'], color='blue', zorder=5, s=150)
+plt.xscale('log')
+plt.title('Total sensitivity of parameters to minimized LCOE', fontsize=16, fontweight='bold')
+plt.ylabel('Parameters', fontsize=14, fontweight='bold')
+plt.xlabel('Total Sensitivity Index', fontsize=14, fontweight='bold')
+plt.xticks(rotation=45, ha='right', fontsize=12, fontweight='bold') 
+plt.yticks(fontsize=12, fontweight='bold',rotation=45)
 plt.grid(True)
 plt.tight_layout() 
-plt.show()
-plt.savefig("post_pro/plots/SI_first.pdf")
+plt.savefig("post_pro/plots/SI_total_abstract.pdf")
 plt.close('all')
 
 
-#similarly for second order interactin 
-# wave heading seems to have more noisy evaluation but no statistical significant impact.
-no_waveheading_sensitivity = "../data/sensitivities/second_no_waveheading.csv" 
-second_Si = pd.read_csv(path_second_Si)
-plt.figure(figsize=(8, 6))
-second_Si = second_Si.sort_values(by='S2', ascending=False)
-#plt.bar(second_Si_sorted['Unnamed: 0'], second_Si_sorted['S2'], color='blue')
-plt.errorbar(second_Si['Unnamed: 0'], second_Si['S2'], yerr=second_Si['S2_conf'], fmt='o', color='blue', capsize=5)
-plt.title('Scatter Plot of second order sensitivity')
-plt.xlabel('parameters')
-#plt.yscale('log')
-plt.ylabel('S2')
-plt.xticks(rotation=45, ha='right') 
-plt.grid(True)
-plt.tight_layout() 
-plt.show()
-plt.savefig("post_pro/plots/SI_second.pdf")
-plt.close('all')
+
+
 
