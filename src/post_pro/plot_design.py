@@ -18,10 +18,10 @@ def get_design(file_path, x):
     # Get the line x
     line_x = data[x]
     return line_x
-x = get_design('../data/paretos/designs_filtered.csv',113)
+x = get_design('../data/paretos/designs_filtered.csv',0)
 # get x and y
 r, L, x, y, d, N = model.unpack_x(x)
-print(d)
+print(np.mean(d),np.std(d)/np.mean(d))
 
 # plot
 colors.get_colors()     # create the color variables
@@ -38,4 +38,4 @@ ax.set_xlim([-40,80])
 ax.set_ylim([-40,80])
 ax.set_aspect('equal', adjustable='box')
 #plt.show()
-plt.savefig('post_pro/plots/design_space.pdf')
+plt.savefig('post_pro/plots/design.pdf')

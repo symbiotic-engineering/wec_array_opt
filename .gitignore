@@ -10,3 +10,4 @@ src/modules/__init__.py
 src/post_pro/plots/*
 degoede_ignore/*
 src/optimization_interfaces/__pycache__/*
+data/skipped.txt
