@@ -45,13 +45,11 @@ PROJECT STRUCTURE
 │     ├── q.py <- Calculates thee q-factor
 │     ├── sensitivity.py <- Calculates the sensitivity upto second order.
 │     ├── wave_field.py <- plots the wave_field for optimal designs 
-├─ requirement.txt <- All the pacakges.
-├─ environment.yml <- All the pacakges.
+├─ requirement.txt <- All the packages.
+├─ environment.yml <- All the packages.
 
 
 
 
  Note: Run code from src folder.
 
-
-FUNDING ACKNOWLEDGEMENT:
