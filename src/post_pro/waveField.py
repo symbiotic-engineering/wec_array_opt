@@ -49,7 +49,7 @@ def waveField(x_optimal):
 
     # radiation = sum(solver.compute_free_surface_elevation(grid, rad) for rad in rad_result)
     incoming_fse = airy_waves_free_surface_elevation(grid, diff_result)
-    total = radiation + diffraction + incoming_fse
+    total =  diffraction + incoming_fse + radiation  
     kd = np.abs(total)/np.abs(incoming_fse)                              # distrubance coeff
 
     # plots
@@ -68,20 +68,21 @@ def waveField(x_optimal):
     plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
     plt.tight_layout()
     plt.show()
+    plt.savefig('post_pro/plots/diffraction.pdf')
 
-    Zk = np.real(kd)
-    colors.get_colors()
-    plt.pcolormesh(X, Y, Zk,cmap=cmap) #, cmap=cmap,vmin=0,vmax=2.5)
-    plt.xlabel("x")
-    plt.ylabel("y")
-    colorbar = plt.colorbar()
-    colorbar.set_label(r'Disturbace Coefficient, $k_d$')
-    plt.scatter(wecx,wecy, marker = 'o', color = 'black', s = 100)  # Add markers
-    plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
-    plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
-    plt.tight_layout()
-    plt.savefig('post_pro/plots/kd_minLCOE.pdf')
-    plt.show()
+    # Zk = np.real(kd)
+    # colors.get_colors()
+    # plt.pcolormesh(X, Y, Zk,cmap=cmap) #, cmap=cmap,vmin=0,vmax=2.5)
+    # plt.xlabel("x")
+    # plt.ylabel("y")
+    # colorbar = plt.colorbar()
+    # colorbar.set_label(r'Disturbace Coefficient, $k_d$')
+    # plt.scatter(wecx,wecy, marker = 'o', color = 'black', s = 100)  # Add markers
+    # plt.arrow(-50, 50, 20, 0, color='black', width=0.2, head_width=5, head_length=5)
+    # plt.text(-60, 40, 'Incident Waves', color='black', fontsize=12, ha='center', va='center')
+    # plt.tight_layout()
+   # plt.savefig('post_pro/plots/diffractionOnly.pdf')
+   # plt.show()
     return
 
 # optimal parameters and design variables

@@ -60,7 +60,7 @@ regression_equation1 = f"y = {coefficients1['Intercept']:.4f}"
 for i, coef in enumerate(coefficients1[1:], start=1):
     regression_equation1 += f" + ({coef:.4f}) * X_{i}"
 
-regression_equation2 = f"y = {coefficients1['Intercept']:.4f}"
+regression_equation2 = f"y = {coefficients2['Intercept']:.4f}"
 for i, coef in enumerate(coefficients2[1:], start=1):
     regression_equation2 += f" + ({coef:.4f}) * X_{i}"
 
@@ -73,13 +73,13 @@ print(latex_equation2)
 
 # Plot regression for the first subset
 sns.regplot(y="LCOE", x="distance", data=df.iloc[:83], label='Cluster 1',line_kws={"color": "orange"}, scatter_kws={"color": "blue"})
+plt.text(0.15, 0.8, r'$LCOE_{2} = 0.3035 - 0.0012 \times distance_{2}$', fontsize=14,  fontweight='bold',transform=plt.gca().transAxes)
 
 # Plot regression for the second subset
 sns.regplot(y="LCOE", x="distance", data=df.iloc[84:], label='Cluster 2',line_kws={"color": "green"}, scatter_kws={"color": "magenta"})
+plt.text(0.2, 0.1, r'$LCOE_{1} = 0.2475 - 0.0003 \times distance_{1}$', fontsize=14,  fontweight='bold',transform=plt.gca().transAxes)
+# Add equations for each line 
 
-# Add equations for each line
-plt.text(0.15, 0.8, r'$LCOE_{1} = 0.2475 - 0.0003 \times distance_{1}$', fontsize=14,  fontweight='bold',transform=plt.gca().transAxes)
-plt.text(0.2, 0.1, r'$LCOE_{2} = 0.2475 - 0.0012 \times distance_{2}$', fontsize=14,  fontweight='bold',transform=plt.gca().transAxes)
 plt.xticks(fontsize=12, fontweight='bold') 
 plt.yticks(fontsize=12, fontweight='bold')
 plt.ylabel('LCOE [$/kWh]', fontweight='bold',fontsize=14)

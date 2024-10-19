@@ -4,6 +4,8 @@ parent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(parent_folder)
 grandparent_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.append("/".join((grandparent_folder,'sea-lab-utils')))
+
+
 import matplotlib.pyplot as plt
 import csv
 import numpy as np
