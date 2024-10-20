@@ -1,4 +1,5 @@
-## run the model for the recommended design and get the matrix for different Hs and Tp
+## run the model for the recommended design and get the matrix for different Hs and Tp to answer: does the farm operates efficiently across a range of sea conditions?
+
 import numpy as np
 import sys
 import os
@@ -30,13 +31,13 @@ def capture_width(P_captured, H_s, T):
     return CW
 
 #calculate capture width ratio (CWR)
-def capture_width_ratio(P_captured, H_s, T, L):
+def capture_width_ratio(P_captured, H_s, T, L=8):
     """
     Calculate the capture width ratio (CWR) of the WEC.
     L: Max sep for layouts?
     """
     CW = capture_width(P_captured, H_s, T)
-    CWR = CW / L 
+    CWR = CW / (4*L) 
     return CWR
 
 # define wave conditions
@@ -58,7 +59,7 @@ for i, Hs in enumerate(Hs_values):
     for j, T in enumerate(T_values):
         omega = 2 * np.pi / T
         p[0] = omega
-        p[2] = Hs /2 #Hs = 2A (significant double amplitude)
+        p[2] = Hs /(2*np.sqrt(2)) #Hs = 2sqrt(2) (significant double amplitude)
         # nominal run for 
         LCOE,AEP,rated_P = model.run(x,p,time_data=True,reactive=True)
         power_matrix[i, j] = rated_P
@@ -69,7 +70,8 @@ for i, Hs in enumerate(Hs_values):
         
         # Calculate capture width
         capture_width_val = rated_P / P_available
-        capture_width_matrix[i, j] = capture_width_val
+        capture_width_matrix[i, j] = capture_width_val #/4 ?
+
 
 
 
