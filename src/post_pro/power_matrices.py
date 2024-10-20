@@ -12,14 +12,42 @@ import seaborn as sns
 from parameters.read_params import read_params
 #nominal run fo grid of Hs and Tp /omega.. store the power rating
 
+def available_wave_power(H_s, T):
+    """
+    Calculate the available wave power per unit width (kW/m).
+    """
+    rho = 1023 #(kg/m^3)
+    g = 9.8
+    P_available = (rho * g**2) / (64 * np.pi) * H_s**2 * T  # in watts per meter
+    return P_available / 1000  # convert to kW/m
+
+def capture_width(P_captured, H_s, T):
+    """
+    Calculate the capture width of the WEC.
+    """
+    P_available = available_wave_power(H_s, T)
+    CW = P_captured / P_available  
+    return CW
+
+#calculate capture width ratio (CWR)
+def capture_width_ratio(P_captured, H_s, T, L):
+    """
+    Calculate the capture width ratio (CWR) of the WEC.
+    L: Max sep for layouts?
+    """
+    CW = capture_width(P_captured, H_s, T)
+    CWR = CW / L 
+    return CWR
+
 # define wave conditions
 
-Hs_values = np.linspace(0.5, 5.0, num=10)
+Hs_values = np.linspace(1, 5.0, num=10)
+print(Hs_values)
 T_values = np.linspace(5, 15, num=10)
 power_matrix = np.zeros((len(Hs_values), len(T_values)))
 
 LCOE_matrix = np.zeros((len(Hs_values), len(T_values)))
-
+capture_width_matrix = np.zeros((len(Hs_values), len(T_values)))
 
 # recommended design
 x = [8.0,0.100000390005137,5.5762347794275575,33.27859672211952,58.573433541920565,5.591921577507208,37.872518187721504,18.691411350753484,5.537755861522799,-9.834722626629564,38.78588955445712,5.545080885661658]
@@ -36,11 +64,18 @@ for i, Hs in enumerate(Hs_values):
         power_matrix[i, j] = rated_P
         LCOE_matrix[i,j] = LCOE
 
+        # Calculate available wave power for this Hs and T
+        P_available = available_wave_power(Hs, T)
+        
+        # Calculate capture width
+        capture_width_val = rated_P / P_available
+        capture_width_matrix[i, j] = capture_width_val
+
 
 
 
 plt.figure(figsize=(8, 6))
-sns.heatmap(power_matrix, xticklabels= np.round(T_values), yticklabels=np.round(Hs_values), cmap='YlOrRd')
+sns.heatmap(power_matrix, xticklabels= np.round(T_values), yticklabels=np.round(Hs_values,1), cmap='YlOrRd')
 plt.title('2D Power(kW) Matrix for recommended design and layout')
 plt.xlabel('Spectral Wave Period (s)')
 plt.ylabel('Significant Wave Height (m)')
@@ -53,3 +88,13 @@ plt.title('LCOE  Matrix for recommended design and layout')
 plt.xlabel('Spectral Wave Period (s)')
 plt.ylabel('Significant Wave Height (m)')
 plt.savefig("src/post_pro/plots/lcoe_matrix.pdf")
+
+
+
+plt.figure(figsize=(10, 8))
+plt.contourf(T_values, Hs_values, capture_width_matrix, cmap='Reds', levels=20)
+plt.colorbar(label='Capture Width (m)')
+plt.xlabel('Wave Period (T) [s]')
+plt.ylabel('Significant Wave Height (Hs) [m]')
+plt.title('Capture Width of WEC Layout')
+plt.savefig("src/post_pro/plots/cw_matrix.pdf")
