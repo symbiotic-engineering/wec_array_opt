@@ -18,9 +18,11 @@ Hs_values = np.linspace(0.5, 5.0, num=10)
 T_values = np.linspace(5, 15, num=10)
 power_matrix = np.zeros((len(Hs_values), len(T_values)))
 
+LCOE_matrix = np.zeros((len(Hs_values), len(T_values)))
+
 
 # recommended design
-x = [8.0,0.100000390005137,5.5762347794275575,5.591921577507208,5.537755861522799,5.545080885661658]
+x = [8.0,0.100000390005137,5.5762347794275575,33.27859672211952,58.573433541920565,5.591921577507208,37.872518187721504,18.691411350753484,5.537755861522799,-9.834722626629564,38.78588955445712,5.545080885661658]
 p = read_params(pfile = 'src/parameters/parameters.csv')
 omega = p[0]
 
@@ -32,13 +34,22 @@ for i, Hs in enumerate(Hs_values):
         # nominal run for 
         LCOE,AEP,rated_P = model.run(x,p,time_data=True,reactive=True)
         power_matrix[i, j] = rated_P
+        LCOE_matrix[i,j] = LCOE
 
 
 
 
 plt.figure(figsize=(8, 6))
-sns.heatmap(power_matrix, xticklabels=T_values, yticklabels=Hs_values, cmap='viridis')
-plt.title('2D Power Matrix for WEC')
+sns.heatmap(power_matrix, xticklabels= np.round(T_values), yticklabels=np.round(Hs_values), cmap='YlOrRd')
+plt.title('2D Power(kW) Matrix for recommended design and layout')
 plt.xlabel('Spectral Wave Period (s)')
 plt.ylabel('Significant Wave Height (m)')
 plt.savefig("src/post_pro/plots/power_matrix.pdf")
+
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(LCOE_matrix, xticklabels= np.round(T_values), yticklabels=np.round(Hs_values), cmap='YlOrRd')
+plt.title('LCOE  Matrix for recommended design and layout')
+plt.xlabel('Spectral Wave Period (s)')
+plt.ylabel('Significant Wave Height (m)')
+plt.savefig("src/post_pro/plots/lcoe_matrix.pdf")
